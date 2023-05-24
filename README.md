@@ -1,34 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tutorial 2
 
-## Getting Started
+- _Date Created_: 24 May 2023
+- _Last Modification Date_: 24 May 2023
 
-First, run the development server:
+# Author(s)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+- [Kishan Patel](ks255715@dal.ca) - _(Owner)_
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# URLs
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- _Tutorial 2 repository_: <https://git.cs.dal.ca/ksp/csci5709_kishan_patel_b00929225_tutorials/-/tree/main/Tutorial2>
+- _Tutorial main repository_: <https://git.cs.dal.ca/ksp/csci5709_kishan_patel_b00929225_tutorials>
+- _Assignment main repository_: <https://git.cs.dal.ca/ksp/csci5709_kishan_patel_b00929225_assignments>
+- _Project main repository_: <https://git.cs.dal.ca/jeet/webgroup-1>
+- _Individual branch (project) repository_: <https://git.cs.dal.ca/jeet/webgroup-1/-/tree/kishan>
+- _Project deployment link_: <https://kishan-patel-b00929225.netlify.app/>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Deployment
 
-## Learn More
+Here's a summary of the steps I performed to deploy my project to Netlify:
 
-To learn more about Next.js, take a look at the following resources:
+- **Step 1**: I created a copy of my GitLab repository on my personal GitHub account. This step is necessary because Netlify does not support direct deployment from GitLab.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Step 2**: I created an account on Netlify by visiting their website and following the registration process. Then, I provided the required information and verified my account by confirming my email address.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- **Step 3**: After signing up and verifying my account, I was redirected to a quick import page on Netlify. Here, I clicked on "import an existing project.". I authorized Netlify to connect to my personal GitHub account, granting it the necessary permissions.
 
-## Deploy on Vercel
+- **Step 4**: I selected the specific repository, branch and build options for my project on Netlify.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Step 5**: Finally, I'm done! Netlify starts deploying my site, and within a few minutes, my front-end starter application is live and accessible. I can view the deployed site and share the provided URL with others as and when required.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+These steps allow me to easily deploy my front-end application using Netlify, leveraging the capabilities of GitHub and Netlify's seamless integration.
+
+# Built With
+
+- [Next.js](https://nextjs.org/) - A React Framework
+
+# Other Tools Used
+
+- [Netlify](https://www.netlify.com/)
+- [GitLab](https://git.cs.dal.ca/)
+- [GitHub](https://github.com/)
+- [Dillinger](https://dillinger.io/)
+- [VS Code](https://code.visualstudio.com/)
