@@ -34,3 +34,19 @@ For deployment purposes, I have used netlify's service. With the help of netlify
 
 * [Next.js](https://nextjs.org/) - The web framework used for developing Front-End
 * [Netlify](https://www.netlify.com/) - Netlify helped in deploying the application
+
+## References
+
+[1]	“Dalhousie university,” Dalhousie University. [Online]. Available: http://dal.ca. [Accessed: 27-May-2023].
+
+[2]	Canva.com. [Online]. Available: http://canva.com. [Accessed: 27-May-2023].
+
+[3]	Freepik.com. [Online]. Available: https://img.freepik.com/free-photo/portrait-beautiful-mature-blonde-bearded-guy-with-trendy-hairdo-casual-grey-shirt-smiling_176420-15741.jpg?w=996&t=st=1684964289~exp=1684964889~hmac=8a06ef27486f94c3344c85fa5277b6ddd877b47d1afdbac450ead3ae275d6de6. [Accessed: 27-May-2023].
+
+[4]	“Online diagramming tool for collaborative diagramming,” Nulab. [Online]. Available: http://cacoo.com. [Accessed: 27-May-2023].
+
+[5]	“Flowchart maker & online diagram software,” Draw.io. [Online]. Available: http://draw.io. [Accessed: 27-May-2023].
+
+[6]	Wireframepro.mockflow. [Online]. Available: http://wireframepro.mockflow. [Accessed: 27-May-2023].
+
+[7]	Produle, “MockFlow - wireframe tools, prototyping tools, UI mockups, UX suite, remote designing,” Mockflow.com. [Online]. Available: https://mockflow.com/. [Accessed: 27-May-2023].
