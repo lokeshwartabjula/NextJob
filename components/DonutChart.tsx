@@ -1,6 +1,8 @@
+"use client";
+
 import { ApexOptions } from "apexcharts";
-import Chart from "react-apexcharts";
 import { DEFAULT_GRAPH_WIDTH } from "./Constants";
+import dynamic from 'next/dynamic';
 
 export default function DonutChart({
   options,
@@ -15,10 +17,11 @@ export default function DonutChart({
   data: number[];
   width?: number;
 }) {
-  width = width || DEFAULT_GRAPH_WIDTH;
+  const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
+    width = width || DEFAULT_GRAPH_WIDTH;
   options = { ...options, labels };
   const series = data;
   return (
-    <Chart options={options} series={series} type={"donut"} height={width*0.75} width={width} />
+    <ApexCharts options={options} series={series} type={"donut"} height={width*0.75} width={width} />
   );
 }

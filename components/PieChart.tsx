@@ -1,6 +1,8 @@
+"use client";
+
 import { ApexOptions } from "apexcharts";
-import Chart from "react-apexcharts";
 import { DEFAULT_GRAPH_WIDTH } from "./Constants";
+import dynamic from "next/dynamic";
 
 export default function PieChart({
   options,
@@ -15,11 +17,20 @@ export default function PieChart({
   data: number[];
   width?: number;
 }) {
+  const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
   width = width || DEFAULT_GRAPH_WIDTH;
   options = {
     ...options,
-    labels
+    labels,
   };
   const series = data;
-  return <Chart options={options} series={series} type={"pie"} height={width*0.75} width={width}/>;
+  return (
+    <ApexCharts
+      options={options}
+      series={series}
+      type={"pie"}
+      height={width * 0.75}
+      width={width}
+    />
+  );
 }

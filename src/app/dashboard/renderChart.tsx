@@ -1,3 +1,5 @@
+"use client";
+
 import BarChart from "../../../components/BarChart";
 import DonutChart from "../../../components/DonutChart";
 import LineChart from "../../../components/LineChart";

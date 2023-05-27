@@ -1,3 +1,5 @@
+"use client";
+
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { ICity, ICountry, IState } from "./types";
 import { City, Country, State } from "country-state-city";
