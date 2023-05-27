@@ -10,7 +10,7 @@ import RenderChart from "./renderChart";
 
 export default function Dashboard() {
   const [options, setOptions] = useState<ApexOptionsModified>({
-    chart: { type: "line" },
+    chart: { type: "bar" },
     title: { text: "Total Job Openings" },
     xaxis: { categories: categories },
     series: data,
@@ -62,8 +62,8 @@ export default function Dashboard() {
             onChange={handleChange}
             autoWidth
           >
-            <MenuItem value={"line"}>Line</MenuItem>
             <MenuItem value={"bar"}>Bar</MenuItem>
+            <MenuItem value={"line"}>Line</MenuItem>
             <MenuItem value={"donut"}>Donut</MenuItem>
             <MenuItem value={"pie"}>Pie</MenuItem>
           </Select>

@@ -12,7 +12,7 @@ export default function RenderChart({
 }): JSX.Element {
   switch (options.chart?.type) {
     case "line":
-      <LineChart
+      return <LineChart
         options={options}
         title="Count"
         labels={categories}
@@ -47,7 +47,7 @@ export default function RenderChart({
       );
     default:
       return (
-        <LineChart
+        <BarChart
           options={options}
           title="Count"
           labels={categories}
