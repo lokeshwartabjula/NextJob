@@ -1,0 +1,26 @@
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  margin-right: 10px;
+}
+
+.userIcon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.userMenu {
+  position: absolute;
+  right: 0;
+  background: #c4c730;
+  padding: 10px;
+}
