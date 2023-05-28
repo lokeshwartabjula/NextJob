@@ -105,3 +105,23 @@ a {
     color-scheme: dark;
   }
 }
+
+.formCSS {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background: rgb(var(--tile-start-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--tile-start-rgb)),
+      rgb(var(--tile-end-rgb))
+    )
+    rgb(var(--tile-start-rgb));
+  box-shadow: 0 0 10px 0 rgba(var(--foreground-rgb), 0.2);
+}
