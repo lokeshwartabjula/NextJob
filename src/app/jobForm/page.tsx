@@ -1,36 +1,55 @@
 "use client";
 
-import { NodeNextRequest } from 'next/dist/server/base-http/node';
-import React, { useState, FormEvent } from 'react';
-import Navbar from '../navBar/page';
+import { NodeNextRequest } from "next/dist/server/base-http/node";
+import React, { useState, FormEvent } from "react";
+import Navbar from "../navBar/page";
 
-const JobForm = ({ initialData, onSubmit }:any) => {
-  const [data, setData] = useState<any>(initialData || {
-    jobPostName: '',
-    companyName: '',
-    location: '',
-    payRate: 0,
-    jobType: '',
-    jobCategory: '',
-    description: '',
-    experienceLevel: '',
-    educationLevel: '',
-    language: ''
-  });
+const JobForm = ({ initialData, onSubmit }: any) => {
+  const [data, setData] = useState<any>(
+    initialData || {
+      jobPostName: "",
+      companyName: "",
+      location: "",
+      payRate: 0,
+      jobType: "",
+      jobCategory: "",
+      description: "",
+      experienceLevel: "",
+      educationLevel: "",
+      language: "",
+    }
+  );
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     console.log("Job form data submitted: ", data);
     // Put your logic here to handle the submitted job form data
-  }
+  };
 
   const jobTypes = ["Full-time", "Part-time", "Internship"];
-  const jobCategories = ["Engineering", "Marketing", "Sales", "HR", "Management"];
+  const jobCategories = [
+    "Engineering",
+    "Marketing",
+    "Sales",
+    "HR",
+    "Management",
+  ];
   const experienceLevels = ["Entry Level", "Mid Level", "Senior Level"];
   const educationLevels = ["High School", "Bachelor's", "Master's", "Ph.D"];
-  const languages = ["English", "Spanish", "French", "German", "Chinese", "Other"];
+  const languages = [
+    "English",
+    "Spanish",
+    "French",
+    "German",
+    "Chinese",
+    "Other",
+  ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     setData({
       ...data,
       [e.target.name]: e.target.value,
@@ -42,52 +61,55 @@ const JobForm = ({ initialData, onSubmit }:any) => {
     if (payRate >= 0) {
       setData({
         ...data,
-        payRate
+        payRate,
       });
     }
-  }
+  };
 
   const formStyles: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '10px',
-    width: '100%',
-    maxWidth: '800px',
-    margin: 'auto',
-    padding: '20px',
-    boxSizing: 'border-box',
-    marginTop: '10px',
-    backgroundColor: 'white',
-    borderRadius: '10px',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "10px",
+    width: "100%",
+    maxWidth: "800px",
+    margin: "auto",
+    padding: "20px",
+    boxSizing: "border-box",
+    marginTop: "10px",
+    backgroundColor: "white",
+    borderRadius: "10px",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
   };
 
   const inputStyles = {
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #007BFF',
-    backgroundColor: 'white',
-    color: 'black'
-
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #007BFF",
+    backgroundColor: "white",
+    color: "black",
   };
 
   const buttonStyles = {
-    backgroundColor: '#007BFF',
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '5px',
-    border: 'none',
-    cursor: 'pointer',
+    backgroundColor: "#007BFF",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
   };
 
   const labelStyles = {
-    color: 'black'
+    color: "black",
   };
 
   return (
-    <div style={{ width: '100%', minHeight: '100vh', backgroundColor: '#FAF9F6' }}>
+    <div
+      style={{ width: "100%", minHeight: "100vh", backgroundColor: "#FAF9F6" }}
+    >
       <Navbar links={["Home", "About", "Contact", "Jobs"]} />
-      <h1 style={{ color: 'Black', marginTop: '1%', textAlign: 'center'}}>Post a Job</h1>
+      <h1 style={{ color: "Black", marginTop: "1%", textAlign: "center" }}>
+        Post a Job
+      </h1>
       <form
         onSubmit={(e: FormEvent) => {
           e.preventDefault();
@@ -103,12 +125,12 @@ const JobForm = ({ initialData, onSubmit }:any) => {
           id="job-post-name"
           type="text"
           name="jobPostName"
-          value={data.jobPostName || ''}
+          value={data.jobPostName || ""}
           onChange={handleChange}
           required
           style={inputStyles}
         />
-  
+
         <label style={labelStyles} htmlFor="company-name">
           Company Name:
         </label>
@@ -116,12 +138,12 @@ const JobForm = ({ initialData, onSubmit }:any) => {
           id="company-name"
           type="text"
           name="companyName"
-          value={data.companyName || ''}
+          value={data.companyName || ""}
           onChange={handleChange}
           required
           style={inputStyles}
         />
-  
+
         <label style={labelStyles} htmlFor="location">
           Location:
         </label>
@@ -129,12 +151,12 @@ const JobForm = ({ initialData, onSubmit }:any) => {
           id="location"
           type="text"
           name="location"
-          value={data.location || ''}
+          value={data.location || ""}
           onChange={handleChange}
           required
           style={inputStyles}
         />
-  
+
         <label style={labelStyles} htmlFor="pay-rate">
           Pay Rate:
         </label>
@@ -142,12 +164,12 @@ const JobForm = ({ initialData, onSubmit }:any) => {
           id="pay-rate"
           type="text" // Changed to text input type
           name="payRate"
-          value={data.payRate || ''}
+          value={data.payRate || ""}
           onChange={handlePayRateChange}
           required
-          style={inputStyles} 
+          style={inputStyles}
         />
-  
+
         <label style={labelStyles} htmlFor="job-type">
           Job Type:
         </label>
@@ -165,7 +187,7 @@ const JobForm = ({ initialData, onSubmit }:any) => {
             </option>
           ))}
         </select>
-  
+
         <label style={labelStyles} htmlFor="job-category">
           Job Category:
         </label>
@@ -183,7 +205,6 @@ const JobForm = ({ initialData, onSubmit }:any) => {
             </option>
           ))}
         </select>
-
 
         <label style={labelStyles} htmlFor="experience-level">
           Experience Level:
@@ -238,20 +259,29 @@ const JobForm = ({ initialData, onSubmit }:any) => {
             </option>
           ))}
         </select>
-  
-        <label style={{ gridColumn: 'span 2', ...labelStyles }} htmlFor="description">
+
+        <label
+          style={{ gridColumn: "span 2", ...labelStyles }}
+          htmlFor="description"
+        >
           Description:
         </label>
         <textarea
           id="description"
           name="description"
-          value={data.description || ''}
+          value={data.description || ""}
           onChange={handleChange}
           required
-          style={{ ...inputStyles, gridColumn: 'span 2', width: '100%', resize: 'none', height: '150px' }}
+          style={{
+            ...inputStyles,
+            gridColumn: "span 2",
+            width: "100%",
+            resize: "none",
+            height: "150px",
+          }}
         />
-  
-        <div style={{ gridColumn: 'span 2', textAlign: 'center' }}>
+
+        <div style={{ gridColumn: "span 2", textAlign: "center" }}>
           <button type="submit" style={buttonStyles}>
             Submit
           </button>
@@ -259,6 +289,6 @@ const JobForm = ({ initialData, onSubmit }:any) => {
       </form>
     </div>
   );
-}
+};
 
 export default JobForm;
