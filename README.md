@@ -1,34 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CSCI-5709 (Advance Topics in Web Development)
+### Assignment-1 (Live App Link: https://luminous-chaja-d73e17.netlify.app/jobform)
+### Assignment-1 GitLab Link (https://git.cs.dal.ca/gajipara/csci_5709_gajipara_maulik_b00934641_assignments/-/tree/main/Assignmet1)
 
-## Getting Started
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Technologies & Libraries Used
+* [Next](https://nextjs.org/)
+* [npm](https://www.npmjs.com/)
+* [balsamiq](https://balsamiq.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Authors
+[Maulik Gajipara] (ml477880@dal.ca) - (Owner)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Task
+* Take job posting details from the user
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Features
+* Job Posting
+* Responsive
 
-## Learn More
+### Deployemnt
 
-To learn more about Next.js, take a look at the following resources:
+The web project is deployed using Git and Netlify:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* The code is pushed to a Git repository, which serves as a version control system to track changes and manage collaboration.
+* Netlify, a powerful hosting platform, is connected to the Git repository, allowing automatic deployments upon code changes or updates.
+* Netlify's build process retrieves the latest code from the repository, runs necessary build scripts, and deploys the compiled project to a live web server for public access.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Testing
 
-## Deploy on Vercel
+The code was manually tested by a developer or tester:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+* Inputs were provided, forms were submitted, and expected outputs were validated against desired results.
+* Manual testing helped uncover issues, validate user experience, and ensure the web project functions as intended.
