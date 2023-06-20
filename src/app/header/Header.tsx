@@ -16,6 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { NavOptions } from "./constant";
+import "./styles.css";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -137,7 +138,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            NEXT JOB
           </Typography>
           <Box
             sx={{
@@ -148,10 +149,9 @@ function ResponsiveAppBar() {
           >
             {NavOptions.map((page) => (
               <Button
+                className={page.className || "nav-link"}
                 key={page.label}
                 onClick={() => handleNavClick(page.route)}
-                className="nav-link"
-                sx={page.style}
               >
                 {page.label}
               </Button>
@@ -161,7 +161,9 @@ function ResponsiveAppBar() {
           {/* Make this visible once user logged-in */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: "0 10px" }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: "0 10px", "&:hover":{
+                background: "none"
+              } }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
