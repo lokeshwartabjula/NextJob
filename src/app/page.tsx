@@ -1,17 +1,16 @@
 "use client";
 import ResponsiveAppBar from "./demo";
-import styles from './page.module.css'
-import Cover from './components/Cover'
-import JobSteps from './components/JobSteps'
-import RecrutingOption from './components/RecrutingOption'
+import Cover from "./components/Cover";
+import JobSteps from "./components/JobSteps";
+import RecrutingOption from "./components/RecrutingOption";
 
 export default function MyApp() {
   return (
     <div>
-    <ResponsiveAppBar/>
-    <Cover />
-      <JobSteps /> 
+      <ResponsiveAppBar />
+      <Cover />
+      <JobSteps />
       <RecrutingOption />
     </div>
-  )
+  );
 }
