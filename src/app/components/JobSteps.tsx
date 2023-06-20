@@ -2,7 +2,8 @@
 
 import { Box, Grid , Typography, CardHeader, Card, Avatar,CardContent, useTheme, useMediaQuery} from '@mui/material';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {steps} from './jobstepsinformation';
+import { Jobstepsinformation as Steps } from "./jobstepsinformation";
+import { JobStepsInformationType } from './types';
 
 export default function JobSteps() {
     const theme = useTheme();
@@ -22,8 +23,8 @@ export default function JobSteps() {
                 <br />
                 <br />
             </Box>
-            <Grid container spacing={2} sx={{ maxWidth: '100%', margin: '0 auto', padding: '0 20px' }}>
-                {steps.map((step) => (
+            <Grid container rowSpacing={6} spacing={2} sx={{ maxWidth: '100%', margin: '0 auto' }}>
+                {Steps.map((step:JobStepsInformationType) => (
                 <Grid item xs={12} md={6} lg={3} key={step.id}>
                     <Card
                     sx={{
