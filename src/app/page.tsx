@@ -1,18 +1,17 @@
-import Image from 'next/image'
+"use client";
+import ResponsiveAppBar from "./demo";
 import styles from './page.module.css'
 import Cover from './components/Cover'
 import JobSteps from './components/JobSteps'
 import RecrutingOption from './components/RecrutingOption'
 
-export default function Home() {
+export default function MyApp() {
   return (
-    <>
     <div>
-      <Cover />
+    <ResponsiveAppBar/>
+    <Cover />
       <JobSteps /> 
       <RecrutingOption />
     </div>
-      
-    </>
   )
 }
