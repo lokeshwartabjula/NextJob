@@ -1,6 +1,9 @@
+"use client";
 import ResponsiveAppBar from "./demo";
 
-export default function Home() {
+import Home from "./pages/Home/page";
+
+export default function MyApp() {
   return (
     <div>
     <ResponsiveAppBar/>
