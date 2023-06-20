@@ -40,5 +40,3 @@ export default function Cover() {
         </Container>
     );
 }
-
-// yellow: #FFDB58   navy blue color: #0A66C2  #003060  #055C9D
