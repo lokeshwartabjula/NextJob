@@ -6,7 +6,15 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React, { useState } from "react";
-
+import {
+  useTheme,
+  useMediaQuery,
+  Input,
+  InputAdornment,
+  TextField,
+  OutlinedInput,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 const faqData: any[] = [
   {
     question: "How can I create an account on the job search website?",
@@ -74,6 +82,9 @@ export default function SimpleAccordion() {
   const [expanded, setExpanded] = useState<string | false>(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
@@ -96,22 +107,23 @@ export default function SimpleAccordion() {
         >
           FAQs
         </Typography>
-        <Typography variant="h4" fontWeight="bold" margin={2}>
+        <Typography variant="h4" fontWeight="bold" margin={2} color={"primary"}>
           Frequently Asked Questions
         </Typography>
         <Typography variant="body2" margin={2} marginBottom={4}>
           Have questions? We're here to help.
         </Typography>
-        <input
-          style={{
-            marginBottom: 30,
-            width: "37vw",
-            height: 20,
-          }}
+        <OutlinedInput
+          className="searchBar"
           type="text"
           placeholder="Search Questions..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          endAdornment={
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          }
         />
       </div>
       <div className="container">
