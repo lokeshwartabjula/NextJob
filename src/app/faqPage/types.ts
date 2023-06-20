@@ -1,6 +1,4 @@
-type faqDataType = {
+export type FaqDataType = {
   question: string;
   answer: string;
 };
-
-export type { faqDataType };

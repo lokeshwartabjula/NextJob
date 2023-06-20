@@ -1,6 +1,6 @@
-import { faqDataType } from "./types";
+import { FaqDataType } from "./types";
 
-const faqData: faqDataType[] = [
+const faqData: FaqDataType[] = [
   {
     question: "How can I create an account on the job search website?",
     answer:
