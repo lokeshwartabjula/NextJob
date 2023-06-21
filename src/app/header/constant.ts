@@ -5,12 +5,10 @@ import { MenuType } from "./types";
 export const NavOptions: MenuType[] = [
   {
     label: "Login",
-    route: "/login",
     className:"nav-link-login"
   },
   {
     label: "Sign Up",
-    route: "/signup",
     className:"nav-link-sign-up"
   },
   {
@@ -23,10 +21,8 @@ export const NavOptions: MenuType[] = [
   },
   {
     label: "Companies",
-    route: "/companies",
   },
   {
     label: "Jobs",
-    route: "/jobs",
   },
 ];

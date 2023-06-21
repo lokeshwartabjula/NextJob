@@ -17,11 +17,14 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { NavOptions } from "./constant";
 import "./styles.css";
+import { Alert, Snackbar } from "@mui/material";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
   const Router = useRouter();
+
+  const [snackBarVisible, setSnackBarVisible] = React.useState(false);
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -45,9 +48,14 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const handleNavClick = (route: string) => {
-    Router.push(route);
+  const handleNavClick = (route?: string) => {
+    route ? Router.push(route) : setSnackBarVisible(true);
     handleCloseNavMenu();
+  };
+
+  const handleProfileItemClick = () => {
+    setSnackBarVisible(true);
+    handleCloseUserMenu();
   };
 
   return (
@@ -161,9 +169,15 @@ function ResponsiveAppBar() {
           {/* Make this visible once user logged-in */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: "0 10px", "&:hover":{
-                background: "none"
-              } }}>
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{
+                  p: "0 10px",
+                  "&:hover": {
+                    background: "none",
+                  },
+                }}
+              >
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
@@ -184,7 +198,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleProfileItemClick}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
@@ -192,6 +206,11 @@ function ResponsiveAppBar() {
           </Box>
         </Toolbar>
       </Container>
+      <Snackbar open={snackBarVisible} autoHideDuration={6000} onClose={()=> setSnackBarVisible(false)}>
+        <Alert onClose={()=> setSnackBarVisible(false)} sx={{ width: "100%" }} severity="info">
+          This feature is not available yet!
+        </Alert>
+      </Snackbar>
     </AppBar>
   );
 }

@@ -29,18 +29,15 @@ export default function SimpleAccordion() {
         }}
       >
         <Typography
-          variant="h6"
+          variant="h4"
           fontWeight="bold"
           margin={2}
           marginTop={10}
-          color={"#515151"}
+          color={"primary"}
         >
-          FAQs
-        </Typography>
-        <Typography variant="h4" fontWeight="bold" margin={2} color={"primary"}>
           Frequently Asked Questions
         </Typography>
-        <Typography variant="body2" margin={2} marginBottom={4}>
+        <Typography variant="body1" margin={2} marginBottom={4}>
           Have questions? We're here to help.
         </Typography>
         <OutlinedInput
@@ -49,6 +46,7 @@ export default function SimpleAccordion() {
           placeholder="Search Questions..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          style={{paddingLeft:"5px"}}
           endAdornment={
             <InputAdornment position="end">
               <SearchIcon />

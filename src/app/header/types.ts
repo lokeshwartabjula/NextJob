@@ -1,5 +1,5 @@
 export type MenuType = {
     label: string;
-    route: string;
+    route?: string;
     className?: string;
   };
