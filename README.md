@@ -55,7 +55,3 @@ By seamlessly integrating with GitHub and offering a user-friendly interface for
 - [VS Code](https://code.visualstudio.com/)
 - [MaterialUI](https://mui.com/)
 - [FortAwesome](https://fortawesome.com/)
-
-
-<!--- The following README.md sample file was adapted from https://gist.github.com/PurpleBooth/109311bb0361f32d87a2#file-readme-template-md by Gabriella Mosquera for academic use ---> 
-
