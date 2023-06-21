@@ -43,8 +43,6 @@ By seamlessly integrating with GitHub and offering a user-friendly interface for
 
 ## Built With
 
-<!--- Provide a list of the frameworks used to build this application, your list should include the name of the framework used, the url where the framework is available for download and what the framework was used for, see the example below --->
-
 - [Next.js](https://nextjs.org/) - A ReactJS Framework
 
 ### Other Tools & Technology Used
