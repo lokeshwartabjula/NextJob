@@ -66,10 +66,10 @@ export default function Contact() {
                   />
                   <CardContent>
                     <Typography variant="body2" color="text.secondary">
-                      ks255715@dal.ca
+                      next.job@yopmail.com
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      ml477880@dal.ca
+                      next-job@yopmail
                     </Typography>
                   </CardContent>
                 </Card>
@@ -89,10 +89,10 @@ export default function Contact() {
                   />
                   <CardContent>
                     <Typography variant="body2" color="text.secondary">
-                      +1 782 548 876
+                      +1(XXX)XXX-XXXX
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      +1 782 548 876
+                      +1(XXX)XXX-XXXX
                     </Typography>
                   </CardContent>
                 </Card>
@@ -123,7 +123,17 @@ export default function Contact() {
             </Grid>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid container xs={12} direction={"row"}>
+            <Grid item xs={12} margin={5}>
+              <Typography
+                variant="h5"
+                align="center"
+                color="primary"
+                fontFamily="arial"
+              >
+                Send Your Message
+              </Typography>
+            </Grid>
             <Grid
               container
               spacing={2}
@@ -131,16 +141,6 @@ export default function Contact() {
             >
               <Grid item xs={12} sm={8}>
                 <Grid container spacing={2} direction="column">
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="h5"
-                      align="center"
-                      color="primary"
-                      fontFamily="arial"
-                    >
-                      Send Your Message
-                    </Typography>
-                  </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={6}>
