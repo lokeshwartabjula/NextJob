@@ -7,7 +7,6 @@ import { GOOGLE_MAPS_API_KEY } from '../../../../utils/CONSTANTS';
 import JobCard from '../../../../components/JobCard/JobCard';
 
 
-// generate random coordinates so that we can have multiple markers on the map and also add a random salary for each marker point. The marker should be spread across the whole map so that we can test the radius search functionality.
 const randomPoints = Array.from({ length: 100 }, () => {
     return {
         latitude: 37.42216 + (Math.random() - 0.5) * 200 * 0.1,
@@ -22,7 +21,7 @@ const randomJobCards = Array.from({ length: 20 }, () => {
         jobTitle: 'Software Engineer',
         jobCompany: 'Google',
         jobType: 'Part Time',
-        salary: Math.floor(Math.random() * 20000),
+        salary: '1000',
         jobLocation: 'San Francisco, CA',
         companyLogo: 'https://images.pexels.com/photos/17456631/pexels-photo-17456631/free-photo-of-mallorca.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     }
@@ -43,14 +42,14 @@ const JobRadiusPage = (() => {
     }
 
     return (
-        <main className='root' >
-            <title>Job By Radius</title>
+        <main className='root'>
+            <title>Jobs By Radius</title>
 
             <div className='dividerView'>
                 {map.isLoaded ? <div className='half-view'>
                     <GoogleMap
                         center={{ lat: 37.42216, lng: -122.08427 }}
-                        mapContainerStyle={{ width: '50vw', height: '90vh' }}
+                        mapContainerStyle={{ width: '100%', height: '90%' }}
                         zoom={10} clickableIcons={false}
                         options={{ fullscreenControl: false, streetViewControl: false, mapTypeControl: false }}
                     >

@@ -1,12 +1,14 @@
+"use client";
 import React from 'react';
 import './JobCard.css';
+import { Button } from '@mui/material';
 
 interface JobCardProps {
     jobDate: string,
     jobTitle: string,
     jobCompany: string,
     jobType: string,
-    salary: number,
+    salary: string,
     jobLocation: string,
     companyLogo: string
 }
@@ -37,14 +39,14 @@ const JobCard = (props: JobCardProps) => {
 
             <div className='footer'>
                 <div className='salary-div'>
-                    <text className='salary'>${props.salary}/Month</text>
+                    <text className='sal'>${props.salary}/Month</text>
                     <text className='location'>{props.jobLocation}</text>
                 </div>
 
                 <div className='bttn'>
-                    <button className='details'>
+                    <Button className='details' onClick={() => { }}>
                         Details
-                    </button>
+                    </Button>
                 </div>
             </div>
 

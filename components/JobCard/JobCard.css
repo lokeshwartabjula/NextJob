@@ -2,8 +2,6 @@
     border: 1px solid #B5A9A9;
     margin: 10px;
     border-radius: 22px;
-    /* overflow: hidden; */
-    /* height: 37vh; */
 }
 
 .job-content {
@@ -13,7 +11,6 @@
     margin-left: 0.8rem;
     margin-right: 0.8rem;
     background-color: rgb(238, 244, 245);
-    /* height: 77%; */
 }
 
 .job-date {
@@ -47,7 +44,6 @@
     padding-left: 1.8rem;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
-    /* height: 50%; */
 }
 
 .comp-div {
@@ -93,7 +89,7 @@
     flex-direction: column;
 }
 
-.salary {
+.sal {
     font-weight: 370;
     font-size: 16px;
 }
@@ -111,7 +107,5 @@
     border-radius: 24px;
     padding-left: 1.3rem;
     padding-right: 1.3rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border: 0px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
 }
