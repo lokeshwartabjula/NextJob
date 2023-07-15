@@ -1,42 +1,41 @@
 "use client";
-import { GoogleMap, InfoBox, InfoWindow, LoadScript, Marker, useLoadScript } from '@react-google-maps/api';
-import styles from './jobRadius.module.css'
-import React, { useEffect, useState } from 'react';
-import CModal from '../../../../components/CModal/CModal';
-import Header from '../../../../components/Header/Header';
-import Sidebar from '../../../../components/Sidebar/Sidebar';
+import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
+import './jobRadius.css'
+import React, { useState } from 'react';
+import SearchSharpIcon from '@mui/icons-material/SearchSharp';
+import { GOOGLE_MAPS_API_KEY } from '../../../../utils/CONSTANTS';
+import JobCard from '../../../../components/JobCard/JobCard';
 
-// generate random coordinates within a radius of 20 km of the center of SanJose. generate 20 of them. and also generate random salary.
-const randomPoints = Array.from({ length: 20 }, () => {
-    const r = 20000 / 111300 // = 20000 meters
-    const y0 = 37.42216
-    const x0 = -122.08427
-    const u = Math.random()
-    const v = Math.random()
-    const w = r * Math.sqrt(u)
-    const t = 2 * Math.PI * v
-    const x = w * Math.cos(t)
-    const y1 = w * Math.sin(t)
-    const x1 = x / Math.cos(y0)
-    const salary = Math.floor(Math.random() * 10000)
 
+// generate random coordinates so that we can have multiple markers on the map and also add a random salary for each marker point. The marker should be spread across the whole map so that we can test the radius search functionality.
+const randomPoints = Array.from({ length: 100 }, () => {
     return {
-        latitude: y0 + y1,
-        longitude: x0 + x1,
-        salary: salary
+        latitude: 37.42216 + (Math.random() - 0.5) * 200 * 0.1,
+        longitude: -122.08427 + (Math.random() - 0.5) * 1203 * 0.1,
+        salary: Math.floor(Math.random() * 1000)
+    }
+})
+
+const randomJobCards = Array.from({ length: 20 }, () => {
+    return {
+        jobDate: '20 May, 2023',
+        jobTitle: 'Software Engineer',
+        jobCompany: 'Google',
+        jobType: 'Part Time',
+        salary: Math.floor(Math.random() * 20000),
+        jobLocation: 'San Francisco, CA',
+        companyLogo: 'https://images.pexels.com/photos/17456631/pexels-photo-17456631/free-photo-of-mallorca.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
     }
 })
 
 
 const JobRadiusPage = (() => {
-
     const [markerPoints, setMarkerPoints] = useState(randomPoints)
     const [showTooltip, setShowTooltip] = useState(false)
     const [showModal, setShowModal] = useState(false)
 
     const map = useLoadScript({
-        googleMapsApiKey: 'AIzaSyBldyBHTIUs5ag7PFJMNsvuzhKw_OWQ4QY',
-        // mapIds: ['59931b6f48b18a0']
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY
     })
 
     const onMarkerClick = (e: any) => {
@@ -44,32 +43,18 @@ const JobRadiusPage = (() => {
     }
 
     return (
-        <main className={styles.root}>
-            <title>Search Job by Radius</title>
-            {/* <div>
-                <h1>Job Radius Page</h1>
-                <button className={styles.radiusBttn} onClick={() => setShowModal(!showModal)} >
-                    Select Radius
-                </button>
-            </div> */}
+        <main className='root' >
+            <title>Job By Radius</title>
 
-            {/* {showModal && <CModal onClose={() => setShowModal(!showModal)} title={'Jeet is here'}>
-                <p>children</p>
-            </CModal>} */}
-
-            <Header />
-
-            <div className={styles.dividerView}>
-                <Sidebar />
-
-                {map.isLoaded ? <div>
+            <div className='dividerView'>
+                {map.isLoaded ? <div className='half-view'>
                     <GoogleMap
                         center={{ lat: 37.42216, lng: -122.08427 }}
-                        mapContainerStyle={{ width: '80vw', height: '80vh', backgroundColor: 'hotpink' }}
+                        mapContainerStyle={{ width: '50vw', height: '90vh' }}
                         zoom={10} clickableIcons={false}
                         options={{ fullscreenControl: false, streetViewControl: false, mapTypeControl: false }}
                     >
-                        {markerPoints.map((point, index) => {
+                        {markerPoints?.map((point, index) => {
                             return (
                                 <Marker
                                     key={index}
@@ -78,21 +63,39 @@ const JobRadiusPage = (() => {
                                     <InfoWindow
                                         position={{ lat: point.latitude, lng: point.longitude }}
                                         options={{ pixelOffset: new google.maps.Size(0, -30), content: '<div class="overflow: hidden;">' + `Salary: ${point.salary}` + `</div>` }}
-
                                     >
-                                        <div className={styles.salaryDiv} >
-                                            <p className={styles.salaryTxt}>Salary: ${`${point.salary}`} / Month</p>
+                                        <div className='salaryDiv' >
+                                            <p className='salaryTxt'>Salary: ${`${point.salary}`} / Month</p>
                                         </div>
                                     </InfoWindow>
                                 </Marker>
                             )
                         })}
+                        <div className='searchToolbar'>
+                            <SearchSharpIcon onClick={() => alert('jeet is here')} style={{ width: '2rem', height: '2rem', color: '#666' }} />
+                        </div>
                     </GoogleMap>
-                </div> : <div>Loading...</div>
-                }
 
+                </div> : <div className='half-view'>Loading...</div>}
+
+                <div className='job-post'>
+                    {randomJobCards?.map((card, index) => {
+                        return (
+                            <JobCard
+                                key={index}
+                                jobTitle={card.jobTitle}
+                                jobCompany={card.jobCompany}
+                                jobType={card.jobType}
+                                salary={card.salary}
+                                jobLocation={card.jobLocation}
+                                companyLogo={card.companyLogo}
+                                jobDate={card.jobDate}
+                            />
+                        )
+                    })}
+                </div>
             </div>
-        </main >
+        </main>
     )
 })
 

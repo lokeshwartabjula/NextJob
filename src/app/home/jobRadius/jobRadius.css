@@ -1,0 +1,59 @@
+.root {
+    background-color: white;
+    height: 90vh;
+    /* overflow-y: hidden; */
+    color: black;
+    overflow: hidden;
+}
+
+.radiusBttn {
+    width: 12vw;
+    height: 5vh;
+    color: black;
+}
+
+.dividerView {
+    display: flex;
+    flex-direction: row;
+}
+
+.half-view {
+    width: 50vw;
+    height: 100vh;
+}
+
+.salaryDiv {
+    background-color: #8ecdbc;
+    padding: 1rem;
+}
+
+.salaryTxt {
+    font-size: 0.7rem;
+    font-weight: 450;
+}
+
+.searchToolbar {
+    position: absolute;
+    top: 3vh;
+    right: 0;
+    z-index: 1;
+    margin-right: 0.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
+    padding: 0.3rem;
+}
+
+.job-post {
+    height: 100vh;
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    flex-flow: column wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
