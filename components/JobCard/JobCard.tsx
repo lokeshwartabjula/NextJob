@@ -43,7 +43,7 @@ const JobCard = (props: JobCardProps) => {
                     <text className='location'>{props.jobLocation}</text>
                 </div>
 
-                <div className='bttn'>
+                <div>
                     <Button className='details' onClick={() => { }}>
                         Details
                     </Button>

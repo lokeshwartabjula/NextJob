@@ -1,5 +1,6 @@
 import React from "react"
-import styles from "./CModal.module.css"
+import "./CModal.css"
+import { Button } from "@mui/material"
 
 interface CModalProps {
     children: React.ReactNode
@@ -10,15 +11,15 @@ interface CModalProps {
 const CModal = (props: CModalProps) => {
 
     return (
-        <div className={styles.parentDiv}>
-            <div className={styles.modalDismiss} onClick={props.onClose} />
-            <div className={styles.modalView}>
-                <div className={styles.modalHeader}>
+        <div className="parentDiv">
+            <div className="modalDismiss" onClick={props.onClose} />
+            <div className="modalView">
+                <div className="modalHeader">
                     <h3>{props.title}</h3>
-                    <button onClick={props.onClose} className={styles.bttn} >X</button>
+                    <Button onClick={props.onClose} variant="text" className="bttnClose" >X</Button>
                 </div>
 
-                <div className={styles.modalBody}>
+                <div className="modalBody">
                     {props.children}
                 </div>
             </div>

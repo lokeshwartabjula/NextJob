@@ -3,8 +3,10 @@ import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps
 import './jobRadius.css'
 import React, { useState } from 'react';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
-import { GOOGLE_MAPS_API_KEY } from '../../../../utils/CONSTANTS';
 import JobCard from '../../../../components/JobCard/JobCard';
+import CModal from '../../../../components/CModal/CModal';
+import { GOOGLE_MAPS_API_KEY } from '../../../../utils/constants';
+import CustomAutoComplete from '../../../../components/CustomAutoComplete/CustomAutoComplete';
 
 
 const randomPoints = Array.from({ length: 100 }, () => {
@@ -27,18 +29,25 @@ const randomJobCards = Array.from({ length: 20 }, () => {
     }
 })
 
+type pinCoordinates = {
+    lat: number | undefined,
+    lng: number | undefined
+}
+
 
 const JobRadiusPage = (() => {
     const [markerPoints, setMarkerPoints] = useState(randomPoints)
-    const [showTooltip, setShowTooltip] = useState(false)
-    const [showModal, setShowModal] = useState(false)
+    const [dropPinToCoordinate, setDropPinToCoordinate] = useState<pinCoordinates>()
+    const [viewJobModal, setViewJobModal] = useState(false)
 
     const map = useLoadScript({
-        googleMapsApiKey: GOOGLE_MAPS_API_KEY
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+        authReferrerPolicy: 'origin',
     })
 
-    const onMarkerClick = (e: any) => {
-        setShowTooltip(!showTooltip)
+    const onMapClick = (e: google.maps.MapMouseEvent) => {
+        console.log(e.latLng?.lat(), e.latLng?.lng())
+        setDropPinToCoordinate({ lat: e.latLng?.lat(), lng: e.latLng?.lng() })
     }
 
     return (
@@ -48,11 +57,15 @@ const JobRadiusPage = (() => {
             <div className='dividerView'>
                 {map.isLoaded ? <div className='half-view'>
                     <GoogleMap
+                        onCenterChanged={() => console.log('center changed')}
                         center={{ lat: 37.42216, lng: -122.08427 }}
-                        mapContainerStyle={{ width: '100%', height: '90%' }}
-                        zoom={10} clickableIcons={false}
+                        mapContainerStyle={{ width: '100%', height: '90%', cursor: 'pointer' }}
+                        zoom={10}
+                        clickableIcons={false}
                         options={{ fullscreenControl: false, streetViewControl: false, mapTypeControl: false }}
+                        onClick={onMapClick}
                     >
+                        {/* view to display the job pins based on the radius selected */}
                         {markerPoints?.map((point, index) => {
                             return (
                                 <Marker
@@ -70,8 +83,14 @@ const JobRadiusPage = (() => {
                                 </Marker>
                             )
                         })}
+
+                        {/* view to drop pin on users selected location which will used to fetch the jobs based on that radius. */}
+                        {dropPinToCoordinate?.lat && dropPinToCoordinate?.lng ? <Marker
+                            position={{ lat: dropPinToCoordinate?.lat, lng: dropPinToCoordinate?.lng }}
+                        /> : null}
+
                         <div className='searchToolbar'>
-                            <SearchSharpIcon onClick={() => alert('jeet is here')} style={{ width: '2rem', height: '2rem', color: '#666' }} />
+                            <SearchSharpIcon onClick={() => setViewJobModal(!viewJobModal)} style={{ width: '2rem', height: '2rem', color: '#666' }} />
                         </div>
                     </GoogleMap>
 
@@ -94,10 +113,19 @@ const JobRadiusPage = (() => {
                     })}
                 </div>
             </div>
+
+            {viewJobModal ?
+                <CModal
+                    onClose={() => setViewJobModal(!viewJobModal)}
+                    title='Search Jobs Based on Radius'
+                >
+                    <CustomAutoComplete onPlaceChanged={(selectedPlace) => console.log('selected place ==>', selectedPlace)} />
+                </CModal>
+                : null}
         </main>
     )
 })
 
 
 
-export default JobRadiusPage;
+export default React.memo(JobRadiusPage);

@@ -29,12 +29,9 @@
     border-bottom: 1px solid #ccc;
 }
 
-.bttn {
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background-color: #ccc;
+.bttnClose {
     cursor: pointer;
+    color: grey;
 }
 
 .modalBody {
