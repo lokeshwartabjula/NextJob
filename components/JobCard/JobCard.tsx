@@ -44,7 +44,14 @@ const JobCard = (props: JobCardProps) => {
                 </div>
 
                 <div>
-                    <Button className='details' onClick={() => { }}>
+                    <Button className='details-bttn' style={{
+                        backgroundColor: 'rgba(140, 226, 112, 0.859)',
+                        color: '#000',
+                        borderRadius: '24px',
+                        paddingLeft: '1.3rem',
+                        paddingRight: '1.3rem',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.16)',
+                    }} onClick={() => { }}>
                         Details
                     </Button>
                 </div>

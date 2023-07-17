@@ -37,16 +37,17 @@ type pinCoordinates = {
 
 const JobRadiusPage = (() => {
     const [markerPoints, setMarkerPoints] = useState(randomPoints)
-    const [dropPinToCoordinate, setDropPinToCoordinate] = useState<pinCoordinates>()
+    const [dropPinToCoordinate, setDropPinToCoordinate] = useState<pinCoordinates>({ lat: 37.42216, lng: -122.08427 })
     const [viewJobModal, setViewJobModal] = useState(false)
 
     const map = useLoadScript({
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-        authReferrerPolicy: 'origin',
+        authReferrerPolicy: 'origin'
     })
 
     const onMapClick = (e: google.maps.MapMouseEvent) => {
-        console.log(e.latLng?.lat(), e.latLng?.lng())
+        e.domEvent.preventDefault()
+        e.stop()
         setDropPinToCoordinate({ lat: e.latLng?.lat(), lng: e.latLng?.lng() })
     }
 
@@ -57,8 +58,8 @@ const JobRadiusPage = (() => {
             <div className='dividerView'>
                 {map.isLoaded ? <div className='half-view'>
                     <GoogleMap
-                        onCenterChanged={() => console.log('center changed')}
-                        center={{ lat: 37.42216, lng: -122.08427 }}
+                        // @ts-ignore
+                        center={dropPinToCoordinate}
                         mapContainerStyle={{ width: '100%', height: '90%', cursor: 'pointer' }}
                         zoom={10}
                         clickableIcons={false}
