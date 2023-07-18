@@ -17,7 +17,7 @@ import (
 func Register(c *gin.Context) {
 	var requestPayload payload.CreateUserPayload
 	c.ShouldBindBodyWith(&requestPayload, binding.JSON)
-	fmt.Print("request Payload for Register API ==>", requestPayload)
+
 	ok, errMsg := utils.ValidateRequest(c, &payload.CreateUserPayload{})
 
 	if !ok {
@@ -35,7 +35,11 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	insertResult, err := coll.InsertOne(context.TODO(), db.User{FirstName: requestPayload.FirstName, Email: requestPayload.Email, Password: requestPayload.Password})
+	insertResult, err := coll.InsertOne(context.TODO(), db.User{
+		FirstName: requestPayload.FirstName,
+		Email:     requestPayload.Email,
+		Password:  utils.HashPassword(requestPayload.Password),
+	})
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while registering user"})
@@ -60,14 +64,8 @@ func Login(c *gin.Context) {
 
 	coll := configs.Client.Database("jobportal").Collection("users")
 	result := coll.FindOne(context.TODO(), bson.M{
-		"email":    requestPayload.Email,
-		"password": requestPayload.Password,
+		"email": requestPayload.Email,
 	})
-
-	if result.Err() != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials"})
-		return
-	}
 
 	var user db.User
 	err := result.Decode(&user)
@@ -76,11 +74,18 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Found a single document:", user.Email)
+	err = utils.VerifyHashPassword(user.Password, requestPayload.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials"})
+		return
+	}
 
-	token := utils.GenerateJWT()
+	if result.Err() != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials"})
+		return
+	}
 
-	fmt.Println("JWT Token ==>", token)
+	token := utils.GenerateJWT(user.Email)
 
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "User logged in successfully"})
+	c.IndentedJSON(http.StatusOK, gin.H{"token": token})
 }
