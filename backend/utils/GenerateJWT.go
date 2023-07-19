@@ -23,7 +23,7 @@ func GenerateJWT(email string) string {
 
 // verify token
 func VerifyToken(tokenString string) bool {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil
 	})
 
@@ -31,8 +31,6 @@ func VerifyToken(tokenString string) bool {
 		fmt.Println(err)
 		return false
 	}
-
-	fmt.Println(token)
 
 	return true
 }
