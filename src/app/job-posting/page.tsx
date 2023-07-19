@@ -2,39 +2,88 @@
 
 import * as React from "react";
 import { useState } from "react";
-import { TextField, Box, Typography, Button } from "@mui/material";
+import {
+  TextField,
+  Box,
+  Typography,
+  Button,
+  Chip,
+  MenuItem,
+  OutlinedInput,
+} from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import "./styles.css";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useTheme } from "@mui/material/styles";
+import { Theme, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import InputField from "./input-field";
 import SelectField from "./select-field";
-import { StandaloneSearchBox, LoadScript } from "@react-google-maps/api";
+import CustomAutoComplete from "./CustomAutoComplete";
 
-const JOB_LOCATIONS: string[] = ["Banglore", "Mumbai", "Delhi"];
 const JOB_TYPES: string[] = ["Full Time", "Part Time", "Intern", "Contract"];
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const skillsSet = [
+  "Communication Skills",
+  "Problem Solving",
+  "Critical Thinking",
+  "Adaptability",
+  "Leadership",
+  "Project Management",
+  "Collaboration",
+  "Digital Literacy",
+  "Data Analysis",
+  "Emotional Intelligence",
+];
+
+function getStyles(name: string, personName: readonly string[], theme: Theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
+type locationInfoType = {
+  name: string;
+  place_id: string;
+  lat: string;
+  lng: string;
+};
+
 export default function JobPosting() {
-  const [location, setLocation] = useState("Banglore");
   const [jobType, setJobType] = useState("Full Time");
   const [jobPosition, setJobPosition] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [closingDate, setClosingDate] = useState<dayjs.Dayjs | null>(dayjs());
   const [salary, setSalary] = useState("");
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [location, setLocation] = useState("");
+
+  const handleChange = (event: SelectChangeEvent<typeof selectedSkills>) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedSkills(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleLocationChange = (event: SelectChangeEvent) => {
-    setLocation(event.target.value as string);
-  };
 
   const handleJobTypeChange = (event: SelectChangeEvent) => {
     setJobType(event.target.value as string);
@@ -47,6 +96,16 @@ export default function JobPosting() {
     }
   };
 
+  const onPlaceChange = (place: any) => {
+    let locationInfo: locationInfoType = {
+      name: place.name,
+      place_id: place.place_id,
+      lat: place.geometry?.location?.lat(),
+      lng: place.geometry?.location?.lng(),
+    };
+    setLocation(JSON.stringify(locationInfo));
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     alert(`
@@ -54,9 +113,9 @@ export default function JobPosting() {
       Company Name: ${companyName}
       Location: ${location}
       Job Type: ${jobType}
-      Roles Description: ${jobDescription}
-      Closing Date: ${closingDate}
+      Job Description: ${jobDescription}
       Salary: ${salary}
+      Skills: ${selectedSkills}
     `);
   };
 
@@ -85,45 +144,67 @@ export default function JobPosting() {
             <Box>
               <InputField
                 id="outlined-multiline-flexible-1"
-                label="Job Position"
+                label="Job Title"
                 setValue={setJobPosition}
+                placeHolder="Enter Job Position..."
               ></InputField>
               <InputField
                 id="outlined-multiline-flexible-2"
                 label="Company Name"
                 setValue={setCompanyName}
+                placeHolder="Enter Company Name..."
               ></InputField>
               <Box width={isTablet ? 250 : 350} mx={2}>
                 <Box display="flex" flexDirection="row" marginTop={2}>
                   <Typography>Location</Typography>
                   <Typography color="red">*</Typography>
                 </Box>
-                <TextField
-                  className="text-field"
-                  id="Location"
-                  required={true}
-                  fullWidth
-                  // onChange={}
-                />
+                <CustomAutoComplete onPlaceChanged={onPlaceChange} />
               </Box>
             </Box>
             <Box>
               <Box width={isTablet ? 250 : 350} mx={2}>
-                <Box display="flex" flexDirection={"row"} marginTop={2}>
-                  <Typography>Closing Date</Typography>
-                  <Typography color={"red"}>*</Typography>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  marginTop={2}
+                  marginBottom={0.6}
+                >
+                  <Typography>Skills</Typography>
+                  <Typography color="red">*</Typography>
                 </Box>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    value={closingDate}
-                    onChange={(newValue: dayjs.Dayjs | null) => {
-                      if (newValue !== null) {
-                        setClosingDate(newValue);
-                      }
-                    }}
-                    className="date-selector"
-                  />
-                </LocalizationProvider>
+                <Select
+                  labelId="demo-multiple-chip-label"
+                  id="demo-multiple-chip"
+                  multiple
+                  value={selectedSkills}
+                  onChange={handleChange}
+                  input={
+                    <OutlinedInput
+                      id="select-multiple-chip"
+                      label="Chip"
+                      fullWidth
+                    />
+                  }
+                  renderValue={(selected) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={value} />
+                      ))}
+                    </Box>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {skillsSet.map((skill) => (
+                    <MenuItem
+                      key={skill}
+                      value={skill}
+                      style={getStyles(skill, selectedSkills, theme)}
+                    >
+                      {skill}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Box>
               <Box width={isTablet ? 250 : 350} mx={2}>
                 <Box display="flex" flexDirection={"row"} marginTop={2.5}>
@@ -133,6 +214,7 @@ export default function JobPosting() {
                 <TextField
                   className="text-field"
                   id="outlined-multiline-flexible-5"
+                  placeholder="Enter Salary..."
                   required={true}
                   fullWidth
                   value={salary}
@@ -159,9 +241,10 @@ export default function JobPosting() {
               required={true}
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Enter Job Description..."
               style={{
                 height: 200,
-                width: isMobile ? 250 : isTablet ? 500 : 733,
+                width: isMobile ? 250 : isTablet ? 533 : 733,
                 marginTop: 2,
               }}
             ></Textarea>
