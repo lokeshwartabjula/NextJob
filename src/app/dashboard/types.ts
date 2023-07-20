@@ -16,7 +16,11 @@ export interface ICity {
 }
 
 export interface ApexOptionsModified extends ApexOptions {
-    chart: {
-      type: "line" | "bar" | "donut" | "pie" | undefined;
-    };
+    chart: ApexChartCustom;
   }
+
+interface ApexChartCustom extends ApexChart{
+  type: "line" | "bar" | "donut" | "pie" | undefined;
+}
+
+export type GraphType = "line" | "bar" | "donut" | "pie";

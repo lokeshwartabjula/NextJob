@@ -12,7 +12,7 @@ export default function RenderChart({
 }: {
   options: ApexOptionsModified;
 }): JSX.Element {
-  switch (options.chart?.type) {
+  switch (options.chart?.type?.toLocaleLowerCase()) {
     case "line":
       return <LineChart
         options={options}
