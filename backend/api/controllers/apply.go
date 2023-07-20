@@ -24,11 +24,38 @@ type EmailConfig struct {
 	FromPassword string
 }
 
+type CandidateInformation struct {
+	fullName        string
+	email           string
+	contact         string
+	linkedInProfile string
+}
+
+type EmployerInformation struct {
+	employerName    string
+	jobTitle        string
+	applicationDate string
+}
+
 var emailConfig = EmailConfig{
 	SMTPHost:     "smtp.gmail.com",
 	SMTPPort:     587,
 	FromEmail:    "nextjob.group1@gmail.com",
 	FromPassword: "onxnmlggoetoycds",
+}
+
+var candidateInfo = CandidateInformation{
+	fullName:        "John Doe",
+	email:           "johndoe@example.com",
+	contact:         "+1 123 456 7890",
+	linkedInProfile: "https://www.linkedin.com/in/johndoe",
+}
+
+// Mock employer information
+var employerInfo = EmployerInformation{
+	employerName:    "Jane Smith",
+	jobTitle:        "Software Engineer",
+	applicationDate: "2023-07-19",
 }
 
 func ApplyJob(c *gin.Context) {
@@ -65,8 +92,8 @@ func ApplyJob(c *gin.Context) {
 
 func notifyEmployerByEmail() {
 
-	subject := "New Job Application for [Job Title] - [Candidate's Full Name]"
-
+	subject := "New Job Application for " + employerInfo.jobTitle + " - " + candidateInfo.fullName
+	jobId := "123"
 	htmlBody := `
 		<!DOCTYPE html>
 		<html>
@@ -80,22 +107,22 @@ func notifyEmployerByEmail() {
 			</style>
 		</head>
 		<body>
-			<p>Dear [Employer's Name],</p>
-			<p>We are pleased to inform you that a potential candidate has applied for the job opening of <strong>[Job Title]</strong> in your company. Below, you will find the relevant details regarding the candidate and their application:</p>
+			<p>Dear ` + employerInfo.employerName + `,</p>
+			<p>We are pleased to inform you that a potential candidate has applied for the job opening of <strong>` + employerInfo.jobTitle + `</strong> in your company. Below, you will find the relevant details regarding the candidate and their application:</p>
 			<!-- Candidate Information section -->
 			<h2>Candidate Information</h2>
 			<ul>
-				<li><strong>Full Name:</strong> [Candidate's Full Name]</li>
-				<li><strong>Email Address:</strong> [Candidate's Email Address]</li>
-				<li><strong>Phone Number:</strong> [Candidate's Phone Number]</li>
-				<li><strong>LinkedIn Profile:</strong> <a href="[Candidate's LinkedIn Profile URL]">[Candidate's LinkedIn Profile URL]</a> (if available)</li>
+				<li><strong>Full Name:</strong> ` + candidateInfo.fullName + `</li>
+				<li><strong>Email Address:</strong> ` + candidateInfo.email + `</li>
+				<li><strong>Phone Number:</strong> ` + candidateInfo.contact + `</li>
+				<li><strong>LinkedIn Profile:</strong> <a href="` + candidateInfo.linkedInProfile + `">` + candidateInfo.linkedInProfile + `</a></li>
 			</ul>
 			<!-- Application Details section -->
 			<h2>Application Details</h2>
 			<ul>
-				<li><strong>Job Title:</strong> [Job Title]</li>
-				<li><strong>Job ID/Reference Number:</strong> [Job ID/Reference Number]</li>
-				<li><strong>Application Date:</strong> [Date of Application]</li>
+				<li><strong>Job Title:</strong> ` + employerInfo.jobTitle + `</li>
+				<li><strong>Job ID/Reference Number:</strong> ` + jobId + `</li>
+				<li><strong>Application Date:</strong> ` + employerInfo.applicationDate + `</li>
 			</ul>
 			<p>We recommend reviewing the candidate's application thoroughly to evaluate their qualifications and suitability for the position.</p>
 			<p>Please take the time to assess the candidate's application and consider scheduling an interview or taking the next steps in the hiring process. Should you have any specific requirements, questions, or further information needed from the candidate, feel free to reach out to them directly using the provided contact details.</p>
