@@ -5,19 +5,34 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Radio,
+  Stack,
+  SvgIcon,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
 import AuthLayout from "../layout";
 import React, { ReactElement } from "react";
+import BusinessIcon from "@mui/icons-material/Business";
+import PersonIcon from "@mui/icons-material/Person";
 
 function Page(): ReactElement {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const [loginType, setLoginType] = React.useState("seeker");
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
   const formik = useFormik({
     initialValues: {
+      loginType: "seeker",
       email: "",
       password: "",
       submit: null,
@@ -70,6 +85,49 @@ function Page(): ReactElement {
             <form noValidate onSubmit={formik.handleSubmit}>
               {isHydrated && (
                 <Stack spacing={3}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ToggleButtonGroup
+                      value={formik.values.loginType}
+                      exclusive
+                      onChange={(event, newLoginType) => {
+                        formik.setFieldValue("loginType", newLoginType);
+                      }}
+                      aria-label="login type"
+                      size="large"
+                    >
+                      <ToggleButton
+                        value="seeker"
+                        aria-label="seeker"
+                        sx={{ margin: "5px", marginRight: "10px" }}
+                      >
+                        <PersonIcon />
+                        <Typography color="text.secondary" variant="body1">
+                          Seeker
+                        </Typography>
+                      </ToggleButton>
+                      <ToggleButton
+                        value="employer"
+                        aria-label="employer"
+                        sx={{
+                          margin: "5px",
+                          marginLeft: "10px",
+                          borderLeft:
+                            "1px solid rgba(0, 0, 0, 0.12) !important",
+                        }}
+                      >
+                        <BusinessIcon />
+                        <Typography color="text.secondary" variant="body1">
+                          Employer
+                        </Typography>
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Box>
                   <TextField
                     error={!!(formik.touched.email && formik.errors.email)}
                     fullWidth
