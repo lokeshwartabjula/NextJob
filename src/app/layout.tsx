@@ -15,7 +15,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{margin:0, minHeight:"100hv"}}>
+      <body
+        className={inter.className}
+        style={{
+          margin: 0,
+          minHeight: "100vh",
+          display: "flex",
+          flexFlow: "column",
+        }}
+      >
         <ResponsiveAppBar />
         {children}
       </body>
