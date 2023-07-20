@@ -26,7 +26,7 @@ type EmailConfig struct {
 
 var emailConfig = EmailConfig{
 	SMTPHost:     "smtp.gmail.com",
-	SMTPPort:     587, // Use the appropriate SMTP port
+	SMTPPort:     587,
 	FromEmail:    "nextjob.group1@gmail.com",
 	FromPassword: "onxnmlggoetoycds",
 }
