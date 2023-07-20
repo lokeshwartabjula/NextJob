@@ -20,5 +20,7 @@ func main() {
 	router.POST("/login", api.Login)
 	router.POST("/register", api.Register)
 
+	router.POST("/apply", api.ApplyJob)
+
 	router.Run(":8080")
 }
