@@ -9,9 +9,7 @@ import {
   Box,
   Button,
   Link,
-  Radio,
   Stack,
-  SvgIcon,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -25,7 +23,6 @@ import PersonIcon from "@mui/icons-material/Person";
 function Page(): ReactElement {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = React.useState(false);
-  const [loginType, setLoginType] = React.useState("seeker");
 
   React.useEffect(() => {
     setIsHydrated(true);
