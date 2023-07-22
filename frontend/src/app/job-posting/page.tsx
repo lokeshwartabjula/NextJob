@@ -140,6 +140,9 @@ export default function JobPosting() {
       noOfPositions: noOfPositions,
       salary: salary,
       employerId: "64b880be2b859d863465867e",
+      jobCompany: "Amazon",
+      jobCompanyLogo:
+        "https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800",
     };
     console.log("jobData ==>", jobData);
     axios
