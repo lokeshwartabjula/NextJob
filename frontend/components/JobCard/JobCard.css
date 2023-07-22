@@ -2,6 +2,7 @@
     border: 1px solid #B5A9A9;
     margin: 10px;
     border-radius: 22px;
+    max-height: 305px;
 }
 
 .job-content {

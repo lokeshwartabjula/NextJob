@@ -1,12 +1,16 @@
 "use client";
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import './jobRadius.css'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import JobCard from '../../../../components/JobCard/JobCard';
 import CModal from '../../../../components/CModal/CModal';
-import { GOOGLE_MAPS_API_KEY } from '../../../../utils/constants';
 import CustomAutoComplete from '../../../../components/CustomAutoComplete/CustomAutoComplete';
+import { GOOGLE_MAPS_API_KEY } from '../../../../utils/constants';
+import { axiosInstance } from '../../../../api';
+import { getJobsByRadius } from '../../../../api/routes';
+import { Button, Result } from 'antd';
+import { useRouter } from 'next/navigation';
 
 
 const randomPoints = Array.from({ length: 100 }, () => {
@@ -35,20 +39,55 @@ type pinCoordinates = {
 }
 
 
-const JobRadiusPage = (() => {
-    const [markerPoints, setMarkerPoints] = useState(randomPoints)
-    const [dropPinToCoordinate, setDropPinToCoordinate] = useState<pinCoordinates>({ lat: 37.42216, lng: -122.08427 })
+const JobRadiusPage = () => {
+    const router = useRouter()
+    const [markerPoints, setMarkerPoints] = useState([])
+    const [dropPinToCoordinate, setDropPinToCoordinate] = useState<pinCoordinates>()
+    const [center, setCenter] = useState<pinCoordinates>({ lat: 44.67793243770347, lng: -63.6071964288432 })
+    const [markerJobs, setMarkerJobs] = useState([])
     const [viewJobModal, setViewJobModal] = useState(false)
+    const [searchLocationData, setSearchLocationData] = useState<any>()
+
 
     const map = useLoadScript({
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
         authReferrerPolicy: 'origin'
     })
 
+    useEffect(() => {
+        if (map.isLoaded && dropPinToCoordinate?.lat && dropPinToCoordinate?.lng) {
+            axiosInstance.get(getJobsByRadius + dropPinToCoordinate?.lat + '/' + dropPinToCoordinate?.lng)
+                .then(res => {
+                    console.log('res =>', res)
+                    setMarkerPoints(res.data.jobs)
+                    setMarkerJobs(res.data.jobs)
+                })
+                .catch(err => {
+                    console.log('error inside fetching jobs based on radius API ==>', err)
+                })
+        }
+    }, [dropPinToCoordinate])
+
     const onMapClick = (e: google.maps.MapMouseEvent) => {
         e.domEvent.preventDefault()
         e.stop()
         setDropPinToCoordinate({ lat: e.latLng?.lat(), lng: e.latLng?.lng() })
+    }
+
+    const onSearchPress = () => {
+        setViewJobModal(!viewJobModal)
+        console.log('searchLocationData =>', searchLocationData)
+        setDropPinToCoordinate({ lat: searchLocationData?.geometry?.location?.lat(), lng: searchLocationData?.geometry?.location?.lng() })
+    }
+
+    const onShowDetails = () => {
+        console.log('onShowDetails')
+        // const data = { show: "sparrow" }
+        // router.
+        // router.push('/home/job-details')
+
+        // navigate to job-details page and also pass parameters to that page.
+        router.push('/home/job-details')
     }
 
     return (
@@ -59,26 +98,29 @@ const JobRadiusPage = (() => {
                 {map.isLoaded ? <div className='half-view'>
                     <GoogleMap
                         // @ts-ignore
-                        center={dropPinToCoordinate}
+                        center={center}
                         mapContainerStyle={{ width: '100%', height: '90%', cursor: 'pointer' }}
-                        zoom={10}
+                        zoom={7}
                         clickableIcons={false}
                         options={{ fullscreenControl: false, streetViewControl: false, mapTypeControl: false }}
                         onClick={onMapClick}
                     >
                         {/* view to display the job pins based on the radius selected */}
-                        {markerPoints?.map((point, index) => {
+                        {markerPoints?.map((point: any, index) => {
                             return (
                                 <Marker
                                     key={index}
-                                    position={{ lat: point.latitude, lng: point.longitude }}
+                                    position={{ lat: point.location.coordinates[1], lng: point.location.coordinates[0] }}
                                 >
                                     <InfoWindow
-                                        position={{ lat: point.latitude, lng: point.longitude }}
-                                        options={{ pixelOffset: new google.maps.Size(0, -30), content: '<div class="overflow: hidden;">' + `Salary: ${point.salary}` + `</div>` }}
+                                        position={{ lat: point.location.coordinates[1], lng: point.location.coordinates[0] }}
+                                        options={{
+                                            pixelOffset: new google.maps.Size(0, -30)
+                                        }}
                                     >
-                                        <div className='salaryDiv' >
-                                            <p className='salaryTxt'>Salary: ${`${point.salary}`} / Month</p>
+                                        <div>
+                                            <h3>{point.jobTitle}</h3>
+                                            <p>Salary: ${point.salary} / Month</p>
                                         </div>
                                     </InfoWindow>
                                 </Marker>
@@ -90,15 +132,16 @@ const JobRadiusPage = (() => {
                             position={{ lat: dropPinToCoordinate?.lat, lng: dropPinToCoordinate?.lng }}
                         /> : null}
 
-                        <div className='searchToolbar'>
+                        {/* <div className='searchToolbar'>
                             <SearchSharpIcon onClick={() => setViewJobModal(!viewJobModal)} style={{ width: '2rem', height: '2rem', color: '#666' }} />
-                        </div>
+                        </div> */}
                     </GoogleMap>
 
                 </div> : <div className='half-view'>Loading...</div>}
 
-                <div className='job-post'>
-                    {randomJobCards?.map((card, index) => {
+                <div className={markerJobs?.length > 0 ? "job-post2" : 'job-post'}>
+                    {markerJobs?.length > 0 ? markerJobs?.map((card: any, index) => {
+
                         return (
                             <JobCard
                                 key={index}
@@ -107,11 +150,20 @@ const JobRadiusPage = (() => {
                                 jobType={card.jobType}
                                 salary={card.salary}
                                 jobLocation={card.jobLocation}
-                                companyLogo={card.companyLogo}
-                                jobDate={card.jobDate}
+                                companyLogo={card.jobCompanyLogo}
+                                jobDate={card.openDate}
+                                showDetails={onShowDetails}
+                                job={card}
                             />
                         )
-                    })}
+                    }) : <div className={"notFound-logo-jobs"}>
+                        <Result
+                            status="404"
+                            title="No Jobs To Show.."
+                            subTitle="Please drop a pin on map to view jobs in that location..."
+                        />
+                    </div>
+                    }
                 </div>
             </div>
 
@@ -120,12 +172,13 @@ const JobRadiusPage = (() => {
                     onClose={() => setViewJobModal(!viewJobModal)}
                     title='Search Jobs Based on Radius'
                 >
-                    <CustomAutoComplete onPlaceChanged={(selectedPlace) => console.log('selected place ==>', selectedPlace)} />
+                    <CustomAutoComplete onPlaceChanged={(selectedPlace) => setSearchLocationData(selectedPlace)} />
+                    <Button type='primary' className='search-jobs' onClick={onSearchPress}>Search</Button>
                 </CModal>
                 : null}
         </main>
     )
-})
+}
 
 
 

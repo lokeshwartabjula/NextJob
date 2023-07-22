@@ -24,12 +24,12 @@
 
 .salaryDiv {
     background-color: #8ecdbc;
-    padding: 1rem;
+    /* padding: 1rem; */
 }
 
 .salaryTxt {
-    font-size: 0.7rem;
-    font-weight: 450;
+    /* font-size: 0.7rem; */
+    /* font-weight: 450; */
 }
 
 .searchToolbar {
@@ -53,13 +53,42 @@
     width: 100%;
     overflow: scroll;
     overflow-x: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.job-post2 {
+    height: 90vh;
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
     flex-flow: column wrap;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
 
+.notFound-logo-jobs {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    margin: auto;
+}
+
+.search-jobs {
+    margin-top: 1.2rem;
+}
+
 @media (max-width: 768px) {
     .job-post {
+        height: 40vh;
+        width: 100%;
+        overflow: initial;
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .job-post2 {
         height: 40vh;
         width: 100%;
         overflow: initial;
