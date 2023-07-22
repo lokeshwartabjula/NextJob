@@ -3,41 +3,58 @@
 import JobListingsSearchBar from "../../../components/JobListingsSearchBar/JobListingsSearchBar";
 import JobListingsItems from "../../../components/JobListingsItems/JobListingsItems";
 import { Grid } from "@mui/material";
-import { useState } from "react";
-import { jobData } from "../../../components/JobListingsItems/jobData";
+import { useState, useEffect } from "react";
+// import { jobData } from "../../../components/JobListingsItems/jobData";
 import { JobData } from "./types";
+import Filter from "../../../components/JobFilter/JobFilter";
+import axios from "axios";
 
 export default function JobListings() {
   const [searchValue, setSearchValue] = useState("");
-  const [dataArr, setDataArr] = useState(jobData);
   const [detailsChecked, setDetailsChecked] = useState(false);
+  const [jobDataArr, setJobDataArr] = useState([]);
+  const [displayedJobDataArr, setDisplayedJobDataArr] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/getJobs");
+        setJobDataArr(response.data.jobs);
+        setDisplayedJobDataArr(response.data.jobs);
+      } catch (error) {
+        console.error("An error occurred while fetching job data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   function applySearch(val: string) {
-    console.log(val);
-    var tempArr = jobData.filter((item: JobData) => {
+    var tempArr = jobDataArr.filter((item: JobData) => {
       return (
         item.jobTitle.toLowerCase().includes(val.toLowerCase()) ||
-        item.jobCompany.toLowerCase().includes(val.toLowerCase()) ||
-        item.jobLocation.toLowerCase().includes(val.toLowerCase()) ||
+        // item.jobCompany.toLowerCase().includes(val.toLowerCase()) ||
+        item.location.placeName.toLowerCase().includes(val.toLowerCase()) ||
         item.jobType.toLowerCase().includes(val.toLowerCase())
       );
     });
-    setDataArr(tempArr);
+    setDisplayedJobDataArr(tempArr);
     setSearchValue(val);
   }
 
   return (
     <Grid container>
       <Grid item xs={12}>
-        <JobListingsSearchBar
-          searchValue={searchValue}
-          applySearch={applySearch}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container>
-          <Grid item xs={12}>
-            <JobListingsItems jobData={dataArr} />
+        <Grid container spacing={3}>
+          <Grid item xs={2}>
+            <Filter />
+          </Grid>
+          <Grid item xs={9}>
+            <JobListingsSearchBar
+              searchValue={searchValue}
+              applySearch={applySearch}
+            />
+            <JobListingsItems jobData={displayedJobDataArr} />
           </Grid>
         </Grid>
       </Grid>

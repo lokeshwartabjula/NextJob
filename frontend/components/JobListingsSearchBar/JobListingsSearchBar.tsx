@@ -1,11 +1,11 @@
 "use client";
 
 import { styled, alpha } from "@mui/material/styles";
-import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import Toolbar from "@mui/material/Toolbar";
 import { JobListingsSearchBarProps } from "@/app/job-listings/types";
+import { Grid } from "@mui/material";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -50,28 +50,25 @@ const JobListingsSearchBar: React.FC<JobListingsSearchBarProps> = ({
   searchValue,
   applySearch,
 }) => {
-  // const [searchValue, setSearchValue] = useState("");
-
-  // function applySearch(event:any) {
-  //   console.log(event.target.value);
-  //   setSearchValue(event.target.value);
-  // }
-
   return (
-    <Toolbar>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search…"
-          inputProps={{ "aria-label": "search" }}
-          sx={{ width: "100%" }}
-          value={searchValue}
-          onChange={(event) => applySearch(event.target.value)}
-        />
-      </Search>
-    </Toolbar>
+    <Grid container justifyContent="center">
+      <Grid item sm={10}>
+        <Toolbar>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+              sx={{ width: "100%" }}
+              value={searchValue}
+              onChange={(event) => applySearch(event.target.value)}
+            />
+          </Search>
+        </Toolbar>
+      </Grid>
+    </Grid>
   );
 };
 
