@@ -44,6 +44,7 @@ const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
             placeholder="Search Location..."
             className="text-field"
             fullWidth
+            required
           ></TextField>
         </Autocomplete>
       </div>

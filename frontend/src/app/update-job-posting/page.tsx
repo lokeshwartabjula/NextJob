@@ -10,6 +10,8 @@ import {
   Chip,
   MenuItem,
   OutlinedInput,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import "./styles.css";
@@ -19,6 +21,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import InputField from "./input-field";
 import SelectField from "./select-field";
 import CustomAutoComplete from "./CustomAutoComplete";
+import axios from "axios";
+import moment from "moment";
+import LinearProgress from "@mui/material/LinearProgress";
+import { useEffect } from "react";
 
 const JOB_TYPES: string[] = ["Full Time", "Part Time", "Intern", "Contract"];
 
@@ -56,20 +62,26 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 }
 
 type locationInfoType = {
-  name: string;
-  place_id: string;
+  placeName: string;
+  placeId: string;
   lat: string;
   lng: string;
 };
 
-export default function JobPosting() {
+export default function EditJobPosting() {
+  const jobId = "64b9c1ff3ae1f642bc7f91ff";
+
   const [jobType, setJobType] = useState("Full Time");
-  const [jobPosition, setJobPosition] = useState("");
+  const [jobTitle, setjobTitle] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [salary, setSalary] = useState("");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState<locationInfoType>();
+  const [experience, setExperience] = useState("");
+  const [noOfPositions, setNoOfPositions] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [snackBarVisible, setSnackBarVisible] = React.useState(false);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedSkills>) => {
     const {
@@ -85,10 +97,6 @@ export default function JobPosting() {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleJobTypeChange = (event: SelectChangeEvent) => {
-    setJobType(event.target.value as string);
-  };
-
   const handleSalaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (/^\d*$/.test(value)) {
@@ -96,31 +104,117 @@ export default function JobPosting() {
     }
   };
 
+  const handleNoOfPositionsChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { value } = event.target;
+    if (/^\d*$/.test(value)) {
+      setNoOfPositions(value);
+    }
+  };
+
+  const handleExperienceChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { value } = event.target;
+    if (/^\d*$/.test(value)) {
+      setExperience(value);
+    }
+  };
+
   const onPlaceChange = (place: any) => {
+    console.log("place ==>", place);
     let locationInfo: locationInfoType = {
-      name: place.name,
-      place_id: place.place_id,
+      placeName: place.formatted_address,
+      placeId: place.place_id,
       lat: place.geometry?.location?.lat(),
       lng: place.geometry?.location?.lng(),
     };
-    setLocation(JSON.stringify(locationInfo));
+    setLocation(locationInfo);
   };
+
+  // fetch job data when component mounts
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/getJob/${jobId}`)
+      .then((response) => {
+        const jobData = response.data.jobs[0];
+        console.log("jobData ==>", jobData);
+        setjobTitle(jobData.jobTitle);
+        setCompanyName("Temp Company"); // modify this according to your requirement
+        setLocation({
+          placeName: jobData.location.placeName,
+          placeId: jobData.location.placeId,
+          lat: jobData.location.coordinates[1],
+          lng: jobData.location.coordinates[0],
+        });
+        setJobType(jobData.jobType);
+        setJobDescription(jobData.jobDescription);
+        setSalary(jobData.salary);
+        setSelectedSkills(jobData.skills);
+        setExperience(jobData.experience);
+        setNoOfPositions(jobData.noOfPositions);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Error in getting jobs");
+      });
+  }, [jobId]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    alert(`
-      Job Position: ${jobPosition}
-      Company Name: ${companyName}
-      Location: ${location}
-      Job Type: ${jobType}
-      Job Description: ${jobDescription}
-      Salary: ${salary}
-      Skills: ${selectedSkills}
-    `);
+
+    const updatedJobData = {
+      id: jobId,
+      jobTitle,
+      jobDescription,
+      skills: selectedSkills,
+      jobStatus: "Active",
+      noOfPositions,
+      jobType,
+      location,
+      salary,
+      experience,
+      openDate: moment().format("YYYY-MM-DD").toString(),
+      employerId: "64b880be2b859d863465867e",
+    };
+
+    axios
+      .put("http://localhost:8080/updateJob", updatedJobData)
+      .then((response) => {
+        console.log("res ==>", response);
+        setSnackBarVisible(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Error in updating job");
+      });
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress sx={{ height: 10 }} />
+      </Box>
+    );
+  }
 
   return (
     <div className="box-parent">
+      <Snackbar
+        open={snackBarVisible}
+        autoHideDuration={6000}
+        onClose={() => setSnackBarVisible(false)}
+      >
+        <Alert
+          onClose={() => setSnackBarVisible(false)}
+          sx={{ width: "100%" }}
+          severity="info"
+        >
+          Job Updated Successfully.
+        </Alert>
+      </Snackbar>
       <form onSubmit={handleSubmit}>
         <Box
           display="flex"
@@ -136,30 +230,50 @@ export default function JobPosting() {
           bgcolor={"#fff"}
         >
           {isMobile ? (
-            <h3>POST A JOB ON PORTAL</h3>
+            <h3>EDIT JOB INFORMATION</h3>
           ) : (
-            <h2>POST A JOB ON PORTAL</h2>
+            <h2>EDIT JOB INFORMATION</h2>
           )}
           <Box display="flex" flexDirection={isMobile ? "column" : "row"}>
             <Box>
               <InputField
                 id="outlined-multiline-flexible-1"
                 label="Job Title"
-                setValue={setJobPosition}
+                setValue={setjobTitle}
                 placeHolder="Enter Job Position..."
+                value={jobTitle}
               ></InputField>
               <InputField
                 id="outlined-multiline-flexible-2"
                 label="Company Name"
                 setValue={setCompanyName}
                 placeHolder="Enter Company Name..."
+                value={companyName}
               ></InputField>
               <Box width={isTablet ? 250 : 350} mx={2}>
                 <Box display="flex" flexDirection="row" marginTop={2}>
                   <Typography>Location</Typography>
                   <Typography color="red">*</Typography>
                 </Box>
-                <CustomAutoComplete onPlaceChanged={onPlaceChange} />
+                <CustomAutoComplete
+                  onPlaceChanged={onPlaceChange}
+                  location={location?.placeName}
+                />
+              </Box>
+              <Box width={isTablet ? 250 : 350} mx={2}>
+                <Box display="flex" flexDirection={"row"} marginTop={2.5}>
+                  <Typography>Experience (In years)</Typography>
+                  <Typography color={"red"}>*</Typography>
+                </Box>
+                <TextField
+                  className="text-field"
+                  id="outlined-multiline-flexible-7"
+                  placeholder="Enter Experience..."
+                  required={true}
+                  fullWidth
+                  value={experience}
+                  onChange={handleExperienceChange}
+                />
               </Box>
             </Box>
             <Box>
@@ -219,6 +333,21 @@ export default function JobPosting() {
                   fullWidth
                   value={salary}
                   onChange={handleSalaryChange}
+                />
+              </Box>
+              <Box width={isTablet ? 250 : 350} mx={2}>
+                <Box display="flex" flexDirection={"row"} marginTop={2.5}>
+                  <Typography>Number of Positions</Typography>
+                  <Typography color={"red"}>*</Typography>
+                </Box>
+                <TextField
+                  className="text-field"
+                  id="outlined-multiline-flexible-6"
+                  required={true}
+                  fullWidth
+                  value={noOfPositions}
+                  onChange={handleNoOfPositionsChange}
+                  placeholder="Enter Number of Positions..."
                 />
               </Box>
               <SelectField
