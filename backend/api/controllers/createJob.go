@@ -56,6 +56,8 @@ func CreateJob(c *gin.Context) {
 			PlaceName:  requestPayload.JobLocation.PlaceName,
 		},
 		EmployerId:     requestPayload.EmployerId,
+		JobCompany:    requestPayload.JobCompany,
+		JobCompanyLogo: requestPayload.JobCompanyLogo,
 	})
 
 	if err != nil {
@@ -165,6 +167,8 @@ func UpdateJob(c *gin.Context) {
 			PlaceName:  requestPayload.JobLocation.PlaceName,
 		},
 		EmployerId:     requestPayload.EmployerId,
+		JobCompany:    requestPayload.JobCompany,
+		JobCompanyLogo: requestPayload.JobCompanyLogo,
 		},
 	})
 
