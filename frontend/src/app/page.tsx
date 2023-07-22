@@ -7,7 +7,7 @@ import RecrutingOption from "./home/RecrutingOption";
 export default function MyApp() {
   return (
     <Grid container rowSpacing={3}>
-      <Grid item marginLeft={{ xs: 0, md: 4, lg:10, xl:16 }}>
+      <Grid item marginLeft={{ xs: 0, md: 4, lg: 10, xl: 16 }}>
         <Cover />
       </Grid>
       <Grid item>
