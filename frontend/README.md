@@ -1,55 +1,51 @@
-<!--- The following README.md sample file was adapted from https://gist.github.com/PurpleBooth/109311bb0361f32d87a2#file-readme-template-md by Gabriella Mosquera for academic use ---> 
+<!--- The following README.md sample file was adapted from https://gist.github.com/PurpleBooth/109311bb0361f32d87a2#file-readme-template-md by Gabriella Mosquera for academic use --->
+<!--- You may delete any comments in this sample README.md file. If needing to use as a .txt file then simply delete all comments, edit as needed, and save as a README.txt file --->
 
-# NEXT JOB
-## Group Proposal
+# Assignment 1 (Individual Deliverable)
 
-Our application is a sleek, user-friendly web solution built on the NextJS framework. We've spiced up the design using MaterialUI for a modern look, and FontAwesome for engaging icons. The app features a home page, a FAQs section, and a contact-us page, all tailored to be responsive for a seamless experience on any device. Our workflow is powered by GitLab for smooth version control, and we've chosen Netlify for dependable hosting. This frontend-only application blends cutting-edge technologies to deliver robust functionality and an excellent user experience.
-
-* *Date Created*: 20 JUN 2023
-* *Last Modification Date*: 20 JUN 2023
-* *Lab URL*: <https://group-1-proposal.netlify.app/>
-* *GitLab URL*: <https://git.cs.dal.ca/jeet/webgroup-1>
+- _Date Created_: 24 MAY 2023
+- _Last Modification Date_: 27 MAY 2023
+- _Group Git URL_: <https://git.cs.dal.ca/jeet/webgroup-1/-/tree/jeet?ref_type=heads>
+- _Group Git Branch URL_: <https://git.cs.dal.ca/jeet/webgroup-1/-/tree/jeet?ref_type=heads>
+- _Individual Repository Git URL_: <https://git.cs.dal.ca/jeet/csci_5709_mehta_jeet_b00945900>
+- _Individual Repository Assignment 1 Git URL_: <https://git.cs.dal.ca/jeet/csci_5709_mehta_jeet_b00945900/-/tree/main/Assignments/Assignment%201>
+- _Deployment URL_: <https://jeetdal.netlify.app/home/jobradius>
 
 ## Authors
 
-* [Aayush Dakwala](ay383119@dal.ca) - *(Full Stack Developer)*
-* [Jeet Mehta](jt429385@dal.ca) - *(Full Stack Developer)*
-* [Kishan Patel](kpatel@dal.ca) - *(Full Stack Developer)*
-* [Kruti Panchal](kr946702@dal.ca) - *(Full Stack Developer)*
-* [Maulik Gajipara](ml477880@dal.ca) - *(Full Stack Developer)*
-* [Lokeshwar Kumar Tabjula](lk544219@dal.ca) - *(Full Stack Developer)*
+- [Jeet Mehta](jt429386@dal.ca) - _(Developer)_
 
+## Feature & Task
+
+For this assignment we have considered the feature where the job seeker is able to find jobs based on radius selected by them. Once the radius is selected by the user/job seeker, system displays jobs based on that location. The jobs are displayed on the map via a tooltip. These tooltips will only have the information about the salary offered in that job. Here a small task of this feature is implemented. The task assumes that the user has already selected the job location (i.e., radius in which he is trying to find a job) and then the system displays the jobs on the map. Here for showing the map I have used @react-google-maps/api library.
 
 ## Testing
 
-We followed a step-by-step process to ensure the app's functionality and user experience. Here's how we did it:
-* Manual Testing: Initially, We tested the developed functionality on our local environment. We carefully checked all the functions and addressed any problems we found.
-* Merging and Deployment: Once we were confident in the app's functionality, we all merged our code in single branch and deployed it using Netlify, making it accessible in a live environment. While merging the code, we ran into a few problems. But we were able to fix it by reviewing all of the developed pages and their code. We also made sure that the code was properly formatted and that there were no errors.
-* Second Round of Testing: After the deployment, we conducted another round of testing. This time, we focused on verifying that the whole app workes correctly in the live environment. While testing, we found a few bugs realted to responsiveness and fixed them. As per peer review, we also made some changes in the UI to make it more user friendly. We also made sure that the app was responsive and worked well on all devices.
-* Thorough Testing: During testing, we considered various scenarios, including failure cases, responsiveness, and coverage of all app components. This helped us ensure that the app was robust and reliable.
-* Final Deployment: After the second round of testing, we deployed the app again. This time, we were confident that the app was working properly and that it was ready for use.
-* Final Testing: We conducted a final round of testing to ensure that the app was working properly.
+For testing of this assignment there is no end to end test cases written, as it was mainly focused on the UI aspects of the application. Even though I have tested the application in various browsers and mobile browser for map to be loading perfectly.
 
 ## Deployment
 
-The Netlify was used for hosting and deploying this web application. The following steps were part of the deployment process:
-
-1. Link GitHub Account: The GitHub account was used to link the project repository to Netlify.
-2. Choose and Configure Repository: In the Netlify dashboard, the specific repository containing the project code was chosen. Branch selection, environment variables, and other configuration options were configured as necessary.
-3. Build and Deploy: Every time changes were pushed to the chosen branch in the GitHub repository, Netlify automatically started a build process. The build process involved compiling the NextJS and TypeScript code into optimized assets ready for deployment.
-4. Live Deployment: After the build process had been successfully completed, the project was made available via a specific URL provided by Netlify and deployed on a live system.
-
-By seamlessly integrating with GitHub and offering a user-friendly interface for configuration and monitoring, Netlify made the deployment process simpler.
+For deployment purposes, I have used netlify's service. With the help of netlify's Github integration on every new commit on main branch the website gets build and deployed with the help of CI/CD of netlify.
 
 ## Built With
 
-- [Next.js](https://nextjs.org/) - A ReactJS Framework
+<!--- Provide a list of the frameworks used to build this application, your list should include the name of the framework used, the url where the framework is available for download and what the framework was used for, see the example below --->
 
-### Other Tools & Technology Used
+- [Next.js](https://nextjs.org/) - The web framework used for developing Front-End
+- [Netlify](https://www.netlify.com/) - Netlify helped in deploying the application
 
-- [Netlify](https://www.netlify.com/)
-- [GitLab](https://git.cs.dal.ca/)
-- [GitHub](https://github.com/)
-- [VS Code](https://code.visualstudio.com/)
-- [MaterialUI](https://mui.com/)
-- [FortAwesome](https://fortawesome.com/)
+## References
+
+[1] “Dalhousie university,” Dalhousie University. [Online]. Available: http://dal.ca. [Accessed: 27-May-2023].
+
+[2] Canva.com. [Online]. Available: http://canva.com. [Accessed: 27-May-2023].
+
+[3] Freepik.com. [Online]. Available: https://img.freepik.com/free-photo/portrait-beautiful-mature-blonde-bearded-guy-with-trendy-hairdo-casual-grey-shirt-smiling_176420-15741.jpg?w=996&t=st=1684964289~exp=1684964889~hmac=8a06ef27486f94c3344c85fa5277b6ddd877b47d1afdbac450ead3ae275d6de6. [Accessed: 27-May-2023].
+
+[4] “Online diagramming tool for collaborative diagramming,” Nulab. [Online]. Available: http://cacoo.com. [Accessed: 27-May-2023].
+
+[5] “Flowchart maker & online diagram software,” Draw.io. [Online]. Available: http://draw.io. [Accessed: 27-May-2023].
+
+[6] Wireframepro.mockflow. [Online]. Available: http://wireframepro.mockflow. [Accessed: 27-May-2023].
+
+[7] Produle, “MockFlow - wireframe tools, prototyping tools, UI mockups, UX suite, remote designing,” Mockflow.com. [Online]. Available: https://mockflow.com/. [Accessed: 27-May-2023].

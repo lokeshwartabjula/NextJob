@@ -28,11 +28,13 @@
     "@types/react-dom": "18.2.4",
     "antd": "4.24.3",
     "axios": "^1.4.0",
+    "moment": "^2.29.4",
     "next": "^13.4.3",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-dom": "18.2.0",
     "typescript": "5.0.4",
-    "yup": "^1.2.0"
+    "yup": "^1.2.0",
+    "react-tooltip": "^5.13.1"
   }
 }
