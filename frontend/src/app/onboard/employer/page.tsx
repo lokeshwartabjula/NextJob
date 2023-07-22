@@ -1,0 +1,340 @@
+"use client";
+
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  TextField,
+} from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2/Grid2";
+import {
+  Formik,
+  Field,
+  Form,
+  FormikErrors,
+  ErrorMessage,
+  FormikTouched,
+} from "formik";
+import React from "react";
+import * as Yup from "yup";
+
+interface FormType {
+  jobTitle: string;
+  phone: string;
+  companyName: string;
+  industry: string;
+  foundedYear: string;
+  companySize: string;
+  companyType: string;
+  description: string;
+  websiteURL?: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  companyLogo: any | null;
+}
+
+const initialValues: FormType = {
+  jobTitle: "",
+  phone: "",
+  companyName: "",
+  industry: "",
+  foundedYear: "",
+  companySize: "",
+  companyType: "",
+  description: "",
+  websiteURL: "",
+  streetAddress: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "",
+  companyLogo: null,
+};
+
+const OnBoardingForm: React.FC = () => {
+  const [isHydrated, setIsHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
+    jobTitle: Yup.string().required("Required"),
+    phone: Yup.string().required("Required"),
+    companyName: Yup.string().required("Required"),
+    industry: Yup.string().required("Required"),
+    foundedYear: Yup.string().required("Required"),
+    companySize: Yup.string().required("Required"),
+    companyType: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
+    websiteURL: Yup.string().url("Invalid URL"),
+    streetAddress: Yup.string().required("Required"),
+    city: Yup.string().required("Required"),
+    state: Yup.string().required("Required"),
+    postalCode: Yup.string().required("Required"),
+    country: Yup.string().required("Required"),
+    companyLogo: Yup.mixed().required("A file is required"),
+  });
+
+  const renderBasicDetails = (
+    errors: FormikErrors<FormType>,
+    touched: FormikTouched<FormType>
+  ) => (
+    <Grid container spacing={2}>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="companyName"
+          error={touched.companyName && !!errors.companyName}
+          helperText={<ErrorMessage name="companyName" />}
+          label="Company Name"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="industry"
+          error={touched.industry && !!errors.industry}
+          helperText={<ErrorMessage name="industry" />}
+          label="Industry"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="foundedYear"
+          error={touched.foundedYear && !!errors.foundedYear}
+          helperText={<ErrorMessage name="foundedYear" />}
+          label="Founded Year"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="companySize"
+          error={touched.companySize && !!errors.companySize}
+          helperText={<ErrorMessage name="companySize" />}
+          label="Company Size"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="companyType"
+          error={touched.companyType && !!errors.companyType}
+          helperText={<ErrorMessage name="companyType" />}
+          label="Company Type"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="websiteURL"
+          error={touched.websiteURL && !!errors.websiteURL}
+          helperText={<ErrorMessage name="websiteURL" />}
+          label="Website URL"
+        />
+      </Grid>
+      <Grid xs={12}>
+        <Field
+          as={TextField}
+          fullWidth
+          multiline
+          rows={4}
+          name="description"
+          error={touched.description && !!errors.description}
+          helperText={<ErrorMessage name="description" />}
+          label="Description"
+        />
+      </Grid>
+    </Grid>
+  );
+
+  const renderPersonalDetails = (
+    errors: FormikErrors<FormType>,
+    touched: FormikTouched<FormType>
+  ) => (
+    <Grid container spacing={2}>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="jobTitle"
+          error={touched.jobTitle && !!errors.jobTitle}
+          helperText={<ErrorMessage name="jobTitle" />}
+          label="Job Title"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="phone"
+          error={touched.phone && !!errors.phone}
+          helperText={<ErrorMessage name="phone" />}
+          label="Phone"
+        />
+      </Grid>
+    </Grid>
+  );
+
+  const renderAddressDetails = (
+    errors: FormikErrors<FormType>,
+    touched: FormikTouched<FormType>
+  ) => (
+    <Grid container spacing={2}>
+      <Grid xs={12}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="streetAddress"
+          error={touched.streetAddress && !!errors.streetAddress}
+          helperText={<ErrorMessage name="streetAddress" />}
+          label="Street Address"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="city"
+          error={touched.city && !!errors.city}
+          helperText={<ErrorMessage name="city" />}
+          label="City"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="state"
+          error={touched.state && !!errors.state}
+          helperText={<ErrorMessage name="state" />}
+          label="State"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="postalCode"
+          error={touched.postalCode && !!errors.postalCode}
+          helperText={<ErrorMessage name="postalCode" />}
+          label="Postal Code"
+        />
+      </Grid>
+      <Grid xs={12} md={6}>
+        <Field
+          as={TextField}
+          fullWidth
+          name="country"
+          error={touched.country && !!errors.country}
+          helperText={<ErrorMessage name="country" />}
+          label="Country"
+        />
+      </Grid>
+    </Grid>
+  );
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values) => {
+        // handle form submission
+        console.log(values);
+      }}
+    >
+      {({ errors, setFieldValue, isSubmitting, touched }) => (
+        <Form>
+          <Grid
+            container
+            justifyContent="center"
+            sx={{ flex: "1 1 auto" }}
+            spacing={1}
+          >
+            {!isHydrated ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Employer Details" />
+                    <CardContent>
+                      {renderPersonalDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Details" />
+                    <CardContent>
+                      {renderBasicDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Address" />
+                    <CardContent>
+                      {renderAddressDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Upload Logo" />
+                    <CardContent>
+                      <Grid container spacing={2}>
+                        <Grid xs={12}>
+                          <input
+                            id="contained-button-file"
+                            type="file"
+                            onChange={(
+                              event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              setFieldValue(
+                                "resume",
+                                event.currentTarget.files?.[0]
+                              );
+                            }}
+                          />
+
+                          <ErrorMessage name="resume" component="div" />
+                        </Grid>
+                        <Grid xs={12}>
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={isSubmitting}
+                          >
+                            Submit
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </>
+            )}
+          </Grid>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default OnBoardingForm;
