@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func Register(c *gin.Context) {
@@ -37,6 +38,7 @@ func Register(c *gin.Context) {
 
 	insertResult, err := coll.InsertOne(context.TODO(), db.User{
 		FirstName: requestPayload.FirstName,
+		LastName:  requestPayload.LastName,
 		Email:     requestPayload.Email,
 		Password:  utils.HashPassword(requestPayload.Password),
 	})
@@ -46,15 +48,23 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Inserted a document to db ==>", insertResult.InsertedID)
+	fmt.Println("Inserted a document to db ==>", insertResult)
 
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "User registered successfully"})
+	responseObject := gin.H{
+		"message":   "User registered successfully",
+		"id":        insertResult.InsertedID,
+		"email":     requestPayload.Email,
+		"firstName": requestPayload.FirstName,
+		"lastName":  requestPayload.LastName,
+		"token":     utils.GenerateJWT(requestPayload.Email),
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"response": responseObject})
 }
 
 func Login(c *gin.Context) {
 	var requestPayload payload.LoginUserPayload
 	c.ShouldBindBodyWith(&requestPayload, binding.JSON)
-	fmt.Print("request Payload for Login API ==>", requestPayload)
 	ok, errMsg := utils.ValidateRequest(c, &payload.LoginUserPayload{})
 
 	if !ok {
@@ -70,7 +80,11 @@ func Login(c *gin.Context) {
 	var user db.User
 	err := result.Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while decoding user"})
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "User not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error while logging in"})
 		return
 	}
 
@@ -87,5 +101,14 @@ func Login(c *gin.Context) {
 
 	token := utils.GenerateJWT(user.Email)
 
-	c.IndentedJSON(http.StatusOK, gin.H{"token": token})
+	responseObject := gin.H{
+		"message":   "User logged in successfully",
+		"token":     token,
+		"firstName": user.FirstName,
+		"lastName":  user.LastName,
+		"email":     user.Email,
+		"id":        user.Id,
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"response": responseObject})
 }
