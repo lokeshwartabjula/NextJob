@@ -4,37 +4,36 @@ import (
 	"backend/configs"
 	"backend/utils"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
 	"net/smtp"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type JobApplication struct {
-	UserID string `json:"userID" binding:"required,alphanum" msg:"UserID must contain alphabets and numbers only"`
-	JobID  string `json:"jobID" binding:"required,alphanum" msg:"JobID must contain alphabets and numbers only"`
+type RequestData struct {
+	UserID            string `json:"userID" binding:"required,alphanum" msg:"UserID must contain alphabets and numbers only"`
+	JobID             string `json:"jobID" binding:"required,alphanum" msg:"JobID must contain alphabets and numbers only"`
+	CandidateFullName string `json:"fullName" binding:"required,alphanum" msg:"FullName must contain alphabets and numbers only"`
+	CandidateEmail    string `json:"email" binding:"required,email" msg:"CandidateEmail must must be in a valid format"`
+	Contact           string `json:"contact" binding:"required,alphanum" msg:"Contact must contain alphabets and numbers only"`
+	EmployerName      string `json:"employerName" binding:"required,alphanum" msg:"EmployerName must contain alphabets and numbers only"`
+	JobTitle          string `json:"jobTitle" binding:"required,alphanum" msg:"JobTitle must contain alphabets and numbers only"`
+	ApplicationDate   string `json:"applicationDate" binding:"required,alphanum" msg:"ApplicationDate must contain alphabets and numbers only"`
+	EmployerEmail     string `json:"employerEmail" binding:"required,email" msg:"EmployerEmail must be in a valid format"`
 }
 
+type JobApplication struct {
+	userID string
+	jobID  string
+}
 type EmailConfig struct {
 	SMTPHost     string
 	SMTPPort     int
 	FromEmail    string
 	FromPassword string
-}
-
-type CandidateInformation struct {
-	fullName        string
-	email           string
-	contact         string
-	linkedInProfile string
-}
-
-type EmployerInformation struct {
-	employerName    string
-	jobTitle        string
-	applicationDate string
 }
 
 var emailConfig = EmailConfig{
@@ -44,56 +43,41 @@ var emailConfig = EmailConfig{
 	FromPassword: "onxnmlggoetoycds",
 }
 
-var candidateInfo = CandidateInformation{
-	fullName:        "John Doe",
-	email:           "johndoe@example.com",
-	contact:         "+1 123 456 7890",
-	linkedInProfile: "https://www.linkedin.com/in/johndoe",
-}
-
-// Mock employer information
-var employerInfo = EmployerInformation{
-	employerName:    "Jane Smith",
-	jobTitle:        "Software Engineer",
-	applicationDate: "2023-07-19",
-}
-
 func ApplyJob(c *gin.Context) {
 
-	var application JobApplication
+	var requestData RequestData
+	var jobApplication JobApplication
 
-	c.ShouldBindBodyWith(&application, binding.JSON)
+	c.ShouldBindBodyWith(&requestData, binding.JSON)
 
-	if ok, errMsg := utils.ValidateRequest(c, &JobApplication{}); !ok {
+	if ok, errMsg := utils.ValidateRequest(c, &RequestData{}); !ok {
 		c.IndentedJSON(http.StatusBadRequest, errMsg)
 		return
 	}
 
 	collection := configs.Client.Database("jobportal").Collection("job_applications")
-
-	_, err := collection.InsertOne(c, application)
+	jobApplication = JobApplication{userID: requestData.UserID, jobID: requestData.JobID}
+	_, err := collection.InsertOne(c, jobApplication)
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Application already exists."})
 			return
 		} else {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error while applying to the job"})
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Error while applying to the job"})
 			return
 		}
-
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message":           "Job Created",
-		"applicationDetail": application,
+		"message": "Job Created",
 	})
-	notifyEmployerByEmail()
+	notifyEmployerByEmail(requestData)
 }
 
-func notifyEmployerByEmail() {
+func notifyEmployerByEmail(data RequestData) {
 
-	subject := "New Job Application for " + employerInfo.jobTitle + " - " + candidateInfo.fullName
-	jobId := "123"
+	subject := "New Job Application for " + data.JobTitle + " - " + data.CandidateFullName
+
 	htmlBody := `
 		<!DOCTYPE html>
 		<html>
@@ -107,22 +91,21 @@ func notifyEmployerByEmail() {
 			</style>
 		</head>
 		<body>
-			<p>Dear ` + employerInfo.employerName + `,</p>
-			<p>We are pleased to inform you that a potential candidate has applied for the job opening of <strong>` + employerInfo.jobTitle + `</strong> in your company. Below, you will find the relevant details regarding the candidate and their application:</p>
+			<p>Dear ` + data.EmployerName + `,</p>
+			<p>We are pleased to inform you that a potential candidate has applied for the job opening of <strong>` + data.JobTitle + `</strong> in your company. Below, you will find the relevant details regarding the candidate and their application:</p>
 			<!-- Candidate Information section -->
 			<h2>Candidate Information</h2>
 			<ul>
-				<li><strong>Full Name:</strong> ` + candidateInfo.fullName + `</li>
-				<li><strong>Email Address:</strong> ` + candidateInfo.email + `</li>
-				<li><strong>Phone Number:</strong> ` + candidateInfo.contact + `</li>
-				<li><strong>LinkedIn Profile:</strong> <a href="` + candidateInfo.linkedInProfile + `">` + candidateInfo.linkedInProfile + `</a></li>
+				<li><strong>Full Name:</strong> ` + data.CandidateFullName + `</li>
+				<li><strong>Email Address:</strong> ` + data.CandidateEmail + `</li>
+				<li><strong>Phone Number:</strong> ` + data.Contact + `</li>		
 			</ul>
 			<!-- Application Details section -->
 			<h2>Application Details</h2>
 			<ul>
-				<li><strong>Job Title:</strong> ` + employerInfo.jobTitle + `</li>
-				<li><strong>Job ID/Reference Number:</strong> ` + jobId + `</li>
-				<li><strong>Application Date:</strong> ` + employerInfo.applicationDate + `</li>
+				<li><strong>Job Title:</strong> ` + data.JobTitle + `</li>
+				<li><strong>Job ID/Reference Number:</strong> ` + data.JobID + `</li>
+				<li><strong>Application Date:</strong> ` + data.ApplicationDate + `</li>
 			</ul>
 			<p>We recommend reviewing the candidate's application thoroughly to evaluate their qualifications and suitability for the position.</p>
 			<p>Please take the time to assess the candidate's application and consider scheduling an interview or taking the next steps in the hiring process. Should you have any specific requirements, questions, or further information needed from the candidate, feel free to reach out to them directly using the provided contact details.</p>
@@ -132,7 +115,7 @@ func notifyEmployerByEmail() {
 		</html>
 	`
 
-	err := sendEmail(emailConfig, "patelkishan9286@gmail.com", subject, htmlBody)
+	err := sendEmail(emailConfig, data.EmployerEmail, subject, htmlBody)
 	if err != nil {
 		log.Println("Failed to send email:", err)
 	}

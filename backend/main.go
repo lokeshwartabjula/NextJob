@@ -7,10 +7,13 @@ import (
 
 	api "backend/api/controllers"
 	"backend/configs"
+	"backend/middlewares"
 )
 
 func main() {
 	router := gin.Default()
+	router.Use(middlewares.CorsMiddleware())
+
 
 	configs.ConnectDB()
 
