@@ -4,6 +4,7 @@ import (
 	"backend/configs"
 	"backend/utils"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"net/http"
 	"net/smtp"
@@ -16,19 +17,15 @@ import (
 type RequestData struct {
 	UserID            string `json:"userID" binding:"required,alphanum" msg:"UserID must contain alphabets and numbers only"`
 	JobID             string `json:"jobID" binding:"required,alphanum" msg:"JobID must contain alphabets and numbers only"`
-	CandidateFullName string `json:"fullName" binding:"required,alphanum" msg:"FullName must contain alphabets and numbers only"`
-	CandidateEmail    string `json:"email" binding:"required,email" msg:"CandidateEmail must must be in a valid format"`
-	Contact           string `json:"contact" binding:"required,alphanum" msg:"Contact must contain alphabets and numbers only"`
-	EmployerName      string `json:"employerName" binding:"required,alphanum" msg:"EmployerName must contain alphabets and numbers only"`
-	JobTitle          string `json:"jobTitle" binding:"required,alphanum" msg:"JobTitle must contain alphabets and numbers only"`
-	ApplicationDate   string `json:"applicationDate" binding:"required,alphanum" msg:"ApplicationDate must contain alphabets and numbers only"`
+	CandidateFullName string `json:"candidateFullName" binding:"required" msg:"FullName must contain alphabets and numbers only"`
+	CandidateEmail    string `json:"candidateEmail" binding:"required,email" msg:"CandidateEmail must must be in a valid format"`
+	Contact           string `json:"contact" binding:"required" msg:"Contact must contain alphabets and numbers only"`
+	EmployerName      string `json:"employerName" binding:"required" msg:"EmployerName must contain alphabets and numbers only"`
+	JobTitle          string `json:"jobTitle" binding:"required" msg:"JobTitle must contain alphabets and numbers only"`
+	ApplicationDate   string `json:"applicationDate" binding:"required" msg:"ApplicationDate must contain alphabets and numbers only"`
 	EmployerEmail     string `json:"employerEmail" binding:"required,email" msg:"EmployerEmail must be in a valid format"`
 }
 
-type JobApplication struct {
-	userID string
-	jobID  string
-}
 type EmailConfig struct {
 	SMTPHost     string
 	SMTPPort     int
@@ -46,7 +43,6 @@ var emailConfig = EmailConfig{
 func ApplyJob(c *gin.Context) {
 
 	var requestData RequestData
-	var jobApplication JobApplication
 
 	c.ShouldBindBodyWith(&requestData, binding.JSON)
 
@@ -56,20 +52,20 @@ func ApplyJob(c *gin.Context) {
 	}
 
 	collection := configs.Client.Database("jobportal").Collection("job_applications")
-	jobApplication = JobApplication{userID: requestData.UserID, jobID: requestData.JobID}
-	_, err := collection.InsertOne(c, jobApplication)
+
+	_, err := collection.InsertOne(c, bson.M{"userId": requestData.UserID, "jobId": requestData.JobID})
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Application already exists."})
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "You have already applied to this job!"})
 			return
 		} else {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Error while applying to the job"})
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "An error occurred while applying for the job!"})
 			return
 		}
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Job Created",
+		"message": "Job was applied to successfully!",
 	})
 	notifyEmployerByEmail(requestData)
 }
