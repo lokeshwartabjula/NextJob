@@ -22,6 +22,7 @@ type RequestData struct {
 	Contact           string `json:"contact" binding:"required" msg:"Contact must contain alphabets and numbers only"`
 	EmployerName      string `json:"employerName" binding:"required" msg:"EmployerName must contain alphabets and numbers only"`
 	JobTitle          string `json:"jobTitle" binding:"required" msg:"JobTitle must contain alphabets and numbers only"`
+	JobType           string `json:"jobType" binding:"required" msg:"JobType must contain alphabets and numbers only"`
 	ApplicationDate   string `json:"applicationDate" binding:"required" msg:"ApplicationDate must contain alphabets and numbers only"`
 	EmployerEmail     string `json:"employerEmail" binding:"required,email" msg:"EmployerEmail must be in a valid format"`
 }
@@ -100,6 +101,7 @@ func notifyEmployerByEmail(data RequestData) {
 			<h2>Application Details</h2>
 			<ul>
 				<li><strong>Job Title:</strong> ` + data.JobTitle + `</li>
+				<li><strong>Job Type:</strong> ` + data.JobType + `</li>
 				<li><strong>Job ID/Reference Number:</strong> ` + data.JobID + `</li>
 				<li><strong>Application Date:</strong> ` + data.ApplicationDate + `</li>
 			</ul>
