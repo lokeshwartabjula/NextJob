@@ -18,26 +18,26 @@ import { Box,
         } from "@mui/material";
 
 import SearchIcon from '@mui/icons-material/Search';
-import JobInformationData  from "../(constants)/jobListings";
-import styles from '../(constants)/joblisting.module.css';
+import jobApplicants  from "../(constants)/applicants";
+import styles from '../(constants)/applicants.module.css';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
-export default function JobListings() {
+export default function ApplicantLists() {
 
-    const [jobs, setJobs] = useState(JobInformationData);
+    const [applicants, setApplicants] = useState(jobApplicants);
     
-    const handleChange = (event: any, id: String) => {
-        const status = event.target.value;
-        console.log(status);
-        console.log(id)
-        const updatedJobs = jobs.map((job) => {
-            if (job.id === id) {
-                return {...job, jobStatus: status};
-            }
-            return job;
-        });
-        setJobs(updatedJobs);;
-    };
+    // const handleChange = (event: any, id: String) => {
+    //     const status = event.target.value;
+    //     console.log(status);
+    //     console.log(id)
+    //     const updatedApplicants = applicants.map((applicants) => {
+    //         if (job.id === id) {
+    //             return {...job, jobStatus: status};
+    //         }
+    //         return job;
+    //     });
+    //     setApplicants(updatedApplicants);;
+    // };
 
     return(
         <>
@@ -126,23 +126,23 @@ export default function JobListings() {
                         <Table>
                             <TableHead sx={{ height: '80px'}}>
                             <TableRow>
-                                <TableCell className={styles.titles}>Job Title</TableCell>
-                                <TableCell className={styles.titles}>Location</TableCell>
-                                <TableCell className={styles.titles}>Openings</TableCell>
+                                <TableCell className={styles.titles}>Name</TableCell>
+                                <TableCell className={styles.titles}>Experience</TableCell>
+                                <TableCell className={styles.titles}>Education</TableCell>
                                 <TableCell className={styles.titles}>Job Status</TableCell>
                                 <TableCell className={styles.titles}>Candidates</TableCell>
                                 <TableCell className={styles.titles}>Actions</TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {jobs.map((job) => (
-                                <TableRow key={job.id} className={styles.description} sx={{ height: '100px'}}>
-                                    <TableCell className={styles.description}>{job.jobTitle}</TableCell>
-                                    <TableCell className={styles.description}>{job.Location}</TableCell>
-                                    <TableCell className={styles.description}>{job.NoOfPosition}</TableCell>
+                            {applicants.map((applicant) => (
+                                <TableRow key={applicant.id} className={styles.description} sx={{ height: '100px'}}>
+                                    <TableCell className={styles.description}>{applicant.name}</TableCell>
+                                    <TableCell className={styles.description}>{applicant.experience}</TableCell>
+                                    <TableCell className={styles.description}>{applicant.education}</TableCell>
                                     <TableCell className={styles.description}>
-                                    <Select defaultValue=""
-                                                value={job.jobStatus}
+                                    {/* <Select defaultValue=""
+                                                value={applicant.jobStatus}
                                                 onChange={(e) => handleChange(e, job.id)}
                                                 displayEmpty
                                                 sx= {{
@@ -168,7 +168,7 @@ export default function JobListings() {
                                                         <ListItemText primary="Paused" />
                                                     </div>
                                                 </MenuItem>
-                                            </Select>
+                                            </Select> */}
                                     </TableCell>
                                     <TableCell>
                                         <Button variant="contained" className={styles.buttonApplicants}>
