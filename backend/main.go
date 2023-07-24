@@ -43,6 +43,10 @@ func main() {
 	router.POST("/seeker", api.AddSeeker)
 	router.PUT("/seeker", api.UpdateSeekerById)
 	router.GET("/seeker/:id", api.GetSeekerById)
+
+	router.POST("/employer", api.AddEmployer)
+	router.PUT("/employer", api.UpdateEmployerById)
+	router.GET("/employer/:id", api.GetEmployerById)
 	
 	router.Run(":8080")
 }
