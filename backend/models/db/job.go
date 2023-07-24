@@ -24,6 +24,9 @@ type JobLocation struct {
 	Coordinates []float64 `json:"coordinates" binding:"required" msg:"Coordinates are required"`
 	PlaceID     string    `json:"placeId" binding:"required" msg:"Place ID is required"`
 	PlaceName   string    `json:"placeName" binding:"required" msg:"Place Name is required"`
+	City        string    `json:"city" binding:"required" msg:"City is required"`
+	State       string    `json:"state" binding:"required" msg:"State is required"`
+	Country     string    `json:"country" binding:"required" msg:"Country is required"`
 }
 
 type LocCoordinates struct {
