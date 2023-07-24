@@ -19,6 +19,7 @@ import {
 } from "formik";
 import React from "react";
 import * as Yup from "yup";
+import { axiosInstance } from "../../../../api";
 
 interface FormType {
   jobTitle: string;
@@ -78,7 +79,17 @@ const OnBoardingForm: React.FC = () => {
     state: Yup.string().required("Required"),
     postalCode: Yup.string().required("Required"),
     country: Yup.string().required("Required"),
-    companyLogo: Yup.mixed().required("A file is required"),
+    companyLogo: Yup.mixed()
+      .required("A file is required")
+      .test(
+        "fileFormat",
+        "Unsupported Format",
+        (value) =>
+          value &&
+          ["image/jpg", "image/jpeg", "image/png"].includes(
+            (value as File).type
+          )
+      ),
   });
 
   const renderBasicDetails = (
@@ -247,16 +258,71 @@ const OnBoardingForm: React.FC = () => {
     </Grid>
   );
 
+  const renderLogoComponent = () => (
+    <Grid container spacing={2}>
+      <Grid xs={12}>
+        <Field name="companyLogo" component={FileUploadField} />
+        <ErrorMessage
+          style={{ color: "red" }}
+          name="companyLogo"
+          component="div"
+        />
+      </Grid>
+    </Grid>
+  );
+
+  const FileUploadField = ({ field, form, ...props }: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.currentTarget.files?.[0];
+      form.setFieldValue(field.name, file);
+    };
+
+    return (
+      <input type="file" accept="image/*" onChange={handleChange} {...props} />
+    );
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values) => {
-        // handle form submission
-        console.log(values);
+      onSubmit={(values: FormType) => {
+        console.log("values=>", values);
+        const formData = new FormData();
+        formData.append("jobTitle", values.jobTitle);
+        formData.append("phone", values.phone);
+        formData.append("companyName", values.companyName);
+        formData.append("industry", values.industry);
+        formData.append("foundedYear", values.foundedYear);
+        formData.append("companySize", values.companySize);
+        formData.append("companyType", values.companyType);
+        formData.append("description", values.description);
+        values.websiteURL && formData.append("websiteURL", values.websiteURL);
+        formData.append("streetAddress", values.streetAddress);
+        formData.append("city", values.city);
+        formData.append("state", values.state);
+        formData.append("postalCode", values.postalCode);
+        formData.append("country", values.country);
+        formData.append("companyLogo", values.companyLogo);
+
+        axiosInstance
+          .post("employer", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            console.log("res=>", res);
+          })
+          .catch((err) => {
+            console.log("err=>", err);
+          });
+      }}
+      onErrors={(errors: FormikErrors<FormType>) => {
+        console.log(errors);
       }}
     >
-      {({ errors, setFieldValue, isSubmitting, touched }) => (
+      {({ errors, touched }) => (
         <Form>
           <Grid
             container
@@ -296,37 +362,19 @@ const OnBoardingForm: React.FC = () => {
                 <Grid xs={11} md={8}>
                   <Card>
                     <CardHeader title="Upload Logo" />
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid xs={12}>
-                          <input
-                            id="contained-button-file"
-                            type="file"
-                            onChange={(
-                              event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              setFieldValue(
-                                "resume",
-                                event.currentTarget.files?.[0]
-                              );
-                            }}
-                          />
-
-                          <ErrorMessage name="resume" component="div" />
-                        </Grid>
-                        <Grid xs={12}>
-                          <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            disabled={isSubmitting}
-                          >
-                            Submit
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
+                    <CardContent>{renderLogoComponent()}</CardContent>
                   </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    // disabled={isSubmitting}
+                    sx={{ mt: 2, py: 1, minWidth: 150 }}
+                  >
+                    Submit
+                  </Button>
                 </Grid>
               </>
             )}

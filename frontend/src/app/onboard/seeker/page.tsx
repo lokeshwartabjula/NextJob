@@ -22,6 +22,7 @@ import {
 } from "formik";
 import React from "react";
 import * as Yup from "yup";
+import { axiosInstance } from "../../../../api";
 
 interface FormType {
   email: string;
@@ -202,7 +203,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="School"
                     fullWidth
-                    error={touched.educations && !!errors.educations}
+                    error={
+                      touched.educations &&
+                      touched.educations[index]?.school &&
+                      !!errors.educations
+                    }
                     helperText={
                       <ErrorMessage name={`educations[${index}].school`} />
                     }
@@ -214,7 +219,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Degree"
                     fullWidth
-                    error={touched.educations && !!errors.educations}
+                    error={
+                      touched.educations &&
+                      touched.educations[index]?.degree &&
+                      !!errors.educations
+                    }
                     helperText={
                       <ErrorMessage name={`educations[${index}].degree`} />
                     }
@@ -226,7 +235,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Field of Study"
                     fullWidth
-                    error={touched.educations && !!errors.educations}
+                    error={
+                      touched.educations &&
+                      touched.educations[index]?.fieldOfStudy &&
+                      !!errors.educations
+                    }
                     helperText={
                       <ErrorMessage
                         name={`educations[${index}].fieldOfStudy`}
@@ -244,7 +257,11 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.educations && !!errors.educations}
+                    error={
+                      touched.educations &&
+                      touched.educations[index]?.startDate &&
+                      !!errors.educations
+                    }
                     helperText={
                       <ErrorMessage name={`educations[${index}].startDate`} />
                     }
@@ -260,7 +277,11 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.educations && !!errors.educations}
+                    error={
+                      touched.educations &&
+                      touched.educations[index]?.endDate &&
+                      !!errors.educations
+                    }
                     helperText={
                       <ErrorMessage name={`educations[${index}].endDate`} />
                     }
@@ -329,7 +350,7 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Company"
                     fullWidth
-                    error={touched.experiences && !!errors.experiences}
+                    error={touched.experiences && touched.experiences[index]?.company && !!errors.experiences}
                     helperText={
                       <ErrorMessage name={`experiences[${index}].company`} />
                     }
@@ -341,7 +362,7 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Title"
                     fullWidth
-                    error={touched.experiences && !!errors.experiences}
+                    error={touched.experiences && touched.experiences[index]?.title && !!errors.experiences}
                     helperText={
                       <ErrorMessage name={`experiences[${index}].title`} />
                     }
@@ -353,7 +374,7 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Location"
                     fullWidth
-                    error={touched.experiences && !!errors.experiences}
+                    error={touched.experiences && touched.experiences[index]?.location && !!errors.experiences}
                     helperText={
                       <ErrorMessage name={`experiences[${index}].location`} />
                     }
@@ -369,7 +390,7 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.experiences && !!errors.experiences}
+                    error={touched.experiences && touched.experiences[index]?.startDate && !!errors.experiences}
                     helperText={
                       <ErrorMessage name={`experiences[${index}].startDate`} />
                     }
@@ -385,7 +406,7 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.experiences && !!errors.experiences}
+                    error={touched.experiences && touched.experiences[index]?.endDate && !!errors.experiences}
                     helperText={
                       <ErrorMessage name={`experiences[${index}].endDate`} />
                     }
@@ -399,10 +420,6 @@ const OnBoardingForm: React.FC = () => {
                     multiline
                     rows={4}
                     fullWidth
-                    error={touched.experiences && !!errors.experiences}
-                    helperText={
-                      <ErrorMessage name={`experiences[${index}].details`} />
-                    }
                   />
                 </Grid>
               </Grid>
@@ -437,17 +454,7 @@ const OnBoardingForm: React.FC = () => {
     <Grid container spacing={2}>
       <Grid xs={12}>
         <Field name="resume" component={FileUploadField} />
-        <ErrorMessage name="resume" component="div" />
-      </Grid>
-      <Grid xs={12}>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={isSubmitting}
-        >
-          Submit
-        </Button>
+        <ErrorMessage style={{ color: "red" }} name="resume" component="div" />
       </Grid>
     </Grid>
   );
@@ -458,7 +465,14 @@ const OnBoardingForm: React.FC = () => {
       form.setFieldValue(field.name, file);
     };
 
-    return <input type="file" onChange={handleChange} {...props} />;
+    return (
+      <input
+        type="file"
+        accept="application/pdf"
+        onChange={handleChange}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -493,6 +507,27 @@ const OnBoardingForm: React.FC = () => {
       onSubmit={(values) => {
         // handle form submission
         console.log(values);
+        const formData = new FormData();
+        formData.append("email", values.email);
+        formData.append("phone", values.phone);
+        formData.append("address1", values.address1);
+        formData.append("address2", values.address2);
+        formData.append("state", values.state);
+        formData.append("postalCode", values.postalCode);
+        values.resume && formData.append("resume", values.resume);
+        formData.append("educations", JSON.stringify(values.educations));
+        formData.append("experiences", JSON.stringify(values.experiences));
+        axiosInstance.post("seeker", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }}
     >
       {({ errors, touched, values, isSubmitting }) => (
@@ -538,6 +573,17 @@ const OnBoardingForm: React.FC = () => {
                       {renderResumeComponent(isSubmitting)}
                     </CardContent>
                   </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    // disabled={isSubmitting}
+                    sx={{ mt: 2, py: 1, minWidth: 150 }}
+                  >
+                    Submit
+                  </Button>
                 </Grid>
               </>
             )}
