@@ -40,5 +40,13 @@ func main() {
 	// create a new route for getting jobs based on radius and latitude and longitude. Here the latitude and longitude will be in passed in query params
 	protected.GET("/getJobByRadius/:lat/:lng", api.GetJobByRadius)
 
+	router.POST("/seeker", api.AddSeeker)
+	router.PUT("/seeker", api.UpdateSeekerById)
+	router.GET("/seeker/:id", api.GetSeekerById)
+
+	router.POST("/employer", api.AddEmployer)
+	router.PUT("/employer", api.UpdateEmployerById)
+	router.GET("/employer/:id", api.GetEmployerById)
+	
 	router.Run(":8080")
 }
