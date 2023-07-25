@@ -24,6 +24,10 @@ export const NavOptions: MenuType[] = [
     route: "/companies"
   },
   {
+    label: "CompaniesList",
+    route: "/CompaniesList"
+  },
+  {
     label: "Jobs",
   },
 ];

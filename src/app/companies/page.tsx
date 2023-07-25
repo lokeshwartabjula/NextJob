@@ -37,29 +37,6 @@ export default function companiesPage() {
           alt="Google" />
         </div>
         </div>
-        {/* <div className="tabsContainer">
-            <div className="tab">
-            <Button variant="contained">Description</Button>
-
-              <div className="tabTitle">
-                Description
-              </div> 
-            </div>
-             <div className="tab">
-            <Button variant="contained">Reviews</Button>
-
-              <div className="tabTitle">
-                Reviews
-              </div>
-            </div>
-            <div className="tab">
-            <Button variant="contained">Active Jobs</Button>
-
-              <div className="tabTitle">
-                Active Jobs
-              </div>
-            </div>
-        </div> */}
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <TabContext value={value}>
         <Tabs value={value} onChange={handleChange} variant="fullWidth">
