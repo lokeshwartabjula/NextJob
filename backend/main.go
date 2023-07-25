@@ -14,7 +14,6 @@ func main() {
 	router := gin.Default()
 	router.Use(middlewares.CorsMiddleware())
 
-
 	configs.ConnectDB()
 
 	router.GET("/", func(c *gin.Context) {
@@ -24,6 +23,7 @@ func main() {
 	router.POST("/register", api.Register)
 
 	router.POST("/apply", api.ApplyJob)
+	router.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
 
 	router.Run(":8080")
 }

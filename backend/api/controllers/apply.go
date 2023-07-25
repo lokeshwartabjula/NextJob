@@ -27,6 +27,11 @@ type RequestData struct {
 	EmployerEmail     string `json:"employerEmail" binding:"required,email" msg:"EmployerEmail must be in a valid format"`
 }
 
+type JobApplication struct {
+	JobId  string `bson:"jobId"`
+	UserId string `bson:"userId"`
+}
+
 type EmailConfig struct {
 	SMTPHost     string
 	SMTPPort     int
@@ -69,6 +74,45 @@ func ApplyJob(c *gin.Context) {
 		"message": "Job was applied to successfully!",
 	})
 	notifyEmployerByEmail(requestData)
+}
+
+func GetJobApplicantIdsByJobId(c *gin.Context) {
+	jobId := c.Param("id")
+	collection := configs.Client.Database("jobportal").Collection("job_applications")
+	//objectId, errObjectId := primitive.ObjectIDFromHex(jobId)
+	//fmt.Println(objectId)
+	//if errObjectId != nil {
+	//	c.IndentedJSON(500, gin.H{
+	//		"message": "Error while getting job 111",
+	//	})
+	//	return
+	//}
+
+	cursor, err := collection.Find(c, bson.M{"jobId": jobId})
+	fmt.Println(cursor)
+	if err != nil {
+		c.IndentedJSON(500, gin.H{
+			"message": "Error while getting job applications",
+		})
+		return
+	}
+
+	var applicantList []string
+
+	for cursor.Next(c) {
+		var jobApplication JobApplication
+		if err = cursor.Decode(&jobApplication); err != nil {
+			c.IndentedJSON(500, gin.H{
+				"message": "Error while decoding job application",
+			})
+			return
+		}
+		applicantList = append(applicantList, jobApplication.UserId)
+	}
+	fmt.Println(applicantList)
+	c.IndentedJSON(200, gin.H{
+		"applicants": applicantList,
+	})
 }
 
 func notifyEmployerByEmail(data RequestData) {
