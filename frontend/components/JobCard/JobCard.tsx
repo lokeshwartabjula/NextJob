@@ -26,16 +26,16 @@ const JobCard = (props: JobData) => {
 
           <div className="company-desc">
             <div className="comp-div">
-              <text className="company">Amazon</text>
+              <text className="company">{props.jobCompany}</text>
               <text className="title">{props.jobTitle}</text>
             </div>
 
             <div className="company-logo">
-              <img src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800" />
-              {/* <Avatar
+              {/* <img src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800" /> */}
+              <Avatar
                 src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800"
                 sx={{ width: 56, height: 56 }}
-              /> */}
+              />
             </div>
           </div>
 
@@ -47,7 +47,9 @@ const JobCard = (props: JobData) => {
         <div className="footer">
           <div className="salary-div">
             <text className="sal">$ {props.salary} /Month</text>
-            <text className="location">{props.location.placeName}</text>
+            <text className="location">
+              {props.location.city},{props.location.country}
+            </text>
           </div>
 
           <div>

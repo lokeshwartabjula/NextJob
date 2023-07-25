@@ -4,21 +4,29 @@ import JobListingsSearchBar from "../../../components/JobListingsSearchBar/JobLi
 import JobListingsItems from "../../../components/JobListingsItems/JobListingsItems";
 import { Grid } from "@mui/material";
 import { useState, useEffect } from "react";
-// import { jobData } from "../../../components/JobListingsItems/jobData";
-import { JobData } from "./types";
-import Filter from "../../../components/JobFilter/JobFilter";
+import { FilterChangeEvent, JobData } from "./types";
+import JobFilter from "../../../components/JobFilter/JobFilter";
 import axios from "axios";
 
 export default function JobListings() {
   const [searchValue, setSearchValue] = useState("");
-  const [detailsChecked, setDetailsChecked] = useState(false);
   const [jobDataArr, setJobDataArr] = useState([]);
   const [displayedJobDataArr, setDisplayedJobDataArr] = useState([]);
+  const [checked, setChecked] = useState({
+    fullTime: false,
+    partTime: false,
+    contract: false,
+    internship: false,
+  });
+  const [minFilterAmount, setMinFilterAmount] = useState(0);
+  const [maxFilterAmount, setMaxFilterAmount] = useState(0);
+  const [minFilterAmountError, setMinFilterAmountError] = useState(false);
+  const [maxFilterAmountError, setMaxFilterAmountError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/getJobs");
+        const response = await axios.get("http://localhost:8081/getJobs");
         setJobDataArr(response.data.jobs);
         setDisplayedJobDataArr(response.data.jobs);
       } catch (error) {
@@ -29,27 +37,96 @@ export default function JobListings() {
     fetchData();
   }, []);
 
-  function applySearch(val: string) {
-    var tempArr = jobDataArr.filter((item: JobData) => {
-      return (
-        item.jobTitle.toLowerCase().includes(val.toLowerCase()) ||
-        // item.jobCompany.toLowerCase().includes(val.toLowerCase()) ||
-        item.location.placeName.toLowerCase().includes(val.toLowerCase()) ||
-        item.jobType.toLowerCase().includes(val.toLowerCase())
-      );
-    });
+  useEffect(() => {
+    var tempArr = jobDataArr
+      .filter((item: JobData) => {
+        if (
+          checked.fullTime &&
+          (item.jobType.toLowerCase().includes("full-time") ||
+            item.jobType.toLowerCase().includes("full time"))
+        ) {
+          return true;
+        } else if (
+          checked.partTime &&
+          (item.jobType.toLowerCase().includes("part-time") ||
+            item.jobType.toLowerCase().includes("part time"))
+        ) {
+          return true;
+        } else if (checked.contract && item.jobType === "Contract") {
+          return true;
+        } else if (checked.internship && item.jobType === "Intern") {
+          return true;
+        } else if (
+          !checked.fullTime &&
+          !checked.partTime &&
+          !checked.contract &&
+          !checked.internship
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .filter((item: JobData) => {
+        const salaryAsNumber = parseInt(item.salary);
+        if (!minFilterAmountError && !maxFilterAmountError) {
+          if (maxFilterAmount != 0 || Object.is(maxFilterAmount, NaN)) {
+            return (
+              salaryAsNumber >= minFilterAmount &&
+              salaryAsNumber <= maxFilterAmount
+            );
+          } else {
+            return salaryAsNumber >= minFilterAmount;
+          }
+        } else {
+          return false;
+        }
+      });
+
+    if (searchValue !== "") {
+      tempArr = tempArr.filter((item: JobData) => {
+        return (
+          item.jobTitle.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.jobCompany.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.location.placeName
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          item.jobType.toLowerCase().includes(searchValue.toLowerCase())
+        );
+      });
+    }
+
     setDisplayedJobDataArr(tempArr);
+  }, [checked, searchValue, minFilterAmount, maxFilterAmount]);
+
+  function applySearch(val: string) {
     setSearchValue(val);
   }
+
+  const handleCheckChange = (event: FilterChangeEvent) => {
+    setChecked({ ...checked, [event.target.name]: event.target.checked });
+  };
 
   return (
     <Grid container>
       <Grid item xs={12}>
         <Grid container spacing={3}>
-          <Grid item xs={2}>
-            <Filter />
+          <Grid item xs={3} sm={3} md={2} lg={2} mt={4}>
+            <JobFilter
+              checked={checked}
+              setChecked={setChecked}
+              handleCheckChange={handleCheckChange}
+              minFilterAmount={minFilterAmount}
+              setMinFilterAmount={setMinFilterAmount}
+              maxFilterAmount={maxFilterAmount}
+              setMaxFilterAmount={setMaxFilterAmount}
+              minFilterAmountError={minFilterAmountError}
+              setMinFilterAmountError={setMinFilterAmountError}
+              maxFilterAmountError={maxFilterAmountError}
+              setMaxFilterAmountError={setMaxFilterAmountError}
+            />
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={9} sm={9} md={9.5} lg={9.5} mt={1.5}>
             <JobListingsSearchBar
               searchValue={searchValue}
               applySearch={applySearch}

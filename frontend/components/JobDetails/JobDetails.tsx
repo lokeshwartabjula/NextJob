@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-
+import { useState } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -22,8 +22,17 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Groups2Icon from "@mui/icons-material/Groups2";
-import { Chip, Grid, ListItemIcon, ListSubheader, Stack } from "@mui/material";
-
+import {
+  Alert,
+  Backdrop,
+  Chip,
+  CircularProgress,
+  Grid,
+  ListItemIcon,
+  ListSubheader,
+  Snackbar,
+  Stack,
+} from "@mui/material";
 export default function JobDetails({
   jobDetailsOpen,
   handleClose,
@@ -32,7 +41,62 @@ export default function JobDetails({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const date = new Date(jobData.openDate);
+  date.setDate(date.getDate() + 1);
   const formattedDate = format(date, "MMMM d, yyyy");
+  const [responseMessage, setResponseMessage] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const handleApply = async () => {
+    setIsLoading(true);
+    const userID = "yourUserIasdasdD1";
+    const jobID = jobData.id;
+    const candidateFullName = "John Doe";
+    const candidateEmail = "johndoe@example.com";
+    const contact = "+1 123 456 7890";
+    const employerName = "Jane Smith";
+    const jobTitle = jobData.jobTitle;
+    const jobType = jobData.jobType;
+    const applicationDate = formattedDate;
+    const employerEmail = "patelkishan9286@gmail.com";
+
+    try {
+      const response = await fetch("http://localhost:8080/apply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userID,
+          jobID,
+          candidateFullName,
+          candidateEmail,
+          contact,
+          employerName,
+          jobTitle,
+          jobType,
+          applicationDate,
+          employerEmail,
+        }),
+      });
+
+      const data = await response.json();
+      setIsLoading(false);
+      setResponseMessage(data.message);
+      setOpenSnackbar(true);
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      setResponseMessage("An error occurred while applying for the job");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
     <div>
@@ -106,14 +170,16 @@ export default function JobDetails({
                           sx={{ flexWrap: "wrap", justifyContent: "center" }}
                           spacing={1}
                         >
-                          {jobData.skills.map((skill: string) => {
-                            return (
-                              <Grid item>
-                                {" "}
-                                <Chip label={skill} />
-                              </Grid>
-                            );
-                          })}
+                          {jobData.skills.map(
+                            (skill: string, index: number) => {
+                              return (
+                                <Grid item key={index}>
+                                  {" "}
+                                  <Chip label={skill} />
+                                </Grid>
+                              );
+                            }
+                          )}
                         </Grid>
                       </Stack>
                     </Grid>
@@ -156,12 +222,33 @@ export default function JobDetails({
           </Card>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button variant="outlined" onClick={handleApply}>
             Apply
           </Button>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={isLoading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <Button variant="outlined" onClick={handleClose}>
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={isError ? "error" : "success"}
+        >
+          {responseMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

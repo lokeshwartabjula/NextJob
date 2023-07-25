@@ -8,7 +8,7 @@ import { JobListingsSearchBarProps } from "@/app/job-listings/types";
 import { Grid } from "@mui/material";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: "50px",
   backgroundColor: alpha("rgb(0, 48, 96)", 0.25),
   "&:hover": {
     backgroundColor: alpha("rgb(0, 48, 96)", 0.25),
