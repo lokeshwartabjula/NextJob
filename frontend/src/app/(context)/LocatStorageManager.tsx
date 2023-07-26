@@ -6,6 +6,7 @@ interface UserMeteData {
   companyId?: string;
   companyName?: string;
   loginType?: "seeker" | "employer";
+  companyLogo?: string;
 }
 
 interface UserState extends UserMeteData {
@@ -21,6 +22,7 @@ export const setUserData = (data: UserState) => {
   localStorage.setItem("companyId", data.companyId || "");
   localStorage.setItem("companyName", data.companyName || "");
   localStorage.setItem("loginType", data.loginType || "");
+  localStorage.setItem("companyLogo", data.companyLogo || "");
 };
 
 export const getUserDataByName = (
@@ -33,11 +35,20 @@ export const getUserDataByName = (
     | "companyId"
     | "companyName"
     | "loginType"
+    | "companyLogo"
 ) => {
   return localStorage.getItem(key);
 };
 
 export const getUserDataFromLocal = (): UserMeteData => {
+  if (typeof window === "undefined")
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      id: "",
+    };
+
   const user: UserMeteData = {
     firstName: localStorage.getItem("firstName") || "",
     lastName: localStorage.getItem("lastName") || "",
@@ -45,6 +56,7 @@ export const getUserDataFromLocal = (): UserMeteData => {
     id: localStorage.getItem("id") || "",
     companyId: localStorage.getItem("companyId") || "",
     companyName: localStorage.getItem("companyName") || "",
+    companyLogo: localStorage.getItem("companyLogo") || "",
   };
   const loginType = localStorage.getItem("loginType");
   if (loginType) {
@@ -67,5 +79,6 @@ export const removeUserData = () => {
   localStorage.removeItem("id");
   localStorage.removeItem("companyId");
   localStorage.removeItem("companyName");
+  localStorage.removeItem("companyLogo");
   localStorage.removeItem("loginType");
 };

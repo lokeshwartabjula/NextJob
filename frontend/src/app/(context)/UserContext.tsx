@@ -9,6 +9,7 @@ interface UserState {
   id: string;
   companyId?: string;
   companyName?: string;
+  companyLogo?: string;
   loginType?: "seeker" | "employer";
 }
 
