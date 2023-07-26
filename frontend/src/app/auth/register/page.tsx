@@ -7,6 +7,8 @@ import * as Yup from "yup";
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import AuthLayout from "../layout";
 import React, { ReactElement } from "react";
+import { axiosInstance } from "../../../../api";
+import { message } from "antd";
 
 function Page(): ReactElement {
   const router = useRouter();
@@ -21,7 +23,7 @@ function Page(): ReactElement {
     initialValues: {
       email: "",
       firstName: "",
-      lastName:"",
+      lastName: "",
       password: "",
       submit: null,
     },
@@ -30,14 +32,21 @@ function Page(): ReactElement {
         .email("Must be a valid email")
         .max(255)
         .required("Email is required"),
-      firsrName: Yup.string().max(255).required("First name is required"),
+      firstName: Yup.string().max(255).required("First name is required"),
       lastName: Yup.string().max(255).required("Last name is required"),
       password: Yup.string().max(255).required("Password is required"),
     }),
     onSubmit: async (values, helpers) => {
       try {
-        // Backend call logic here
-        router.push("/");
+        axiosInstance
+          .post("/pub/register", { ...values, submit: undefined })
+          .then((res) => {
+            router.push("/auth/login");
+          })
+          .catch((err) => {
+            message.error(err.response.data.message);
+            message.error("Error while regestring user");
+          });
       } catch (err: any) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -86,9 +95,13 @@ function Page(): ReactElement {
               {isHydrated && (
                 <Stack spacing={3}>
                   <TextField
-                    error={!!(formik.touched.firstName && formik.errors.firstName)}
+                    error={
+                      !!(formik.touched.firstName && formik.errors.firstName)
+                    }
                     fullWidth
-                    helperText={formik.touched.firstName && formik.errors.firstName}
+                    helperText={
+                      formik.touched.firstName && formik.errors.firstName
+                    }
                     label="First Name"
                     name="firstName"
                     onBlur={formik.handleBlur}
@@ -96,9 +109,13 @@ function Page(): ReactElement {
                     value={formik.values.firstName}
                   />
                   <TextField
-                    error={!!(formik.touched.lastName && formik.errors.lastName)}
+                    error={
+                      !!(formik.touched.lastName && formik.errors.lastName)
+                    }
                     fullWidth
-                    helperText={formik.touched.lastName && formik.errors.lastName}
+                    helperText={
+                      formik.touched.lastName && formik.errors.lastName
+                    }
                     label="Last Name"
                     name="lastName"
                     onBlur={formik.handleBlur}
@@ -145,7 +162,7 @@ function Page(): ReactElement {
                 type="submit"
                 variant="contained"
               >
-                Continue
+                Register
               </Button>
             </form>
           </div>
