@@ -1,5 +1,6 @@
 "use client";
 import { Grid } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Cover from "./home/Cover";
 import JobSteps from "./home/JobSteps";
 import RecrutingOption from "./home/RecrutingOption";
@@ -19,3 +20,4 @@ export default function MyApp() {
     </Grid>
   );
 }
+
