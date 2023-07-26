@@ -34,7 +34,6 @@ export interface SeekerFormType {
     startDate: string;
     endDate?: string;
   }[];
-  totalExp: string;
   experiences: {
     company: string;
     title: string;

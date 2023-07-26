@@ -1,12 +1,12 @@
 "use client";
 import * as React from 'react';
-import { Box, Typography, useTheme, useMediaQuery} from '@mui/material';
-import JobListings from './components/JobListings';
+import { Box, Grid, Typography, useTheme, useMediaQuery, Container} from '@mui/material';
+import ApplicantsListing from './components/ApplicantsListing';
 
-export default function jobInformation(){
+export default function ApplicantPage({params}: {params: {id: string}}) {
     const theme = useTheme();
     const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
-
+    const jobId = params.id;
     return (
         <>
         <Box sx={{
@@ -25,10 +25,10 @@ export default function jobInformation(){
                         fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.5px', fontSize: '34px', color: '#003060'
                     }}
                 >
-                    JOB LISTINGS
+                    Applicants
                 </Typography>
             </Box>
-            <JobListings />
+            <ApplicantsListing id={jobId}/>
         </Box>
         </>
     );

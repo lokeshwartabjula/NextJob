@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { axiosInstance } from "../../../../api";
 import { useRouter } from 'next/navigation';
+import JobDetails from "../../../../components/JobDetails/JobDetails";
 
 import {
   Box,
@@ -24,7 +25,9 @@ import {
   TableCell,
   TableBody,
   Paper,
-  Button
+  Button,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,6 +37,8 @@ import styles from "../(constants)/joblisting.module.css";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 export default function JobListings() {
+    const theme = useTheme();
+    const captionSize = useMediaQuery(theme.breakpoints.down('md'));
     const [jobs, setJobs] = useState<JobInformation[]>([]);
     const [filteredJobs, setFilteredJobs] = useState<JobInformation[]>([]);
     const [loading, setLoading] = useState(true);
@@ -41,6 +46,8 @@ export default function JobListings() {
     const [searchLocation, setSearchLocation] = useState("");
     const [jobStatus, setJobStatus] = useState("");
     const [isMounted, setIsMounted] = useState(false);
+    const [ jobDetailsOpen, setJobDetailsOpen ] = useState(false);
+    const [ jobDetails, setJobDetails ] = useState<JobInformation>();
     var router = useRouter();
   
   useEffect(() => {
@@ -121,22 +128,42 @@ const handleChange = async (event: any, id: String) => {
     }
   };
 
+  const handleClickOpen = (event: any, job: JobInformation) => {
+    setJobDetailsOpen(true);
+    console.log("job details bro:");
+    setJobDetails(job);
+  };
+
+  const handleClose = () => {
+    setJobDetailsOpen(false);
+  };
+
+
   return (
     <>
       <Box>
         <Grid container sx={{ margin: "0px" }}>
           <Grid item xs={12} sm={12} md={3} lg={3}>
             <Card
-              sx={{
-                margin: "0% 5%",
-                display: "flex",
-                flexDirection: "column",
-                textAlign: "center",
-                alignContent: "center",
-                alignItems: "center",
-                border: "1px solid #D4D2D0",
-                boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                borderRadius: "5px",
+              sx={ captionSize ?{ margin: "0% 5% 5% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px"} 
+                  : {
+                    margin: "0% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px"
               }}
             >
               <CardContent>
@@ -160,7 +187,7 @@ const handleChange = async (event: any, id: String) => {
                   }}
                   value={searchTitle}
                   onChange={(e) => setSearchTitle(e.target.value)}
-                  placeholder="Searh for Job Title"
+                  placeholder="Search for Job Title"
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -242,7 +269,7 @@ const handleChange = async (event: any, id: String) => {
                         className={styles.description}
                         sx={{ height: "100px" }}
                       >
-                        <TableCell className={styles.description}>
+                        <TableCell className={styles.titleDescription} onClick={(event) => handleClickOpen(event, job)}>
                           {job.jobTitle}
                         </TableCell>
                         <TableCell className={styles.description}>
@@ -329,6 +356,7 @@ const handleChange = async (event: any, id: String) => {
                                 </Grid>
                             </Grid>
                         </TableCell>
+
                       </TableRow>
                     ))}
                 </TableBody>
@@ -336,7 +364,16 @@ const handleChange = async (event: any, id: String) => {
             </TableContainer>  
           </Grid>
         </Grid>
+        {  jobDetails &&       
+            <JobDetails
+              jobDetailsOpen={jobDetailsOpen}
+              handleClose={handleClose}
+              jobData={jobDetails}
+              isClickedByEmployer = {true}
+            />
+        }
       </Box>
+      
     </>
   );
 }
