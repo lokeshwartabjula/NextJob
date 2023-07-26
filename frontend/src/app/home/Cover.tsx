@@ -7,10 +7,10 @@ export default function Cover() {
     const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
-        <Container maxWidth="lg" component={'div'} style={{ marginTop: '10%'}}>
+        <Container maxWidth="lg" component={'div'} style={{ marginTop: '17%'}}>
             <Box
                 sx={{
-                    height: '70%',
+                    height: '75%',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'left',

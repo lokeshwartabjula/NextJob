@@ -31,11 +31,11 @@ func main() {
 	protected.GET(("/"), func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"resp": "Hello World with JWT token"})
 	})
-	protected.POST("/createJob", api.CreateJob)
-	protected.GET("/getJobs", api.GetJobs)
-	protected.GET("/getJob/:id", api.GetJobById)
-	protected.PUT("/updateJob", api.UpdateJob)
-	protected.DELETE("/deleteJob/:id", api.DeleteJob)
+	public.POST("/createJob", api.CreateJob)
+	public.GET("/getJobs", api.GetJobs)
+	public.GET("/getJob/:id", api.GetJobById)
+	public.PUT("/updateJob", api.UpdateJob)
+	public.DELETE("/deleteJob/:id", api.DeleteJob)
 
 	// create a new route for getting jobs based on radius and latitude and longitude. Here the latitude and longitude will be in passed in query params
 	protected.GET("/getJobByRadius/:lat/:lng", api.GetJobByRadius)
@@ -47,6 +47,6 @@ func main() {
 	router.POST("/employer", api.AddEmployer)
 	router.PUT("/employer", api.UpdateEmployerById)
 	router.GET("/employer/:id", api.GetEmployerById)
-	
+	router.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
 	router.Run(":8080")
 }
