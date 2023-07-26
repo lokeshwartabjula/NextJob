@@ -212,3 +212,24 @@ func GetJobByRadius(c *gin.Context) {
 		"jobs": places,
 	})
 }
+
+// GetJobsByCompany to get jobs by company name
+func GetJobsByCompany(c *gin.Context) {
+	requestCompany := c.Param("companyName")
+
+	collection := configs.Client.Database("jobportal").Collection("jobs")
+
+	cursor, _ := collection.Find(context.Background(), bson.M{"jobcompany": requestCompany})
+
+	var jobs db.Job
+	var jobsList []db.Job
+
+	for cursor.Next(context.Background()) {
+		cursor.Decode(&jobs)
+		jobsList = append(jobsList, jobs)
+	}
+
+	c.JSON(200, gin.H{
+		"jobs": jobsList,
+	})
+}

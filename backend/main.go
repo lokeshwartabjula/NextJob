@@ -15,7 +15,6 @@ func main() {
 
 	router := gin.Default()
 
-
 	router.Use(middlewares.CorsMiddleware())
 
 	// public routes. No need to add Authorization header to request these routes. The API would look like this: http://localhost:8080/pub/
@@ -32,12 +31,13 @@ func main() {
 	protected.GET(("/"), func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"resp": "Hello World with JWT token"})
 	})
-	
+
 	protected.POST("/createJob", api.CreateJob)
 	protected.GET("/getJobs", api.GetJobs)
 	protected.GET("/getJob/:id", api.GetJobById)
 	protected.PUT("/updateJob", api.UpdateJob)
 	protected.DELETE("/deleteJob/:id", api.DeleteJob)
+	router.GET("/getJobsByCompany/:companyName", api.GetJobsByCompany)
 
 	// create a new route for getting jobs based on radius and latitude and longitude. Here the latitude and longitude will be in passed in query params
 	protected.GET("/getJobByRadius/:lat/:lng", api.GetJobByRadius)
@@ -51,6 +51,8 @@ func main() {
 	protected.GET("/employer/:id", api.GetEmployerById)
 	protected.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
 	protected.POST("/apply", api.ApplyJob)
+
+	protected.GET("/getEmployers", api.GetEmployers)
 
 	router.Run(":8080")
 }
