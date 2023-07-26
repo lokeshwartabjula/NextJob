@@ -4,10 +4,11 @@ import (
 	"backend/configs"
 	"backend/models/payload"
 	"context"
+
 	// "fmt"
 	"io/ioutil"
 	"net/http"
-	
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -71,7 +72,7 @@ func AddEmployer(c *gin.Context) {
 	})
 }
 
-func UpdateEmployerById(c *gin.Context){
+func UpdateEmployerById(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10<<20) // 10 MB
 	err := c.Request.ParseMultipartForm(10 << 20)
 	if err != nil {
@@ -134,7 +135,7 @@ func UpdateEmployerById(c *gin.Context){
 }
 
 // GetEmployerById to get employer by id
-func GetEmployerById(c *gin.Context){
+func GetEmployerById(c *gin.Context) {
 	requestId := c.Param("id")
 
 	collection := configs.Client.Database("jobportal").Collection("employers")
@@ -155,3 +156,21 @@ func GetEmployerById(c *gin.Context){
 	})
 }
 
+// GetEmployers to get all employers
+func GetEmployers(c *gin.Context) {
+	collection := configs.Client.Database("jobportal").Collection("employers")
+
+	cursor, _ := collection.Find(context.Background(), bson.M{})
+
+	var employers payload.EmployerUpdate
+	var employersList []payload.EmployerUpdate
+
+	for cursor.Next(context.Background()) {
+		cursor.Decode(&employers)
+		employersList = append(employersList, employers)
+	}
+
+	c.JSON(200, gin.H{
+		"employers": employersList,
+	})
+}
