@@ -37,7 +37,7 @@ export default function JobDetails({
   jobDetailsOpen,
   handleClose,
   jobData,
-  isClickedByEmployer
+  isClickedByEmployer,
 }: any) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -64,7 +64,7 @@ export default function JobDetails({
     const employerEmail = "patelkishan9286@gmail.com";
 
     try {
-      const response = await fetch("http://localhost:8080/apply", {
+      const response = await fetch("http://localhost:8083/apply", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,11 +86,13 @@ export default function JobDetails({
       const data = await response.json();
       setIsLoading(false);
       setResponseMessage(data.message);
+
       setOpenSnackbar(true);
     } catch (error) {
       setIsLoading(false);
       setIsError(true);
       setResponseMessage("An error occurred while applying for the job");
+
       setOpenSnackbar(true);
     }
   };
@@ -223,11 +225,11 @@ export default function JobDetails({
           </Card>
         </DialogContent>
         <DialogActions>
-          {isClickedByEmployer ? null :
+          {isClickedByEmployer ? null : (
             <Button variant="outlined" onClick={handleApply}>
               Apply
             </Button>
-          }
+          )}
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={isLoading}
