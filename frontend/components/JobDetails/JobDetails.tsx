@@ -223,7 +223,7 @@ export default function JobDetails({
           </Card>
         </DialogContent>
         <DialogActions>
-          { isClickedByEmployer ? null :
+          {isClickedByEmployer ? null :
             <Button variant="outlined" onClick={handleApply}>
               Apply
             </Button>
