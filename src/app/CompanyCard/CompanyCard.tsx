@@ -4,16 +4,24 @@ import './company-card.css';
 import { Button } from '@mui/material';
 
 interface CompanyCardProps {
+    companyId: string,
     companyDate: string,
     companyTitle: string,
     companyCompany: string,
     companyType: string,
     salary: string,
     companyLocation: string,
-    companyLogo: string
+    companyLogo: string,
+    onViewButtonClick: (companyId: string) => void
 }
 
 const CompanyCard = (props: CompanyCardProps) => {
+    const { companyId, companyDate, companyTitle, companyCompany, companyType, salary, companyLocation, companyLogo, onViewButtonClick } = props;
+
+    const handleViewButtonClick = () => {
+        onViewButtonClick(companyId);
+    };
+
     return (
         <div className='card'>
             <div className='job-content'>
@@ -37,7 +45,7 @@ const CompanyCard = (props: CompanyCardProps) => {
                         paddingLeft: '1.3rem',
                         paddingRight: '1.3rem',
                         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.16)',
-                    }} onClick={() => { }}>
+                    }} onClick={handleViewButtonClick}>
                         View
                     </Button>
                 </div>

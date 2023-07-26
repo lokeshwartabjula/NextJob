@@ -4,12 +4,59 @@ import "./companies-list.css";
 import { Box, Grid, Typography, useTheme, useMediaQuery, Container, Toolbar, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, AppBar, IconButton, Drawer, FormGroup, FormControlLabel, Checkbox, FormLabel} from '@mui/material';
 import Button from '@mui/material/Button';
 import CompanyCard from '../CompanyCard/CompanyCard';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 const drawerWidth = 240;
+
+interface CompanyData {
+  id: string;
+  jobTitle: string;
+  phone: string;
+  companyName: string;
+  industry: string;
+  foundedYear: string;
+  companySize: string;
+  companyType: string;
+  description: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+}
+
+
+
 
 
 export default function CompaniesList(props: any) {
     const { window } = props;
+
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const container = window !== undefined ? () => window().document.body : undefined;
+
+  const [companyData, setCompanyData] = useState<CompanyData[]>([]);
+
+  const fetchCompanyData = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/getEmployers');
+      const data = await response.json();
+      setCompanyData(data.employers);
+    } catch (error) {
+      console.error('Error fetching company data:', error);
+      setCompanyData([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCompanyData();
+  }, []);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
     // State variables for filters
     const [mediumSize, setMediumSize] = React.useState(false);
@@ -17,17 +64,17 @@ export default function CompaniesList(props: any) {
     const [halifaxLocation, setHalifaxLocation] = React.useState(false);
     const [newYorkLocation, setNewYorkLocation] = React.useState(false);
 
-    // Function to filter companies based on selected filters
-    const filterCompanies = () => {
-      return companyData.filter((company) => {
-        return (
-          (!mediumSize || company.companySize === 'Medium') &&
-          (!largeSize || company.companySize === 'Large') &&
-          (!halifaxLocation || company.companyLocation === 'Halifax') &&
-          (!newYorkLocation || company.companyLocation === 'New York')
-        );
-      });
-    };
+    // // Function to filter companies based on selected filters
+    // const filterCompanies = () => {
+    //   return companyData.filter((company) => {
+    //     return (
+    //       (!mediumSize || company.companySize === 'Medium') &&
+    //       (!largeSize || company.companySize === 'Large') &&
+    //       (!halifaxLocation || company.companyLocation === 'Halifax') &&
+    //       (!newYorkLocation || company.companyLocation === 'New York')
+    //     );
+    //   });
+    // };
 
     const handleMediumSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMediumSize(event.target.checked);
@@ -53,88 +100,8 @@ export default function CompaniesList(props: any) {
     const theme = useTheme();
     const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const companyData = [
-        {
-         companyDate: '2023-07-19',
-         companyTitle: 'Company 1 Large New York',
-         companyCompany: 'Example Company',
-         companyType: 'Full-Time',
-         salary: '5000',
-         companyLocation: 'New York',
-         companySize: 'Large',
-         companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-       },
-       {
-         companyDate: '2023-07-19',
-         companyTitle: 'Company 2 Large Halifax',
-         companyCompany: 'Example Company2',
-         companyType: 'Full-Time 2',
-         salary: '5000',
-         companyLocation: 'Halifax',
-         companySize: 'Large',
-         companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-       },
-       {
-         companyDate: '2023-07-19',
-         companyTitle: 'Company 3 Large Halifax',
-         companyCompany: 'Example Company 3',
-         companyType: 'Full-Time 3',
-         salary: '50003',
-         companyLocation: 'Halifax',
-         companySize: 'Large',
-         companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-       },
-       {
-         companyDate: '2023-07-19',
-         companyTitle: 'Company 4 Medium Halifax',
-         companyCompany: 'Example Company 4',
-         companyType: 'Full-Time 4',
-         salary: '5000 4',
-         companyLocation: 'Halifax',
-         companySize: 'Medium',
-         companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-       },
-       {
-         companyDate: '2023-07-19',
-         companyTitle: 'Company 5 Medium New York',
-         companyCompany: 'Example Company 5',
-         companyType: 'Full-Time 5',
-         salary: '50005',
-         companyLocation: 'New York',
-         companySize: 'Medium',
-         companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-       },
-      {
-        companyDate: '2023-07-19',
-        companyTitle: 'Company 6 Medium New York',
-        companyCompany: 'Example Company 4',
-        companyType: 'Full-Time 4',
-        salary: '5000 4',
-        companyLocation: 'New York',
-        companySize: 'Medium',
-        companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-      },
-      {
-        companyDate: '2023-07-19',
-        companyTitle: 'Company 7 Medium Toronto',
-        companyCompany: 'Example Company 5',
-        companyType: 'Full-Time 5',
-        salary: '50005',
-        companyLocation: 'Toronto',
-        companySize: 'Medium',
-        companyLogo: 'https://www.freepnglogos.com/uploads/amazon-png-logo-vector/amazon-icon-symbol-png-logo-21.png', // Replace with the actual image path
-      },
-      
-       ];
+    //companydata to be fetched here
 
-       const [mobileOpen, setMobileOpen] = React.useState(false);
-
-       const container = window !== undefined ? () => window().document.body : undefined;
-
-
-       const handleDrawerToggle = () => {
-         setMobileOpen(!mobileOpen);
-       };
      
        const drawer = (
         <div className="indentation">
@@ -159,6 +126,17 @@ export default function CompaniesList(props: any) {
         </FormGroup>
       </div>
        );
+
+       // State variable to hold the selected companyId
+        const [selectedCompanyId, setSelectedCompanyId] = useState('');
+
+        const router = useRouter();
+
+       const handleViewButtonClick = (companyId: string) => {
+        setSelectedCompanyId(companyId);
+        router.push(`/companies/${companyId}`);
+      };
+        
      
 
     return (
@@ -235,18 +213,22 @@ export default function CompaniesList(props: any) {
 
             </Box>
         <Box sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'space-around'}}>
-        {filterCompanies().map((company) => (
-          <CompanyCard
-            key={company.companyTitle} // Make sure to provide a unique key for each companyCard
-            companyDate={company.companyDate}
-            companyTitle={company.companyTitle}
-            companyCompany={company.companyCompany}
-            companyType={company.companyType}
-            salary={company.salary}
-            companyLocation={company.companyLocation}
-            companyLogo={company.companyLogo}
-          />
-        ))}
+       
+
+      {companyData.map((company) => (
+        <CompanyCard
+          companyId={company.id}
+          key={company.id} // Make sure to provide a unique key for each companyCard
+          companyDate={company.foundedYear}
+          companyTitle={company.jobTitle}
+          companyCompany={company.companyName}
+          companyType={company.companyType}
+          salary={company.description}
+          companyLocation={company.city}
+          companyLogo={company.companyName}
+          onViewButtonClick={() => { handleViewButtonClick(company.id); }}
+        />
+      ))}
         </Box>
        
       </Box>

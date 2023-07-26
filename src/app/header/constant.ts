@@ -21,12 +21,12 @@ export const NavOptions: MenuType[] = [
   },
   {
     label: "Companies",
-    route: "/companies"
-  },
-  {
-    label: "CompaniesList",
     route: "/CompaniesList"
   },
+  // {
+  //   label: "CompaniesList",
+  //   route: "/CompaniesList"
+  // },
   {
     label: "Jobs",
   },
