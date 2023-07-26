@@ -20,9 +20,11 @@ import {
   FieldArray,
   FieldArrayRenderProps,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../../api";
+import { UserContext } from "@/app/(context)/UserContext";
+import { useRouter } from "next/navigation";
 
 interface FormType {
   email: string;
@@ -51,7 +53,9 @@ interface FormType {
 
 const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const router = useRouter();
 
+  const { state } = useContext(UserContext);
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
@@ -350,7 +354,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Company"
                     fullWidth
-                    error={touched.experiences && touched.experiences[index]?.company && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.company &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].company`} />
                     }
@@ -362,7 +370,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Title"
                     fullWidth
-                    error={touched.experiences && touched.experiences[index]?.title && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.title &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].title`} />
                     }
@@ -374,7 +386,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Location"
                     fullWidth
-                    error={touched.experiences && touched.experiences[index]?.location && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.location &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].location`} />
                     }
@@ -390,7 +406,11 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.experiences && touched.experiences[index]?.startDate && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.startDate &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].startDate`} />
                     }
@@ -406,7 +426,11 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.experiences && touched.experiences[index]?.endDate && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.endDate &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].endDate`} />
                     }
@@ -517,13 +541,15 @@ const OnBoardingForm: React.FC = () => {
         values.resume && formData.append("resume", values.resume);
         formData.append("educations", JSON.stringify(values.educations));
         formData.append("experiences", JSON.stringify(values.experiences));
-        axiosInstance.post("seeker", formData, {
+        formData.append("userId", state.id);
+        axiosInstance
+          .post("api/seeker", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log(res);
+            router.push("/dashboard");
           })
           .catch((err) => {
             console.log(err);
