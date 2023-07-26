@@ -2,15 +2,14 @@
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import './jobRadius.css'
 import React, { useEffect, useState } from 'react';
-import SearchSharpIcon from '@mui/icons-material/SearchSharp';
-import JobCard from '../../../../components/JobCard/JobCard';
 import CModal from '../../../../components/CModal/CModal';
 import CustomAutoComplete from '../../../../components/CustomAutoComplete/CustomAutoComplete';
-import { GOOGLE_MAPS_API_KEY } from '../../../../utils/constants';
 import { axiosInstance } from '../../../../api';
 import { getJobsByRadius } from '../../../../api/routes';
 import { Button, Result } from 'antd';
 import { useRouter } from 'next/navigation';
+import CJobCard from '../../../../components/CJobCard/CJobCard';
+import { GOOGLE_MAPS_API_KEY } from '../../../../utils/CONSTANTS';
 
 
 const randomPoints = Array.from({ length: 100 }, () => {
@@ -143,7 +142,7 @@ const JobRadiusPage = () => {
                     {markerJobs?.length > 0 ? markerJobs?.map((card: any, index) => {
 
                         return (
-                            <JobCard
+                            <CJobCard
                                 key={index}
                                 jobTitle={card.jobTitle}
                                 jobCompany={card.jobCompany}
