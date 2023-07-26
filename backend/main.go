@@ -31,6 +31,7 @@ func main() {
 	protected.GET(("/"), func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"resp": "Hello World with JWT token"})
 	})
+
 	protected.POST("/createJob", api.CreateJob)
 	protected.GET("/getJobs", api.GetJobs)
 	protected.GET("/getJob/:id", api.GetJobById)
@@ -41,14 +42,17 @@ func main() {
 	// create a new route for getting jobs based on radius and latitude and longitude. Here the latitude and longitude will be in passed in query params
 	protected.GET("/getJobByRadius/:lat/:lng", api.GetJobByRadius)
 
-	router.POST("/seeker", api.AddSeeker)
-	router.PUT("/seeker", api.UpdateSeekerById)
-	router.GET("/seeker/:id", api.GetSeekerById)
+	protected.POST("/seeker", api.AddSeeker)
+	protected.PUT("/seeker", api.UpdateSeekerById)
+	protected.GET("/seeker/:id", api.GetSeekerById)
 
-	router.POST("/employer", api.AddEmployer)
-	router.PUT("/employer", api.UpdateEmployerById)
-	router.GET("/employer/:id", api.GetEmployerById)
-	router.GET("/getEmployers", api.GetEmployers)
+	protected.POST("/employer", api.AddEmployer)
+	protected.PUT("/employer", api.UpdateEmployerById)
+	protected.GET("/employer/:id", api.GetEmployerById)
+	protected.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
+	protected.POST("/apply", api.ApplyJob)
+
+	protected.GET("/getEmployers", api.GetEmployers)
 
 	router.Run(":8080")
 }
