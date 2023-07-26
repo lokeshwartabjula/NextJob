@@ -37,6 +37,7 @@ func AddEmployer(c *gin.Context) {
 		State:         c.PostForm("state"),
 		PostalCode:    c.PostForm("postalCode"),
 		Country:       c.PostForm("country"),
+		UserId:        c.PostForm("userId"),
 	}
 
 	file, _, err := c.Request.FormFile("companyLogo")
@@ -95,6 +96,7 @@ func UpdateEmployerById(c *gin.Context) {
 		State:         c.PostForm("state"),
 		PostalCode:    c.PostForm("postalCode"),
 		Country:       c.PostForm("country"),
+		UserId:        c.PostForm("userId"),
 	}
 
 	// Read id
@@ -119,7 +121,7 @@ func UpdateEmployerById(c *gin.Context) {
 	// fmt.Println("request Payload for AddEmployer API ==>", employerPayload)
 
 	collection := configs.Client.Database("jobportal").Collection("employers")
-	_, err = collection.UpdateOne(context.Background(), bson.M{"_id": employerData.ID}, bson.D{{"$set", employerData}})
+	_, err = collection.UpdateOne(context.Background(), bson.M{"userId": employerData.UserId}, bson.D{{"$set", employerData}})
 
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -139,9 +141,9 @@ func GetEmployerById(c *gin.Context) {
 	requestId := c.Param("id")
 
 	collection := configs.Client.Database("jobportal").Collection("employers")
-	objectId, _ := primitive.ObjectIDFromHex(requestId)
+	// objectId, _ := primitive.ObjectIDFromHex(requestId)
 
-	cursor, _ := collection.Find(context.Background(), bson.M{"_id": objectId})
+	cursor, _ := collection.Find(context.Background(), bson.M{"userId": requestId})
 
 	var employers payload.EmployerUpdate
 	var employersList []payload.EmployerUpdate
