@@ -8,6 +8,7 @@ type CreateUserPayload struct {
 }
 
 type LoginUserPayload struct {
-	Email    string `json:"email" binding:"required,email" msg:"Invalid Email Address"`
-	Password string `json:"password" binding:"required,alphanum" msg:"Password must contain alphabets and numbers only"`
+	Email     string `json:"email" binding:"required,email" msg:"Invalid Email Address"`
+	Password  string `json:"password"`
+	LoginType string `json:"loginType"`
 }
