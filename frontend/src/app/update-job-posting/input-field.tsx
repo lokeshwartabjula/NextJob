@@ -41,6 +41,8 @@ const InputField: React.FC<InputFieldProps> = ({
         onChange={handleInputChange}
         placeholder={placeHolder}
         value={value}
+        disabled={label === "Company Name" ? true : false}
+        defaultValue={label === "Company Name" ? value : ""}
       />
     </Box>
   );

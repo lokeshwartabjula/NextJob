@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { UserContext } from "../(context)/UserContext";
 
 type InputFieldProps = {
   id: string;
@@ -19,6 +20,7 @@ const InputField: React.FC<InputFieldProps> = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const { state } = useContext(UserContext);
 
   // Function to handle the input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +40,8 @@ const InputField: React.FC<InputFieldProps> = ({
         fullWidth
         onChange={handleInputChange}
         placeholder={placeHolder}
+        disabled={label === "Company Name" ? true : false}
+        defaultValue={label === "Company Name" ? state.companyName : ""}
       />
     </Box>
   );
