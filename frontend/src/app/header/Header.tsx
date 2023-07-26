@@ -19,7 +19,12 @@ import { NavOptions } from "./constant";
 import "./styles.css";
 import { Alert, Snackbar } from "@mui/material";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings: { label: string; url?: string }[] = [
+  { label: "Profile", url: "/my-profile" },
+  { label: "Account" },
+  { label: "Dashboard" },
+  { label: "Logout" },
+];
 
 function ResponsiveAppBar() {
   const Router = useRouter();
@@ -51,11 +56,6 @@ function ResponsiveAppBar() {
   const handleNavClick = (route?: string) => {
     route ? Router.push(route) : setSnackBarVisible(true);
     handleCloseNavMenu();
-  };
-
-  const handleProfileItemClick = () => {
-    setSnackBarVisible(true);
-    handleCloseUserMenu();
   };
 
   return (
@@ -178,7 +178,7 @@ function ResponsiveAppBar() {
                   },
                 }}
               >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -198,16 +198,27 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleProfileItemClick}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem
+                  key={setting.label}
+                  onClick={() => handleNavClick(setting.url)}
+                >
+                  <Typography textAlign="center">{setting.label}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
         </Toolbar>
       </Container>
-      <Snackbar open={snackBarVisible} autoHideDuration={6000} onClose={()=> setSnackBarVisible(false)}>
-        <Alert onClose={()=> setSnackBarVisible(false)} sx={{ width: "100%" }} severity="info">
+      <Snackbar
+        open={snackBarVisible}
+        autoHideDuration={6000}
+        onClose={() => setSnackBarVisible(false)}
+      >
+        <Alert
+          onClose={() => setSnackBarVisible(false)}
+          sx={{ width: "100%" }}
+          severity="info"
+        >
           This feature is not available yet!
         </Alert>
       </Snackbar>

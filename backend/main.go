@@ -11,22 +11,48 @@ import (
 )
 
 func main() {
-	router := gin.Default()
-	
-	router.Use(middlewares.CorsMiddleware())
-	
 	configs.ConnectDB()
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"resp": "Hello World"})
+	router := gin.Default()
+
+	router.Use(middlewares.CorsMiddleware())
+
+	// public routes. No need to add Authorization header to request these routes. The API would look like this: http://localhost:8080/pub/
+	public := router.Group("/pub")
+	public.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"resp": "Hello World without JWT token"})
 	})
-	router.POST("/login", api.Login)
-	router.POST("/register", api.Register)
-	router.POST("/createJob", api.CreateJob)
-	router.GET("/getJobs", api.GetJobs)
-	router.GET("/getJob/:id", api.GetJobById)
-	router.PUT("/updateJob", api.UpdateJob)
-	router.DELETE("/deleteJob/:id", api.DeleteJob)
+	public.POST("/login", api.Login)
+	public.POST("/register", api.Register)
+
+	// protected routes. For this routes you need to add Authorization header which contains JWT token. The API would look like this: http://localhost:8080/api/
+	protected := router.Group("/api")
+	protected.Use(middlewares.JwtAuthMiddleware())
+	protected.GET(("/"), func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"resp": "Hello World with JWT token"})
+	})
+
+	protected.POST("/createJob", api.CreateJob)
+	protected.GET("/getJobs", api.GetJobs)
+	protected.GET("/getJob/:id", api.GetJobById)
+	protected.PUT("/updateJob", api.UpdateJob)
+	protected.DELETE("/deleteJob/:id", api.DeleteJob)
+	router.GET("/getJobsByCompany/:companyName", api.GetJobsByCompany)
+
+	// create a new route for getting jobs based on radius and latitude and longitude. Here the latitude and longitude will be in passed in query params
+	protected.GET("/getJobByRadius/:lat/:lng", api.GetJobByRadius)
+
+	protected.POST("/seeker", api.AddSeeker)
+	protected.PUT("/seeker", api.UpdateSeekerById)
+	protected.GET("/seeker/:id", api.GetSeekerById)
+
+	protected.POST("/employer", api.AddEmployer)
+	protected.PUT("/employer", api.UpdateEmployerById)
+	protected.GET("/employer/:id", api.GetEmployerById)
+	protected.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
+	protected.POST("/apply", api.ApplyJob)
+
+	protected.GET("/getEmployers", api.GetEmployers)
 
 	router.Run(":8080")
 }

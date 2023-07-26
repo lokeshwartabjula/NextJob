@@ -64,6 +64,9 @@ type locationInfoType = {
   placeId: string;
   lat: string;
   lng: string;
+  city: string;
+  state: string;
+  country: string;
 };
 
 export default function JobPosting() {
@@ -115,12 +118,20 @@ export default function JobPosting() {
   };
 
   const onPlaceChange = (place: any) => {
-    console.log("place ==>", place);
     let locationInfo: locationInfoType = {
       placeName: place.formatted_address,
       placeId: place.place_id,
       lat: place.geometry?.location?.lat(),
       lng: place.geometry?.location?.lng(),
+      city: place.address_components.filter((values: any) => {
+        if (values.types[0] === 'locality') return values.long_name
+      })[0].long_name,
+      state: place.address_components.filter((values: any) => {
+        if (values.types[0] === 'administrative_area_level_1') return values.long_name
+      })[0].long_name,
+      country: place.address_components.filter((values: any) => {
+        if (values.types[0] === 'country') return values.long_name
+      })[0].long_name,
     };
     setLocation(locationInfo);
   };
@@ -152,7 +163,7 @@ export default function JobPosting() {
         setSnackBarVisible(true);
       })
       .catch((error) => {
-        console.error(error);
+        console.log('api error ==>', error);
         alert("Error in creating job");
       });
   };

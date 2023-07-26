@@ -15,7 +15,7 @@ type Job struct {
 	Experience     string             `json:"experience" binding:"required" msg:"Experience is required"`
 	OpenDate       string             `json:"openDate" binding:"required" msg:"Open Date is required"`
 	EmployerId     primitive.ObjectID `bson:"employerId" json:"employerId" binding:"required" msg:"Employer ID is required"`
-	JobCompany	 string             `json:"jobCompany" binding:"required" msg:"Job Company is required"`
+	JobCompany     string             `json:"jobCompany" binding:"required" msg:"Job Company is required"`
 	JobCompanyLogo string             `json:"jobCompanyLogo" binding:"required" msg:"Job Company Logo is required"`
 }
 
@@ -23,10 +23,10 @@ type JobLocation struct {
 	Type        string    `json:"type" binding:"required" msg:"Type is required"`
 	Coordinates []float64 `json:"coordinates" binding:"required" msg:"Coordinates are required"`
 	PlaceID     string    `json:"placeId" binding:"required" msg:"Place ID is required"`
-	PlaceName  string    `json:"placeName" binding:"required" msg:"Place Name is required"`
-	City  string    `json:"city" binding:"required" msg:"Place Name is required"`
-	State  string    `json:"state" binding:"required" msg:"Place Name is required"`
-	Country  string    `json:"country" binding:"required" msg:"Place Name is required"`
+	PlaceName   string    `json:"placeName" binding:"required" msg:"Place Name is required"`
+	City        string    `json:"city" binding:"required" msg:"City is required"`
+	State       string    `json:"state" binding:"required" msg:"State is required"`
+	Country     string    `json:"country" binding:"required" msg:"Country is required"`
 }
 
 type LocCoordinates struct {
