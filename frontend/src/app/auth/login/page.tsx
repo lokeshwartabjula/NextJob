@@ -55,12 +55,12 @@ function Page(): ReactElement {
         const data: LoginResponseType = res.data.response;
         setUserData(data);
         dispatch(data);
-        if (!data.isSeeker) {
+        if (value.loginType==="seeker" && !data.isSeeker) {
           router.push("/onboard/seeker");
-        } else if (!data.isEmployer) {
+        } else if (value.loginType==="employer" && !data.isEmployer) {
           router.push("/onboard/employer");
         } else {
-          router.push("/");
+          router.push("/dashboard");
         }
       })
       .catch((err) => {});
