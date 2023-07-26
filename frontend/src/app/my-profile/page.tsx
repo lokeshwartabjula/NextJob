@@ -1,15 +1,19 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../../../api";
 import { EmployerProps, SeekerProps } from "./types";
 import SeekerForm from "./seeker";
 import Employer from "./employer";
+import { UserContext } from "../(context)/UserContext";
 
 const MyProfile: React.FC<{ userType: number }> = (props: {
   userType: number;
 }) => {
-  const userType:Number = 2;
-  const userId = "64bc0f0a85645b8733a7e95c";
+  const { state } = useContext(UserContext);
+  console.log("=======>",state);
+  
+  const userType: "seeker" | "employer" | undefined = state.loginType;
+  const userId = state.id;
   const [seekerData, setSeekerData] = useState<SeekerProps | null>(null);
   const [employerData, setEmployerData] = useState<EmployerProps | null>(null);
 
@@ -18,12 +22,12 @@ const MyProfile: React.FC<{ userType: number }> = (props: {
   }, []);
 
   const fetchUserData = async () => {
-    if (userType === 1) {
-      const res = await axiosInstance.get(`/seeker/${userId}`);
+    if (userType === "seeker") {
+      const res = await axiosInstance.get(`/api/seeker/${userId}`);
       console.log("seeker", res.data?.seekers[0]);
       res.data?.seekers[0] != null && setSeekerData(res.data?.seekers[0]);
-    } else if (userType === 2) {
-      const res = await axiosInstance.get(`/employer/${userId}`);
+    } else if (userType === "employer") {
+      const res = await axiosInstance.get(`/api/employer/${userId}`);
       console.log("employer", res.data);
       res.data?.employers[0] != null && setEmployerData(res.data?.employers[0]);
     }
@@ -32,12 +36,12 @@ const MyProfile: React.FC<{ userType: number }> = (props: {
   const renderForm = () => {
     console.log("userType", userType);
 
-    return userType === 1
+    return userType === "seeker"
       ? seekerData && <SeekerForm {...seekerData} />
       : employerData && <Employer {...employerData} />;
   };
 
-  return <>{renderForm()}</>;
+  return <>{userType && renderForm()}</>;
 };
 
 export default MyProfile;

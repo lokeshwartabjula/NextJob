@@ -17,45 +17,49 @@ import {
   ErrorMessage,
   FormikTouched,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../api";
 import { EmployerFormType, EmployerProps } from "./types";
+import { UserContext } from "../(context)/UserContext";
+import { message } from "antd";
 
 const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const { state } = useContext(UserContext);
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
 
-  const validationSchema: Yup.ObjectSchema<EmployerFormType> = Yup.object().shape({
-    jobTitle: Yup.string().required("Required"),
-    phone: Yup.string().required("Required"),
-    companyName: Yup.string().required("Required"),
-    industry: Yup.string().required("Required"),
-    foundedYear: Yup.string().required("Required"),
-    companySize: Yup.string().required("Required"),
-    companyType: Yup.string().required("Required"),
-    description: Yup.string().required("Required"),
-    websiteURL: Yup.string().url("Invalid URL"),
-    streetAddress: Yup.string().required("Required"),
-    city: Yup.string().required("Required"),
-    state: Yup.string().required("Required"),
-    postalCode: Yup.string().required("Required"),
-    country: Yup.string().required("Required"),
-    // companyLogo: Yup.mixed()
-    //   .required("A file is required")
-    //   .test(
-    //     "fileFormat",
-    //     "Unsupported Format",
-    //     (value) =>
-    //       value &&
-    //       ["image/jpg", "image/jpeg", "image/png"].includes(
-    //         (value as File).type
-    //       )
-    //   ),
-  });
+  const validationSchema: Yup.ObjectSchema<EmployerFormType> =
+    Yup.object().shape({
+      jobTitle: Yup.string().required("Required"),
+      phone: Yup.string().required("Required"),
+      companyName: Yup.string().required("Required"),
+      industry: Yup.string().required("Required"),
+      foundedYear: Yup.string().required("Required"),
+      companySize: Yup.string().required("Required"),
+      companyType: Yup.string().required("Required"),
+      description: Yup.string().required("Required"),
+      websiteURL: Yup.string().url("Invalid URL"),
+      streetAddress: Yup.string().required("Required"),
+      city: Yup.string().required("Required"),
+      state: Yup.string().required("Required"),
+      postalCode: Yup.string().required("Required"),
+      country: Yup.string().required("Required"),
+      // companyLogo: Yup.mixed()
+      //   .required("A file is required")
+      //   .test(
+      //     "fileFormat",
+      //     "Unsupported Format",
+      //     (value) =>
+      //       value &&
+      //       ["image/jpg", "image/jpeg", "image/png"].includes(
+      //         (value as File).type
+      //       )
+      //   ),
+    });
 
   const renderBasicDetails = (
     errors: FormikErrors<EmployerFormType>,
@@ -269,16 +273,17 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
         formData.append("state", values.state);
         formData.append("postalCode", values.postalCode);
         formData.append("country", values.country);
+        formData.append("userId", state.id);
         // formData.append("companyLogo", values.companyLogo);
 
         axiosInstance
-          .put(`employer`, formData, {
+          .put(`api/employer`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log("res=>", res);
+            message.success("Profile updated successfully");
           })
           .catch((err) => {
             console.log("err=>", err);
