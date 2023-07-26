@@ -1,0 +1,29 @@
+.titles{
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.cards{
+    border: 1px solid #E5E5E5;
+}
+
+.description{
+    font-weight: 500;
+    font-size: 17px;
+    color: #333333;
+}
+
+.hr{
+    border: 0.8px solid #D4D2D0;
+}
+
+.buttonApplicants{
+    padding: 6px 18px;
+    max-width: 200px; 
+    background-color:#2457A7;
+}
+
+.cardTitle{
+    text-align: left;
+    font-size: 18px;
+}

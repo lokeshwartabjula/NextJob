@@ -37,6 +37,7 @@ export default function JobDetails({
   jobDetailsOpen,
   handleClose,
   jobData,
+  isClickedByEmployer
 }: any) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -222,9 +223,11 @@ export default function JobDetails({
           </Card>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleApply}>
-            Apply
-          </Button>
+          {isClickedByEmployer ? null :
+            <Button variant="outlined" onClick={handleApply}>
+              Apply
+            </Button>
+          }
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={isLoading}
