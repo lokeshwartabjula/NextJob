@@ -17,9 +17,11 @@ import {
   ErrorMessage,
   FormikTouched,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../../api";
+import { UserContext } from "@/app/(context)/UserContext";
+import { useRouter } from "next/navigation";
 
 interface FormType {
   jobTitle: string;
@@ -59,6 +61,8 @@ const initialValues: FormType = {
 
 const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const { state } = useContext(UserContext);
+  const router = useRouter();
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -287,7 +291,6 @@ const OnBoardingForm: React.FC = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values: FormType) => {
-        console.log("values=>", values);
         const formData = new FormData();
         formData.append("jobTitle", values.jobTitle);
         formData.append("phone", values.phone);
@@ -304,15 +307,16 @@ const OnBoardingForm: React.FC = () => {
         formData.append("postalCode", values.postalCode);
         formData.append("country", values.country);
         formData.append("companyLogo", values.companyLogo);
+        formData.append("userId", state.id);
 
         axiosInstance
-          .post("employer", formData, {
+          .post("api/employer", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log("res=>", res);
+            router.push("/dashboard");
           })
           .catch((err) => {
             console.log("err=>", err);

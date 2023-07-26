@@ -20,13 +20,16 @@ import {
   FieldArray,
   FieldArrayRenderProps,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../api";
 import { SeekerFormType, SeekerProps } from "./types";
+import { UserContext } from "../(context)/UserContext";
+import { message } from "antd";
 
 const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const { state } = useContext(UserContext);
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -476,7 +479,6 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
       initialValues={props}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values);
         const formData = new FormData();
         formData.append("ID", props.id);
         formData.append("email", values.email);
@@ -488,14 +490,15 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
         // values.resume && formData.append("resume", values.resume);
         formData.append("educations", JSON.stringify(values.educations));
         formData.append("experiences", JSON.stringify(values.experiences));
+        formData.append("userId", state.id);
         axiosInstance
-          .put(`seeker`, formData, {
+          .put(`api/seeker`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log(res);
+            message.success("Profile updated successfully");
           })
           .catch((err) => {
             console.log(err);

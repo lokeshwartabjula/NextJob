@@ -18,24 +18,25 @@ type Employer struct {
 	PostalCode    string `json:"postalCode"`
 	Country       string `json:"country"`
 	CompanyLogo   []byte `json:"companyLogo"`
+	UserId        string `json:"userId" bson:"userId"`
 }
 
-
 type EmployerUpdate struct {
-	ID          primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	JobTitle      string `json:"jobTitle" bson:"jobTitle"`
-	Phone         string `json:"phone" bson:"phone"`
-	CompanyName   string `json:"companyName" bson:"companyName"`
-	Industry      string `json:"industry" bson:"industry"`
-	FoundedYear   string `json:"foundedYear" bson:"foundedYear"`
-	CompanySize   string `json:"companySize" bson:"companySize"`
-	CompanyType   string `json:"companyType" bson:"companyType"`
-	Description   string `json:"description" bson:"description"`
-	WebsiteURL    string `json:"websiteURL,omitempty" bson:"websiteURL,omitempty"`
-	StreetAddress string `json:"streetAddress" bson:"streetAddress"`
-	City          string `json:"city" bson:"city"`
-	State         string `json:"state" bson:"state"`
-	PostalCode    string `json:"postalCode" bson:"postalCode"`
-	Country       string `json:"country" bson:"country"`
+	ID            primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	JobTitle      string             `json:"jobTitle" bson:"jobTitle"`
+	Phone         string             `json:"phone" bson:"phone"`
+	CompanyName   string             `json:"companyName" bson:"companyName"`
+	Industry      string             `json:"industry" bson:"industry"`
+	FoundedYear   string             `json:"foundedYear" bson:"foundedYear"`
+	CompanySize   string             `json:"companySize" bson:"companySize"`
+	CompanyType   string             `json:"companyType" bson:"companyType"`
+	Description   string             `json:"description" bson:"description"`
+	WebsiteURL    string             `json:"websiteURL,omitempty" bson:"websiteURL,omitempty"`
+	StreetAddress string             `json:"streetAddress" bson:"streetAddress"`
+	City          string             `json:"city" bson:"city"`
+	State         string             `json:"state" bson:"state"`
+	PostalCode    string             `json:"postalCode" bson:"postalCode"`
+	Country       string             `json:"country" bson:"country"`
+	UserId        string             `json:"userId" bson:"userId"`
 	// CompanyLogo   []byte `json:"companyLogo,omitempty" bson:"companyLogo,omitempty"` // File as []byte
 }
