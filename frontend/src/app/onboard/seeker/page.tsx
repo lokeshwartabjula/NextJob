@@ -529,8 +529,6 @@ const OnBoardingForm: React.FC = () => {
       }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        // handle form submission
-        console.log(values);
         const formData = new FormData();
         formData.append("email", values.email);
         formData.append("phone", values.phone);

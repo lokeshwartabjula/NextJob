@@ -10,8 +10,7 @@ const MyProfile: React.FC<{ userType: number }> = (props: {
   userType: number;
 }) => {
   const { state } = useContext(UserContext);
-  console.log("=======>",state);
-  
+
   const userType: "seeker" | "employer" | undefined = state.loginType;
   const userId = state.id;
   const [seekerData, setSeekerData] = useState<SeekerProps | null>(null);
@@ -24,18 +23,14 @@ const MyProfile: React.FC<{ userType: number }> = (props: {
   const fetchUserData = async () => {
     if (userType === "seeker") {
       const res = await axiosInstance.get(`/api/seeker/${userId}`);
-      console.log("seeker", res.data?.seekers[0]);
       res.data?.seekers[0] != null && setSeekerData(res.data?.seekers[0]);
     } else if (userType === "employer") {
       const res = await axiosInstance.get(`/api/employer/${userId}`);
-      console.log("employer", res.data);
       res.data?.employers[0] != null && setEmployerData(res.data?.employers[0]);
     }
   };
 
   const renderForm = () => {
-    console.log("userType", userType);
-
     return userType === "seeker"
       ? seekerData && <SeekerForm {...seekerData} />
       : employerData && <Employer {...employerData} />;

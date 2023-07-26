@@ -256,7 +256,6 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
       initialValues={props}
       validationSchema={validationSchema}
       onSubmit={(values: EmployerFormType) => {
-        console.log("values=>", values);
         const formData = new FormData();
         formData.append("ID", props.id);
         formData.append("jobTitle", values.jobTitle);

@@ -479,7 +479,6 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
       initialValues={props}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values);
         const formData = new FormData();
         formData.append("ID", props.id);
         formData.append("email", values.email);

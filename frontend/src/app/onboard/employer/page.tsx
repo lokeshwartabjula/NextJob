@@ -291,7 +291,6 @@ const OnBoardingForm: React.FC = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values: FormType) => {
-        console.log("values=>", values);
         const formData = new FormData();
         formData.append("jobTitle", values.jobTitle);
         formData.append("phone", values.phone);
