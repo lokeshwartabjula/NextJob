@@ -1,3 +1,10 @@
+/*
+  Author:-
+  Name: Maulik Gajipara    
+  Banner Id: B00934641
+  Email id: ml477880@dal.ca
+*/
+
 "use client";
 
 import * as React from "react";
@@ -158,6 +165,7 @@ export default function JobPosting() {
       employerId: state.id,
       jobCompany: state.companyName,
       jobCompanyLogo: state.companyLogo,
+      employerEmail: state.email,
     };
     console.log("jobData ==>", jobData);
     axiosInstance
