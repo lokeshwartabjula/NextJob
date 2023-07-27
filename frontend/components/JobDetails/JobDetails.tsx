@@ -22,6 +22,7 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Groups2Icon from "@mui/icons-material/Groups2";
+import { axiosInstance } from "../../api";
 import {
   Alert,
   Backdrop,
@@ -33,13 +34,16 @@ import {
   Snackbar,
   Stack,
 } from "@mui/material";
+import { useContext } from "react";
+import { UserContext } from "@/app/(context)/UserContext";
 export default function JobDetails({
   jobDetailsOpen,
   handleClose,
   jobData,
-  isClickedByEmployer
+  isClickedByEmployer,
 }: any) {
   const theme = useTheme();
+  const { state } = useContext(UserContext);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const date = new Date(jobData.openDate);
   date.setDate(date.getDate() + 1);
@@ -52,44 +56,46 @@ export default function JobDetails({
 
   const handleApply = async () => {
     setIsLoading(true);
-    const userID = "yourUserIasdasdD1";
+    var seekerData;
+    try {
+      const res = await axiosInstance.get(`/api/seeker/${state.id}`);
+      seekerData = res.data.seekers[0];
+    } catch (error) {
+      console.error("Failed to get seeker data:", error);
+    }
+    const userID = state.id;
     const jobID = jobData.id;
-    const candidateFullName = "John Doe";
-    const candidateEmail = "johndoe@example.com";
-    const contact = "+1 123 456 7890";
-    const employerName = "Jane Smith";
+    const candidateFullName = state.firstName + " " + state.lastName;
+    const candidateEmail = state.email;
+    const contact = seekerData.phone;
+    const employerName = jobData.jobCompany;
     const jobTitle = jobData.jobTitle;
     const jobType = jobData.jobType;
     const applicationDate = formattedDate;
-    const employerEmail = "patelkishan9286@gmail.com";
+    const employerEmail = jobData.employerEmail;
 
     try {
-      const response = await fetch("http://localhost:8080/apply", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userID,
-          jobID,
-          candidateFullName,
-          candidateEmail,
-          contact,
-          employerName,
-          jobTitle,
-          jobType,
-          applicationDate,
-          employerEmail,
-        }),
+      const response = await axiosInstance.post("/api/apply", {
+        userID,
+        jobID,
+        candidateFullName,
+        candidateEmail,
+        contact,
+        employerName,
+        jobTitle,
+        jobType,
+        applicationDate,
+        employerEmail,
       });
-
-      const data = await response.json();
+      const data = await response.data;
       setIsLoading(false);
       setResponseMessage(data.message);
+      setIsError(false);
       setOpenSnackbar(true);
     } catch (error) {
-      setIsLoading(false);
+      console.error(error);
       setIsError(true);
+      setIsLoading(false);
       setResponseMessage("An error occurred while applying for the job");
       setOpenSnackbar(true);
     }
@@ -223,11 +229,11 @@ export default function JobDetails({
           </Card>
         </DialogContent>
         <DialogActions>
-          {isClickedByEmployer ? null :
+          {isClickedByEmployer ? null : (
             <Button variant="outlined" onClick={handleApply}>
               Apply
             </Button>
-          }
+          )}
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={isLoading}

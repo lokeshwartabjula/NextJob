@@ -11,6 +11,7 @@ export default function jobInformation(){
         <>
         <Box sx={{
             backgroundColor: '#F0F4FC',
+            minHeight: '100vh'
         }}>
             <Box
                 sx = {{
