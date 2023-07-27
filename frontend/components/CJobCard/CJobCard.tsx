@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 "use client";
 import React from 'react';
 import './CJobCard.css';
@@ -19,7 +25,6 @@ interface CJobCardProps {
 
 const CJobCard = (props: CJobCardProps) => {
     const finalDate = moment(props.jobDate).format("DD MMM, YYYY")
-    console.log('datasas ==>', props.companyLogo)
     return (
         <div className='card'>
             <div className='job-content'>

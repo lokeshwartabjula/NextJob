@@ -164,6 +164,11 @@ func DeleteJob(c *gin.Context) {
 	})
 }
 
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
 func GetJobByRadius(c *gin.Context) {
 	latParam := c.Param("lat")
 	lngParam := c.Param("lng")

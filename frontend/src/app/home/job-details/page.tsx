@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 "use client";
 import { useSearchParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react"

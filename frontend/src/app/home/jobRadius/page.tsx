@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 "use client";
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import './jobRadius.css'

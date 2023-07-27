@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "./routes";
 import { message } from "antd";
