@@ -9,9 +9,11 @@ const JobListingsItems = ({ jobData }: JobListingsItemsProps) => {
     <Grid container>
       {jobData?.map((card, index) => {
         return (
-          <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
-            <JobCard key={index} {...card} />
-          </Grid>
+          card.jobStatus === "Active" && (
+            <Grid item xs={12} sm={12} md={6} lg={4} key={index}>
+              <JobCard key={index} {...card} />
+            </Grid>
+          )
         );
       })}
     </Grid>

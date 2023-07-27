@@ -52,4 +52,5 @@ export interface JobData {
   employerId: string;
   jobCompany: string;
   jobCompanyLogo: string;
+  employerEmail: string;
 }
