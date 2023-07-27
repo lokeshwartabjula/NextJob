@@ -6,9 +6,7 @@ import SeekerForm from "./seeker";
 import Employer from "./employer";
 import { UserContext } from "../(context)/UserContext";
 
-const MyProfile: React.FC<{ userType: number }> = (props: {
-  userType: number;
-}) => {
+const MyProfile: React.FC = () => {
   const { state } = useContext(UserContext);
 
   const userType: "seeker" | "employer" | undefined = state.loginType;
