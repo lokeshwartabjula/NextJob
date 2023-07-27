@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 package api
 
 import (
@@ -152,11 +158,11 @@ func Login(c *gin.Context) {
 
 	fmt.Println("companyName ==>", companyName)
 
-	var companyLogo []byte
+	var companyLogo string
 	if isEmployer {
 		companyLogo = employer.CompanyLogo
 	} else {
-		companyLogo = nil
+		companyLogo = ""
 	}
 
 	fmt.Println("companyLogo ==>", companyLogo)

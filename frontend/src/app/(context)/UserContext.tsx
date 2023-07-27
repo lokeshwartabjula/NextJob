@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 import React, { ReactElement, createContext, useReducer } from "react";
 import { getUserDataFromLocal } from "./LocatStorageManager";

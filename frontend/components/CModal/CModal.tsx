@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 import React from "react"
 import "./CModal.css"
 import { Button } from "@mui/material"

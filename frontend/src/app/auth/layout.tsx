@@ -1,6 +1,10 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
+
 "use client";
 import PropTypes from "prop-types";
-import NextLink from "next/link";
 import { Box, Typography, Unstable_Grid2 as Grid } from "@mui/material";
 
 export default function Layout(props: any) {

@@ -1,13 +1,23 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 "use client";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import "./styles.css"
-import { Button } from "@mui/material";
+import { Alert, Button, Snackbar } from "@mui/material";
 import { JobCard } from "../../../../components/JobCard/types";
+import { UserContext } from "@/app/(context)/UserContext";
+import { axiosInstance } from "../../../../api";
 
 const JobDetailsPage = () => {
     const data: any = useSearchParams()
     const [job, setJob] = useState<JobCard>()
+    const { state } = useContext(UserContext)
+    const [snackBarVisible, setSnackBarVisible] = React.useState(false);
 
     useEffect(() => {
         if (data) {
@@ -21,6 +31,34 @@ const JobDetailsPage = () => {
             console.log('type ==>', typeof job.openDate)
         }
     }, [job])
+
+    const onApplyBttn = () => {
+
+        console.log('onApplyBttn', state)
+        axiosInstance.get('/api/seeker/' + state.id)
+            .then(res => {
+                console.log('ers==>', res)
+
+                const requestObject = {
+                    userID: state.id,
+                    jobID: job?.id,
+                    candidateFullName: state.firstName + ' ' + state?.lastName,
+                    candidateEmail: state.email,
+                    contact: res.data.seekers[0].phone,
+                    employerName: job?.jobCompany,
+                    jobTitle: job?.jobTitle,
+                    jobType: job?.jobType,
+                    applicationDate: job?.openDate,
+                    employerEmail: job?.employerEmail,
+                }
+
+                axiosInstance.post('/api/apply', requestObject)
+                    .then(res => {
+                        console.log('res==>', res)
+                        setSnackBarVisible(true)
+                    })
+            })
+    }
 
     return (
         <div className="jeet-job-detail">
@@ -52,9 +90,23 @@ const JobDetailsPage = () => {
                         <p className="job-detail-description-tag">{job?.jobDescription}</p>
                     </div>
 
-                    <div className="job-detail-apply-bttn">
-                        <Button variant="contained" href="" onClick={() => { }} type="primary">Apply</Button>
-                    </div>
+                    {state?.loginType === 'seeker' ? <div className="job-detail-apply-bttn">
+                        <Button variant="contained" href="" onClick={onApplyBttn} type="primary">Apply</Button>
+                    </div> : null}
+
+                    <Snackbar
+                        open={snackBarVisible}
+                        autoHideDuration={6000}
+                        onClose={() => setSnackBarVisible(false)}
+                    >
+                        <Alert
+                            onClose={() => setSnackBarVisible(false)}
+                            sx={{ width: "100%" }}
+                            severity="info"
+                        >
+                            Job Applied Successfully.
+                        </Alert>
+                    </Snackbar>
 
                 </div>
             </div>

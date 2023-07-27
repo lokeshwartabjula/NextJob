@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import {
@@ -37,37 +41,40 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
 
   const validationSchema: Yup.ObjectSchema<SeekerFormType> = Yup.object().shape(
     {
-      email: Yup.string().email("Invalid email").required("Required"),
-      phone: Yup.string().required("Required"),
-      address1: Yup.string().required("Required"),
-      address2: Yup.string().required("Required"),
-      state: Yup.string().required("Required"),
-      postalCode: Yup.string().required("Required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      phone: Yup.string()
+        .min(10, "Phone number is too short")
+        .max(15, "Phone number is too long")
+        .required("Phone number is required"),
+      address1: Yup.string().required("Address line 1 is required"),
+      address2: Yup.string().required("Address line 2 is required"),
+      state: Yup.string().required("State is required"),
+      postalCode: Yup.string().required("Postal code is required"),
       educations: Yup.array()
         .of(
           Yup.object().shape({
-            school: Yup.string().required("Required"),
-            degree: Yup.string().required("Required"),
-            fieldOfStudy: Yup.string().required("Required"),
-            startDate: Yup.string().required("Required"),
+            school: Yup.string().required("School name is required"),
+            degree: Yup.string().required("Degree is required"),
+            fieldOfStudy: Yup.string().required("Field of study is required"),
+            startDate: Yup.string().required("Start date is required"),
             endDate: Yup.string(),
           })
         )
-        .required("Required")
+        .required("At least one education item is required")
         .max(3, "You can add up to 3 educations"),
       experiences: Yup.array()
         .of(
           Yup.object().shape({
-            company: Yup.string().required("Required"),
-            title: Yup.string().required("Required"),
-            location: Yup.string().required("Required"),
-            startDate: Yup.string().required("Required"),
+            company: Yup.string().required("Company name is required"),
+            title: Yup.string().required("Job title is required"),
+            location: Yup.string().required("Location is required"),
+            startDate: Yup.string().required("Start date is required"),
             endDate: Yup.string(),
             details: Yup.string(),
           })
         )
-        .required("Required")
-        .max(3, "You can add up to 3 experiences"),
+        .required("At least one work experience item is required")
+        .max(3, "You can add up to 3 work experiences"),
       // resume: Yup.mixed()
       //   .test(
       //     "fileSize",
