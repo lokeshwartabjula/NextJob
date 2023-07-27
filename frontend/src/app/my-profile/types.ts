@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 export interface EmployerFormType {
   jobTitle: string;
   phone: string;

@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 package payload
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
