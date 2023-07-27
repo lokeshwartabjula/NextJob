@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 import React, { useState } from "react";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
 import { GOOGLE_MAPS_API_KEY } from "../../utils/constants";

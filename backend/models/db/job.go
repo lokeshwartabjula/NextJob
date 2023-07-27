@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 package db
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
