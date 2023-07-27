@@ -169,7 +169,7 @@ export default function JobPosting() {
     };
     console.log("jobData ==>", jobData);
     axiosInstance
-      .post("http://localhost:8080/api/createJob", jobData)
+      .post("/api/createJob", jobData)
       .then((response) => {
         console.log(response);
         setSnackBarVisible(true);
