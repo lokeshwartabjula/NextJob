@@ -1,3 +1,4 @@
+// Developed by: Kishan Patel | B00929225
 "use client";
 
 import JobListingsSearchBar from "../../../components/JobListingsSearchBar/JobListingsSearchBar";
