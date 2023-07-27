@@ -1,3 +1,8 @@
+/*
+  Author: Lokeshwar Kumar Tabjula
+  Banner Id: B00936909
+  email id: lk544219@dal.ca
+*/
 'use client';
 import * as React from 'react';
 import "./companies-list.css";
@@ -34,70 +39,57 @@ interface CompanyData {
 export default function CompaniesList(props: any) {
     const { window } = props;
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+ 
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const container = window !== undefined ? () => window().document.body : undefined;
+  
+    const [companyData, setCompanyData] = useState<CompanyData[]>([]);
+    const [filteredCompanyData, setFilteredCompanyData] = useState<CompanyData[]>([]);
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  
 
-  const container = window !== undefined ? () => window().document.body : undefined;
-
-  const [companyData, setCompanyData] = useState<CompanyData[]>([]);
-
-  const fetchCompanyData = async () => {
-    try {
-      const response = await axiosInstance.get('api/getEmployers');
-      console.log("response from api/getEmployers before getting data", response);
-      const data = await response.data;
-      console.log("data from api/getEmployers", data);
-      setCompanyData(data.employers);
-    } catch (error) {
-      console.error('Error fetching company data:', error);
-      setCompanyData([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchCompanyData();
-  }, []);
+    const fetchCompanyData = async () => {
+      try {
+        const response = await axiosInstance.get('api/getEmployers');
+        const data = await response.data;
+        setCompanyData(data.employers);
+        setFilteredCompanyData(data.employers); // Initialize filtered data with all companies
+      } catch (error) {
+        console.error('Error fetching company data:', error);
+        setCompanyData([]);
+        setFilteredCompanyData([]);
+      }
+    };
+  
+    useEffect(() => {
+      fetchCompanyData();
+    }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-    // State variables for filters
-    const [mediumSize, setMediumSize] = React.useState(false);
-    const [largeSize, setLargeSize] = React.useState(false);
-    const [halifaxLocation, setHalifaxLocation] = React.useState(false);
-    const [newYorkLocation, setNewYorkLocation] = React.useState(false);
+   // Handle checkbox change
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const filterValue = event.target.value;
+    const updatedFilters = selectedFilters.includes(filterValue)
+      ? selectedFilters.filter((filter) => filter !== filterValue)
+      : [...selectedFilters, filterValue];
 
-    // // Function to filter companies based on selected filters
-    // const filterCompanies = () => {
-    //   return companyData.filter((company) => {
-    //     return (
-    //       (!mediumSize || company.companySize === 'Medium') &&
-    //       (!largeSize || company.companySize === 'Large') &&
-    //       (!halifaxLocation || company.companyLocation === 'Halifax') &&
-    //       (!newYorkLocation || company.companyLocation === 'New York')
-    //     );
-    //   });
-    // };
+    setSelectedFilters(updatedFilters);
+  };
 
-    const handleMediumSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMediumSize(event.target.checked);
-      };
-    
-      const handleLargeSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLargeSize(event.target.checked);
-      };
-    
-      const handleHalifaxLocationChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-      ) => {
-        setHalifaxLocation(event.target.checked);
-      };
-    
-      const handleNewYorkLocationChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-      ) => {
-        setNewYorkLocation(event.target.checked);
-      };
+  // Apply filters and update filteredCompanyData
+  useEffect(() => {
+    if (selectedFilters.length > 0) {
+      const filteredData = companyData.filter((company) =>
+        selectedFilters.includes(company.industry) // Customize this based on your actual filter criteria
+      );
+      setFilteredCompanyData(filteredData);
+    } else {
+      setFilteredCompanyData(companyData);
+    }
+  }, [selectedFilters, companyData]);
 
 
     const theme = useTheme();
@@ -106,29 +98,26 @@ export default function CompaniesList(props: any) {
     //companydata to be fetched here
 
      
-       const drawer = (
-        <div className="indentation">
-        <FormLabel component="legend">Apply Filter</FormLabel>
+    const drawer = (
+      <div className="indentation">
+        <FormLabel component="legend">Industry Based Filter</FormLabel>
         <FormGroup>
-          <FormControlLabel
-            control={<Checkbox checked={mediumSize} onChange={handleMediumSizeChange} />}
-            label="Medium size company"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={largeSize} onChange={handleLargeSizeChange} />}
-            label="Large Size Company"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={halifaxLocation} onChange={handleHalifaxLocationChange} />}
-            label="Halifax Based Companies"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={newYorkLocation} onChange={handleNewYorkLocationChange} />}
-            label="New York Based Companies"
-          />
+          {Array.from(new Set(companyData.map((company) => company.industry))).map((industry) => (
+            <FormControlLabel
+              key={industry}
+              control={
+                <Checkbox
+                  checked={selectedFilters.includes(industry)}
+                  onChange={handleCheckboxChange}
+                  value={industry}
+                />
+              }
+              label={industry}
+            />
+          ))}
         </FormGroup>
       </div>
-       );
+    );
 
        // State variable to hold the selected companyId
         const [selectedCompanyId, setSelectedCompanyId] = useState('');
@@ -218,20 +207,20 @@ export default function CompaniesList(props: any) {
         <Box sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'space-around'}}>
        
 
-      {companyData.map((company) => (
-        <CompanyCard
-          companyId={company.id}
-          key={company.id} // Make sure to provide a unique key for each companyCard
-          companyDate={company.foundedYear}
-          companyTitle={company.companyName}
-          companyCompany={company.companyName}
-          companyType={company.companyType}
-          salary={company.description}
-          companyLocation={company.city}
-          companyLogo={company.companyName}
-          onViewButtonClick={() => { handleViewButtonClick(company.id); }}
-        />
-      ))}
+        {filteredCompanyData.map((company) => (
+      <CompanyCard
+        companyId={company.id}
+        key={company.id}
+        companyDate={company.foundedYear}
+        companyTitle={company.companyName}
+        companyCompany={company.companyName}
+        companyType={company.companyType}
+        salary={company.description}
+        companyLocation={company.city}
+        companyLogo={company.companyName}
+        onViewButtonClick={() => { handleViewButtonClick(company.id); }}
+      />
+    ))}
         </Box>
        
       </Box>
