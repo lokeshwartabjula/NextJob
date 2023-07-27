@@ -6,7 +6,6 @@ import (
 	"context"
 
 	// "fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,22 +37,23 @@ func AddEmployer(c *gin.Context) {
 		PostalCode:    c.PostForm("postalCode"),
 		Country:       c.PostForm("country"),
 		UserId:        c.PostForm("userId"),
+		CompanyLogo:   c.PostForm("companyLogo"),
 	}
 
-	file, _, err := c.Request.FormFile("companyLogo")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	defer file.Close()
+	// file, _, err := c.Request.FormFile("companyLogo")
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// defer file.Close()
 
-	fileBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// fileBytes, err := ioutil.ReadAll(file)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
-	employerData.CompanyLogo = fileBytes
+	// employerData.CompanyLogo = fileBytes
 
 	// fmt.Println("request Payload for AddEmployer API ==>", employerPayload)
 

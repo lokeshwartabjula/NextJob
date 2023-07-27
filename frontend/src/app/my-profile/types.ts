@@ -3,7 +3,7 @@ export interface EmployerFormType {
   phone: string;
   companyName: string;
   industry: string;
-  foundedYear: string;
+  foundedYear: number;
   companySize: string;
   companyType: string;
   description: string;
