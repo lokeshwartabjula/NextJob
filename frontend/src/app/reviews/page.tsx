@@ -25,7 +25,7 @@ const data: Review[] = [
   { name: "Jane Doe", review: "This is another review" },
 ];
 
-function App() {
+function ReviewComponent() {
   const [open, setOpen] = useState(false);
   const [review, setReview] = useState({ name: "", review: "" });
   const [error, setError] = useState(false);
@@ -61,7 +61,7 @@ function App() {
 
   return (
     <>
-      <Box>
+      <Box sx={{display:'flex', justifyContent:'center'}}>
         <Button
           variant="contained"
           style={{
@@ -114,4 +114,4 @@ function App() {
     </>
   );
 }
-export default App;
+export default ReviewComponent;
