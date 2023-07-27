@@ -23,6 +23,7 @@ type CreateJobPayload struct {
 	EmployerId     primitive.ObjectID `bson:"employerId" json:"employerId" binding:"required" msg:"Employer ID is required"`
 	JobCompany     string             `json:"jobCompany" binding:"required" msg:"Job Company is required"`
 	JobCompanyLogo string             `json:"jobCompanyLogo" binding:"required" msg:"Job Company Logo is required"`
+	EmployerEmail string 		   `json:"employerEmail" binding:"required" msg:"Employer Email is required"`
 }
 
 type JobLocationPayload struct {
