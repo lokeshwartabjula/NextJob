@@ -152,11 +152,11 @@ func Login(c *gin.Context) {
 
 	fmt.Println("companyName ==>", companyName)
 
-	var companyLogo []byte
+	var companyLogo string
 	if isEmployer {
 		companyLogo = employer.CompanyLogo
 	} else {
-		companyLogo = nil
+		companyLogo = ""
 	}
 
 	fmt.Println("companyLogo ==>", companyLogo)
