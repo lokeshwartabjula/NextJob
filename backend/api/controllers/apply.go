@@ -1,13 +1,20 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 package api
 
 import (
 	"backend/configs"
 	"backend/utils"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"net/http"
 	"net/smtp"
+
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
