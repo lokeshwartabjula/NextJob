@@ -125,7 +125,7 @@ export default function JobDetails({
                   src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800"
                 />
               }
-              title="Amazon"
+              title={jobData.jobCompany}
               titleTypographyProps={{ variant: "subtitle1" }}
               subheader={formattedDate}
               subheaderTypographyProps={{ variant: "subtitle2" }}

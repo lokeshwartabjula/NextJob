@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 import { alpha, useTheme } from "@mui/material";
 import { ApexOptionsModified } from "./types";
 
