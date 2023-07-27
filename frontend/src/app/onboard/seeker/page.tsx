@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import {
@@ -55,7 +59,7 @@ const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const router = useRouter();
 
-  const { state } = useContext(UserContext);
+  const { state, dispatch } = useContext(UserContext);
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
@@ -550,6 +554,7 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
+            dispatch({...state, loginType: "seeker"})
             router.push("/dashboard");
           })
           .catch((err) => {
