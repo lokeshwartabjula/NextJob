@@ -17,7 +17,7 @@ type Employer struct {
 	State         string `json:"state"`
 	PostalCode    string `json:"postalCode"`
 	Country       string `json:"country"`
-	CompanyLogo   []byte `json:"companyLogo"`
+	CompanyLogo   string `json:"companyLogo"`
 	UserId        string `json:"userId" bson:"userId"`
 }
 
