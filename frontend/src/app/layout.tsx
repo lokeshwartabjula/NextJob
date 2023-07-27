@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 import { Inter } from "next/font/google";
 import ResponsiveAppBar from "./header/Header";
 import { UserProvider } from "./(context)/UserContext";

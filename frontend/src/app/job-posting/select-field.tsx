@@ -1,3 +1,10 @@
+/*
+  Author:-
+  Name: Maulik Gajipara    
+  Banner Id: B00934641
+  Email id: ml477880@dal.ca
+*/
+
 import React from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";

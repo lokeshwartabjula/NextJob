@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 export interface JobInformation {
   id: string;
   jobTitle: string;
@@ -17,7 +23,7 @@ export interface JobInformation {
 export interface JobLocation {
   type: string;
   coordinates: number[];
-  placeID: string;
+  placeId: string;
   placeName: string;
   city: string;
   state: string;

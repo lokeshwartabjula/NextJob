@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 package api
 
 import (
@@ -39,24 +43,6 @@ func AddEmployer(c *gin.Context) {
 		UserId:        c.PostForm("userId"),
 		CompanyLogo:   c.PostForm("companyLogo"),
 	}
-
-	// file, _, err := c.Request.FormFile("companyLogo")
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// defer file.Close()
-
-	// fileBytes, err := ioutil.ReadAll(file)
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// employerData.CompanyLogo = fileBytes
-
-	// fmt.Println("request Payload for AddEmployer API ==>", employerPayload)
-
 	collection := configs.Client.Database("jobportal").Collection("employers")
 	insertResult, err := collection.InsertOne(context.Background(), employerData)
 
@@ -102,23 +88,6 @@ func UpdateEmployerById(c *gin.Context) {
 	// Read id
 	objectId, _ := primitive.ObjectIDFromHex(c.PostForm("ID"))
 	employerData.ID = objectId
-
-	// file, _, err := c.Request.FormFile("companyLogo")
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// defer file.Close()
-
-	// fileBytes, err := ioutil.ReadAll(file)
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	// employerData.CompanyLogo = fileBytes
-
-	// fmt.Println("request Payload for AddEmployer API ==>", employerPayload)
 
 	collection := configs.Client.Database("jobportal").Collection("employers")
 	_, err = collection.UpdateOne(context.Background(), bson.M{"userId": employerData.UserId}, bson.D{{"$set", employerData}})
