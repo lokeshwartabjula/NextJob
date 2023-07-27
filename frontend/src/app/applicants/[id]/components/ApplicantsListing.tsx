@@ -27,6 +27,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "../(constants)/applicants.module.css";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 export default function ApplicantsListing(props:{ id: string}) {
     const jobId = props.id;
@@ -47,7 +48,7 @@ export default function ApplicantsListing(props:{ id: string}) {
     useEffect(() => {
         const fetchApplicants = async () => {
             try {
-                const response = await axiosInstance.get(`getJobApplicantIdsByJobId/${jobId}`);
+                const response = await axiosInstance.get(`api/getJobApplicantIdsByJobId/${jobId}`);
                 setApplicants(response.data.applicants);
             } catch (error) {
                 console.error('Error fetching applicant data:', error);
@@ -56,15 +57,17 @@ export default function ApplicantsListing(props:{ id: string}) {
 
         fetchApplicants();
     }, []);
-  
+
     useEffect(() => {
         const fetchSeekers = async () => {
             let seekers = [];
             for(let i=0; i<applicants.length; i++) {
                 try {
-                    const response = await axiosInstance.get(`seeker/${applicants[i]}`);
+                    const response = await axiosInstance.get(`api/seeker/${applicants[i]}`);
                     seekers.push(response.data.seekers[0]);
                     setLoading(false);
+                    console.log("seekers" );
+                    console.log(seekers);
                 } catch (error) {
                     console.error('Error fetching seeker data:', error);
                 }
@@ -72,7 +75,8 @@ export default function ApplicantsListing(props:{ id: string}) {
             setSeekersData(seekers);
         }
 
-        if (applicants.length > 0) {
+        if (applicants !==null) {
+          if (applicants.length > 0)
             fetchSeekers();
         }
     }, [applicants]);
@@ -252,6 +256,19 @@ export default function ApplicantsListing(props:{ id: string}) {
                         </TableCell>
                       </TableRow>
                     ))}
+                    { 
+                      applicants === null &&
+                        <Box sx={{ textAlign :"center", width: "100%" }} >
+                            <h3 >No Applicants applied for this job.</h3>
+                        </Box>
+                       
+                    }
+                    {
+                       applicants && applicants.length == 0 &&
+                        <Box sx={{ textAlign :"center", width: "100%" }}>
+                            <h3 >No Applicants applied for this job.</h3>
+                        </Box>
+                    }
                 </TableBody>
               </Table>
             </TableContainer>  
