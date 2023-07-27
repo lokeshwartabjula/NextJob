@@ -1,3 +1,4 @@
+// Developed by: Kishan Patel | B00929225
 "use client";
 
 import JobListingsSearchBar from "../../../components/JobListingsSearchBar/JobListingsSearchBar";
@@ -6,7 +7,8 @@ import { Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 import { FilterChangeEvent, JobData } from "./types";
 import JobFilter from "../../../components/JobFilter/JobFilter";
-import axios from "axios";
+
+import { axiosInstance } from "../../../api";
 
 export default function JobListings() {
   const [searchValue, setSearchValue] = useState("");
@@ -26,7 +28,7 @@ export default function JobListings() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/getJobs");
+        const response = await axiosInstance.get("/api/getJobs");
         setJobDataArr(response.data.jobs);
         setDisplayedJobDataArr(response.data.jobs);
       } catch (error) {
@@ -52,9 +54,15 @@ export default function JobListings() {
             item.jobType.toLowerCase().includes("part time"))
         ) {
           return true;
-        } else if (checked.contract && item.jobType === "Contract") {
+        } else if (
+          checked.contract &&
+          item.jobType.toLowerCase().includes("contract")
+        ) {
           return true;
-        } else if (checked.internship && item.jobType === "Intern") {
+        } else if (
+          checked.internship &&
+          item.jobType.toLowerCase().includes("intern")
+        ) {
           return true;
         } else if (
           !checked.fullTime &&

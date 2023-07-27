@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import CompanyCard from '../CompanyCard/CompanyCard';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { axiosInstance } from '../../../api';
 
 const drawerWidth = 240;
 
@@ -41,8 +42,10 @@ export default function CompaniesList(props: any) {
 
   const fetchCompanyData = async () => {
     try {
-      const response = await fetch('http://localhost:8080/getEmployers');
-      const data = await response.json();
+      const response = await axiosInstance.get('api/getEmployers');
+      console.log("response from api/getEmployers before getting data", response);
+      const data = await response.data;
+      console.log("data from api/getEmployers", data);
       setCompanyData(data.employers);
     } catch (error) {
       console.error('Error fetching company data:', error);
@@ -220,7 +223,7 @@ export default function CompaniesList(props: any) {
           companyId={company.id}
           key={company.id} // Make sure to provide a unique key for each companyCard
           companyDate={company.foundedYear}
-          companyTitle={company.jobTitle}
+          companyTitle={company.companyName}
           companyCompany={company.companyName}
           companyType={company.companyType}
           salary={company.description}

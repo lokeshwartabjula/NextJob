@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 package payload
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,7 +21,7 @@ type Employer struct {
 	State         string `json:"state"`
 	PostalCode    string `json:"postalCode"`
 	Country       string `json:"country"`
-	CompanyLogo   []byte `json:"companyLogo"`
+	CompanyLogo   string `json:"companyLogo"`
 	UserId        string `json:"userId" bson:"userId"`
 }
 

@@ -4,6 +4,7 @@ import * as React from 'react';
 import JobCard from '../JobCard/JobCard';
 import "./styles.css";
 import { useEffect, useState } from 'react';
+import { axiosInstance } from '../../../api';
 
 
 interface JobData {
@@ -47,8 +48,8 @@ export default function ActiveJobsTabPage(props: any) {
   const fetchJobData = async () => {
     console.log("employerName", employerName);
     try {
-      const response = await fetch(`http://localhost:8080/getJobsByCompany/${employerName}`);
-      const data = await response.json();
+      const response = await axiosInstance.get(`/api/getJobsByCompany/${employerName}`);
+      const data = await response.data.response.json();
       console.log("data", data);
       setJobData(data.jobs);
       console.log("jobData", jobData);

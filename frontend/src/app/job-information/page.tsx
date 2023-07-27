@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 import * as React from 'react';
 import { Box, Typography, useTheme, useMediaQuery} from '@mui/material';
@@ -11,6 +17,7 @@ export default function jobInformation(){
         <>
         <Box sx={{
             backgroundColor: '#F0F4FC',
+            minHeight: '100vh'
         }}>
             <Box
                 sx = {{

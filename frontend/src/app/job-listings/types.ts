@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
-
+// Developed by: Kishan Patel | B00929225
 export interface JobListingsSearchBarProps {
   searchValue: string;
   applySearch: (value: string) => void;
@@ -52,4 +51,5 @@ export interface JobData {
   employerId: string;
   jobCompany: string;
   jobCompanyLogo: string;
+  employerEmail: string;
 }

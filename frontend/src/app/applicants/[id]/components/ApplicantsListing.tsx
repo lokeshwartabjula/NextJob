@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -47,7 +53,7 @@ export default function ApplicantsListing(props:{ id: string}) {
     useEffect(() => {
         const fetchApplicants = async () => {
             try {
-                const response = await axiosInstance.get(`getJobApplicantIdsByJobId/${jobId}`);
+                const response = await axiosInstance.get(`api/getJobApplicantIdsByJobId/${jobId}`);
                 setApplicants(response.data.applicants);
             } catch (error) {
                 console.error('Error fetching applicant data:', error);
@@ -56,15 +62,17 @@ export default function ApplicantsListing(props:{ id: string}) {
 
         fetchApplicants();
     }, []);
-  
+
     useEffect(() => {
         const fetchSeekers = async () => {
             let seekers = [];
             for(let i=0; i<applicants.length; i++) {
                 try {
-                    const response = await axiosInstance.get(`seeker/${applicants[i]}`);
+                    const response = await axiosInstance.get(`api/seeker/${applicants[i]}`);
                     seekers.push(response.data.seekers[0]);
                     setLoading(false);
+                    console.log("seekers" );
+                    console.log(seekers);
                 } catch (error) {
                     console.error('Error fetching seeker data:', error);
                 }
@@ -72,7 +80,8 @@ export default function ApplicantsListing(props:{ id: string}) {
             setSeekersData(seekers);
         }
 
-        if (applicants.length > 0) {
+        if (applicants !==null) {
+          if (applicants.length > 0)
             fetchSeekers();
         }
     }, [applicants]);
@@ -214,7 +223,7 @@ export default function ApplicantsListing(props:{ id: string}) {
               <Table>
                 <TableHead sx={{ height: "80px" }}>
                   <TableRow>
-                    <TableCell className={styles.titles}>Name</TableCell>
+                    <TableCell className={styles.titles}>Email</TableCell>
                     <TableCell className={styles.titles}>Recent Experience</TableCell>
                     <TableCell className={styles.titles}>Field of study</TableCell>
                     <TableCell className={styles.titles}>Degree</TableCell>
@@ -252,6 +261,19 @@ export default function ApplicantsListing(props:{ id: string}) {
                         </TableCell>
                       </TableRow>
                     ))}
+                    { 
+                      applicants === null &&
+                        <Box sx={{ textAlign :"center", width: "100%" }} >
+                            <h3 >No Applicants applied for this job.</h3>
+                        </Box>
+                       
+                    }
+                    {
+                       applicants && applicants.length == 0 &&
+                        <Box sx={{ textAlign :"center", width: "100%" }}>
+                            <h3 >No Applicants applied for this job.</h3>
+                        </Box>
+                    }
                 </TableBody>
               </Table>
             </TableContainer>  
