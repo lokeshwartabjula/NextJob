@@ -55,7 +55,7 @@ const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const router = useRouter();
 
-  const { state } = useContext(UserContext);
+  const { state, dispatch } = useContext(UserContext);
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
@@ -550,6 +550,7 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
+            dispatch({...state, loginType: "seeker"})
             router.push("/dashboard");
           })
           .catch((err) => {

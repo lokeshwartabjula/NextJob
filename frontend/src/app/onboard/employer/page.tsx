@@ -63,7 +63,7 @@ const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const [companyLogoURL, setCompanyLogoURL] = React.useState("");
 
-  const { state } = useContext(UserContext);
+  const { state, dispatch } = useContext(UserContext);
   const router = useRouter();
 
   React.useEffect(() => {
@@ -295,7 +295,7 @@ const OnBoardingForm: React.FC = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values: FormType) => {
-        if(!companyLogoURL){
+        if (!companyLogoURL) {
           message.error("Please enter valid company name");
           return;
         }
@@ -325,6 +325,12 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
+            dispatch({
+              ...state,
+              loginType: "employer",
+              companyName: values.companyName,
+              companyLogo: companyLogoURL,
+            });
             router.push("/dashboard");
           })
           .catch((err) => {
@@ -343,54 +349,54 @@ const OnBoardingForm: React.FC = () => {
             sx={{ flex: "1 1 auto" }}
             spacing={1}
           >
-            {!isHydrated ? (
-              <CircularProgress />
-            ) : (
-              <>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Employer Details" />
-                    <CardContent>
-                      {renderPersonalDetails(errors, touched)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Company Details" />
-                    <CardContent>
-                      {renderBasicDetails(errors, touched, values)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Company Address" />
-                    <CardContent>
-                      {renderAddressDetails(errors, touched)}
-                    </CardContent>
-                  </Card>
-                </Grid>
+              {!isHydrated ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Employer Details" />
+                      <CardContent>
+                        {renderPersonalDetails(errors, touched)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Company Details" />
+                      <CardContent>
+                        {renderBasicDetails(errors, touched, values)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Company Address" />
+                      <CardContent>
+                        {renderAddressDetails(errors, touched)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
 
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Company Logo" />
-                    <CardContent>{renderLogoComponent()}</CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    // disabled={isSubmitting}
-                    sx={{ mt: 2, py: 1, minWidth: 150 }}
-                  >
-                    Submit
-                  </Button>
-                </Grid>
-              </>
-            )}
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Company Logo" />
+                      <CardContent>{renderLogoComponent()}</CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      // disabled={isSubmitting}
+                      sx={{ mt: 2, py: 1, minWidth: 150 }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                </>
+              )}
           </Grid>
         </Form>
       )}
