@@ -1,10 +1,14 @@
 
-
+/*
+  Author: Lokeshwar Kumar Tabjula
+  Banner Id: B00936909
+  email id: lk544219@dal.ca
+*/
 'use client';
 import * as React from 'react';
 import "../styles.css";
 import Button from '@mui/material/Button';
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import { useState, useEffect } from 'react';
@@ -70,19 +74,22 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
 
   return (
     <div className="mainContainer">
-    <div className="parentContainer"></div>
+    <div className="parentContainer">
+
+    </div>
     <div className="container">
       <div className="content">
         <div className="coverImage">
-          
+        <Typography variant="h1" sx={{display:'flex', justifyContent:'center', alignItems:'center', fontVariant:'all-small-caps'}}>{employerData?.companyName}</Typography>
+
         </div>
-        <div className="logoDiv">
+        {/* <div className="logoDiv">
         <div className="logoContainer">
           <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" 
           className="logoImage"
           alt="Google" />
         </div>
-        </div>
+        </div> */}
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <TabContext value={value}>
         <Tabs value={value} onChange={handleChange} variant="fullWidth">
@@ -103,6 +110,7 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
               type={employerData.companyType}
               industry={employerData.industry}
               foundedYear={employerData.foundedYear}
+              description={employerData.description}
             
             />
           </div>
@@ -130,6 +138,7 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
     </div>
   </div>
   </div>
+  
   );
 }
 
