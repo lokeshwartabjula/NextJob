@@ -7,9 +7,7 @@
 - _Last Modification Date_: 26 JULY 2023
 - _Group Git URL_: <https://git.cs.dal.ca/jeet/webgroup-1/-/tree/jeet?ref_type=heads>
 - _Group Git Branch URL_: <https://git.cs.dal.ca/jeet/webgroup-1/-/tree/jeet?ref_type=heads>
-- _Individual Repository Git URL_: <https://git.cs.dal.ca/jeet/csci_5709_mehta_jeet_b00945900>
-- _Individual Repository Assignment 1 Git URL_: <https://git.cs.dal.ca/jeet/csci_5709_mehta_jeet_b00945900/-/tree/main/Assignments/Assignment%201>
-- _Deployment URL_: <https://jeetdal.netlify.app/home/jobradius>
+- _Deployment URL_: <https://legendary-starlight-48dd6e.netlify.app/>
 
 ## Authors
 
@@ -34,6 +32,42 @@ For deployment purposes, I have used Netlify for FrontEnd and for backend servic
 - [Next.js](https://nextjs.org/) - The web framework used for developing Front-End
 - [Netlify](https://www.netlify.com/) - Netlify helped in deploying the application
 - [Render](https://render.com/) - Render helped in deploying the backend of application
+
+## List of Files Created
+
+### Backend
+
+- [main.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/main.go) - This file contains the main function for the backend
+- [auth.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/api/controllers/auth.go) - This file contains the functions for the authentication module
+- [dbConnect.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/configs/dbConnect.go) - This file contains the functions for connecting to the database
+- [users.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/models/db/users.go) - This file contains the user model
+- [usersPayload.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/models/payload/usersPayload.go) - This file contains the user payload model
+- [jobs.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/master/backend/models/db/jobs.go) - This file contains the job model
+- [createJobPayload](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/models/payload/createJobPayload.go) - This file contains the create job payload model
+- [middleware.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/middlewares/middleware.go) - This file contains the middleware for the server
+- [job.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/models/db/job.go) - This file contains the job model for database
+- [users.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/models/db/users.go) - This file contains the user model for database
+- [createJobPayload.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/models/payload/createJobPayload.go) - This file contains the create job payload model
+- [GenrateJWT](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/utils/GenerateJWT.go) - This file contains the function for generating JWT token
+- [functions.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/utils/functions.go) - This file contains the function to hash the password and verify the password
+- [validate.go](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/backend/utils/validate.go) - This file contains the function for validating the request payload
+
+
+### Frontend
+
+- [index.ts](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/api/index.ts) - This file contains the functions for making API calls
+- [routes.ts](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/api/routes.ts) - This file contains the routes for the API calls
+- [CJobCard.css](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/components/CJobCard/CJobCard.css) - This file contains the CSS for the job card component
+- [CJobCard.tsx](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/components/CJobCard/CJobCard.tsx) - This file contains the job card component
+- [CModal.css](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/components/CModal/CModal.css) - This file contains the CSS for the modal component
+- [CModal.tsx](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/components/CModal/CModal.tsx) - This file contains the modal component
+- [CustomAutoComplete.tsx](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/components/CustomAutoComplete/CustomAutoComplete.tsx) - This file contains the custom autocomplete component
+- [page.tsx](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/src/app/home/job-details/page.tsx) - this file contains the job details page 
+- [styles.css](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/src/app/home/job-details/styles.css) - this file contains the job details page css styles
+- [jobRadius.css](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/src/app/home/jobRadius/jobRadius.css) - this file contains the job radius page css styles
+- [page.tsx](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/src/app/home/jobRadius/page.tsx) - this file contains the job radius page
+- [CONSTANTS.ts](https://git.cs.dal.ca/jeet/webgroup-1/-/blob/dev-integration/frontend/utils/CONSTANTS.ts) - This file contains the constants for the application
+
 
 ## Technologies & Services Used
 
