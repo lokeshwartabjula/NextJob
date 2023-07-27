@@ -9,11 +9,14 @@ import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import { useState, useEffect } from 'react';
 import { useRouter} from 'next/navigation';
+import { axiosInstance } from '../../../../api';
 
 
 
 import CompaniesDescTabPage from '../../CompaniesDescTabPage/page';
 import ActiveJobsTabPage from '../../ActiveJobsTabPage/page';
+import ReviewComponent from '@/app/reviews/page';
+import JobListings from '@/app/job-information/components/JobListings';
 
 interface EmployerData {
     id: string;
@@ -51,8 +54,8 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
   
     const fetchEmployerData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/employer/${companyId}`);
-        const data = await response.json();
+        const response = await axiosInstance.get(`/api/employer/${companyId}`);
+        const data = await response.data;
         console.log("data", data);
         if (data.employers && data.employers.length > 0) {
           setEmployerData(data.employers[0]); // Assuming there's only one employer in the response
@@ -109,13 +112,15 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
 
         <TabPanel value="2">
           <div className="mainContentContainer">
-            Page under construction by Jeet
+            {/* Page under construction by Maulik */}
+            <ReviewComponent/>
           </div>
         </TabPanel>
 
         <TabPanel value="3">
           <div className="mainContentContainer">
-            <ActiveJobsTabPage employerName={employerData?.companyName}/>
+            {/* <ActiveJobsTabPage employerName={employerData?.companyName}/> */}
+            <JobListings/>
           </div>
         </TabPanel>
 
