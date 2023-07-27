@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 import { Grid } from "@mui/material";
 import Cover from "./home/Cover";
@@ -7,7 +13,7 @@ import RecrutingOption from "./home/RecrutingOption";
 export default function MyApp() {
   return (
     <Grid container rowSpacing={3}>
-      <Grid item marginLeft={{ xs: 0, md: 4, lg:10, xl:16 }}>
+      <Grid item marginLeft={{ xs: 0, md: 4, lg: 10, xl: 16 }}>
         <Cover />
       </Grid>
       <Grid item>
@@ -19,3 +25,4 @@ export default function MyApp() {
     </Grid>
   );
 }
+

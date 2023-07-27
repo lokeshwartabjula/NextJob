@@ -1,0 +1,13 @@
+.active{
+    display: none;
+}
+
+@media screen and(max-width: '400px') {
+   .active{
+        display: block;
+   }
+}
+
+.indentation{
+    top: 94px;
+}

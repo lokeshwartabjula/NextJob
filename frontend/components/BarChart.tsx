@@ -1,0 +1,37 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
+"use client";
+
+import { ApexOptions } from "apexcharts";
+import { DEFAULT_GRAPH_WIDTH } from "./Constants";
+import dynamic from "next/dynamic";
+
+export default function BarChart({
+  options,
+  title,
+  labels,
+  data,
+  width,
+}: {
+  options: ApexOptions;
+  title: string;
+  labels: string[];
+  data: number[];
+  width?: number;
+}) {
+  const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
+  width = width || DEFAULT_GRAPH_WIDTH;
+  options = { ...options, xaxis: { categories: labels } };
+  const series = [{ data: data, name: title }];
+  return (
+    <ApexCharts
+      options={options}
+      series={series}
+      type={"bar"}
+      height={width * 0.75}
+      width={width}
+    />
+  );
+}

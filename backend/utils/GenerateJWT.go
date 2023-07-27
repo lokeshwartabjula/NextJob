@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 package utils
 
 import (
@@ -7,11 +13,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func GenerateJWT() string {
+func GenerateJWT(email string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": "admin",
-		"password": "admin",
-		"exp":      time.Now().Add(time.Hour * 72).Unix(),
+		email: email,
+		"exp": time.Now().Add(time.Hour * 72).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte("secret"))
@@ -19,8 +24,19 @@ func GenerateJWT() string {
 		fmt.Println(err)
 	}
 
-	fmt.Println(tokenString)
-
-	// return the token to function caller
 	return tokenString
+}
+
+// verify token
+func VerifyToken(tokenString string) bool {
+	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret"), nil
+	})
+
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	return true
 }

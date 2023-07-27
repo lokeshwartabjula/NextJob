@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import * as React from "react";
@@ -15,14 +19,36 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { NavOptions } from "./constant";
+import { EmployerNavOptions, NavOptions, SeekerNavOptions } from "./constant";
 import "./styles.css";
 import { Alert, Snackbar } from "@mui/material";
+import { UserContext } from "../(context)/UserContext";
+import { MenuType } from "./types";
+import { removeUserData } from "../(context)/LocatStorageManager";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings: { label: string; url?: string }[] = [
+  { label: "Profile", url: "/my-profile" },
+  { label: "Account" },
+  { label: "Dashboard" },
+  { label: "Logout" },
+];
 
 function ResponsiveAppBar() {
   const Router = useRouter();
+  const { state, dispatch } = React.useContext(UserContext);
+  const [isHydrated, setIsHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+  const navList: MenuType[] = [];
+  if (state.loginType === "seeker") {
+    navList.push(...SeekerNavOptions);
+  } else if (state.loginType === "employer") {
+    navList.push(...EmployerNavOptions);
+  } else {
+    navList.push(...NavOptions);
+  }
 
   const [snackBarVisible, setSnackBarVisible] = React.useState(false);
 
@@ -36,9 +62,6 @@ function ResponsiveAppBar() {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -49,165 +72,135 @@ function ResponsiveAppBar() {
   };
 
   const handleNavClick = (route?: string) => {
-    route ? Router.push(route) : setSnackBarVisible(true);
+    if (route === "/logout") {
+      Router.push("/auth/login");
+      dispatch({ firstName: "", lastName: "", email: "", id: "", loginType: undefined });
+      removeUserData();
+    } else route ? Router.push(route) : setSnackBarVisible(true);
     handleCloseNavMenu();
-  };
-
-  const handleProfileItemClick = () => {
-    setSnackBarVisible(true);
-    handleCloseUserMenu();
   };
 
   return (
     <AppBar position="sticky" sx={{ background: "white", color: "black" }}>
       <Container maxWidth="xl" style={{ maxWidth: "none" }}>
-        <Toolbar disableGutters>
-          <AdbIcon
-            sx={{
-              display: { xs: "none", md: "flex", fontSize: "32px" },
-              mr: 1,
-            }}
-          />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-              fontSize: "1.5rem",
-              "&:hover": {
-                color: "inherit",
-              },
-            }}
-          >
-            NEXT JOB
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+        {isHydrated && (
+          <Toolbar disableGutters>
+            <AdbIcon
               sx={{
-                display: { xs: "block", md: "none" },
+                display: { xs: "none", md: "flex", fontSize: "32px" },
+                mr: 1,
+              }}
+            />
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+                fontSize: "1.5rem",
+                "&:hover": {
+                  color: "inherit",
+                },
               }}
             >
-              {NavOptions.map((page) => (
-                <MenuItem
+              NEXT JOB
+            </Typography>
+
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {NavOptions.map((page) => (
+                  <MenuItem
+                    key={page.label}
+                    onClick={() => handleNavClick(page.route)}
+                  >
+                    <Typography textAlign="center">{page.label}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href=""
+              sx={{
+                mr: 2,
+                display: { xs: "flex", md: "none" },
+                flexGrow: 1,
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              NEXT JOB
+            </Typography>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", md: "flex" },
+                flexDirection: "row-reverse",
+              }}
+            >
+              {navList.map((page) => (
+                <Button
+                  className={page.className || "nav-link"}
                   key={page.label}
                   onClick={() => handleNavClick(page.route)}
                 >
-                  <Typography textAlign="center">{page.label}</Typography>
-                </MenuItem>
+                  {page.label}
+                </Button>
               ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            NEXT JOB
-          </Typography>
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: { xs: "none", md: "flex" },
-              flexDirection: "row-reverse",
-            }}
-          >
-            {NavOptions.map((page) => (
-              <Button
-                className={page.className || "nav-link"}
-                key={page.label}
-                onClick={() => handleNavClick(page.route)}
-              >
-                {page.label}
-              </Button>
-            ))}
-          </Box>
-
-          {/* Make this visible once user logged-in */}
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton
-                onClick={handleOpenUserMenu}
-                sx={{
-                  p: "0 10px",
-                  "&:hover": {
-                    background: "none",
-                  },
-                }}
-              >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleProfileItemClick}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
+            </Box>
+          </Toolbar>
+        )}
       </Container>
-      <Snackbar open={snackBarVisible} autoHideDuration={6000} onClose={()=> setSnackBarVisible(false)}>
-        <Alert onClose={()=> setSnackBarVisible(false)} sx={{ width: "100%" }} severity="info">
+      <Snackbar
+        open={snackBarVisible}
+        autoHideDuration={6000}
+        onClose={() => setSnackBarVisible(false)}
+      >
+        <Alert
+          onClose={() => setSnackBarVisible(false)}
+          sx={{ width: "100%" }}
+          severity="info"
+        >
           This feature is not available yet!
         </Alert>
       </Snackbar>

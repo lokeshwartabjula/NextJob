@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 import { Container, Typography, Button, Box, useMediaQuery, useTheme } from '@mui/material';
 
@@ -7,10 +13,10 @@ export default function Cover() {
     const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
-        <Container maxWidth="lg" component={'div'} style={{ marginTop: '10%'}}>
+        <Container maxWidth="lg" component={'div'} style={{ marginTop: '17%'}}>
             <Box
                 sx={{
-                    height: '70%',
+                    height: '75%',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'left',
