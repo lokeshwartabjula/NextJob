@@ -28,7 +28,7 @@ interface FormType {
   phone: string;
   companyName: string;
   industry: string;
-  foundedYear: string;
+  foundedYear?: number;
   companySize: string;
   companyType: string;
   description: string;
@@ -46,7 +46,6 @@ const initialValues: FormType = {
   phone: "",
   companyName: "",
   industry: "",
-  foundedYear: "",
   companySize: "",
   companyType: "",
   description: "",
@@ -69,20 +68,28 @@ const OnBoardingForm: React.FC = () => {
   }, []);
 
   const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
-    jobTitle: Yup.string().required("Required"),
-    phone: Yup.string().required("Required"),
-    companyName: Yup.string().required("Required"),
-    industry: Yup.string().required("Required"),
-    foundedYear: Yup.string().required("Required"),
-    companySize: Yup.string().required("Required"),
-    companyType: Yup.string().required("Required"),
-    description: Yup.string().required("Required"),
-    websiteURL: Yup.string().url("Invalid URL"),
-    streetAddress: Yup.string().required("Required"),
-    city: Yup.string().required("Required"),
-    state: Yup.string().required("Required"),
-    postalCode: Yup.string().required("Required"),
-    country: Yup.string().required("Required"),
+    jobTitle: Yup.string().required("Job title is required"),
+    phone: Yup.string()
+      .min(10, "Phone number is too short")
+      .max(15, "Phone number is too long")
+      .required("Phone number is required"),
+    companyName: Yup.string().required("Company name is required"),
+    industry: Yup.string().required("Industry is required"),
+    foundedYear: Yup.number()
+      .min(1000, "Invalid year")
+      .max(new Date().getFullYear(), "Invalid year")
+      .required("Founded year is required"),
+    companySize: Yup.string().required("Company size is required"),
+    companyType: Yup.string().required("Company type is required"),
+    description: Yup.string().required("Company description is required"),
+    websiteURL: Yup.string()
+      .url("Invalid URL")
+      .required("Website URL is required"),
+    streetAddress: Yup.string().required("Street address is required"),
+    city: Yup.string().required("City is required"),
+    state: Yup.string().required("State is required"),
+    postalCode: Yup.string().required("Postal code is required"),
+    country: Yup.string().required("Country is required"),
     companyLogo: Yup.mixed()
       .required("A file is required")
       .test(
@@ -296,7 +303,8 @@ const OnBoardingForm: React.FC = () => {
         formData.append("phone", values.phone);
         formData.append("companyName", values.companyName);
         formData.append("industry", values.industry);
-        formData.append("foundedYear", values.foundedYear);
+        values.foundedYear &&
+          formData.append("foundedYear", values.foundedYear.toString());
         formData.append("companySize", values.companySize);
         formData.append("companyType", values.companyType);
         formData.append("description", values.description);
