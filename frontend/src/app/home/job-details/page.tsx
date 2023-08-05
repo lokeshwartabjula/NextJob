@@ -15,13 +15,6 @@ const JobDetailsPage = () => {
         }
     }, [])
 
-    useEffect(() => {
-        if (job) {
-            console.log('job ==>', job)
-            console.log('type ==>', typeof job.openDate)
-        }
-    }, [job])
-
     return (
         <div className="jeet-job-detail">
             <div className="inner-div-job-detail">

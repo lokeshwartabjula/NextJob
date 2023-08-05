@@ -29,8 +29,6 @@ export default function Dashboard() {
   const handleChange = (value: string | null) => {
     let newOptions = { ...options };
     newOptions.chart!.type = value as GraphType;
-    console.log(newOptions);
-
     setOptions(newOptions);
   };
 

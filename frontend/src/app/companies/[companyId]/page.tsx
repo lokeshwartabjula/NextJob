@@ -53,7 +53,6 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
       try {
         const response = await fetch(`http://localhost:8080/employer/${companyId}`);
         const data = await response.json();
-        console.log("data", data);
         if (data.employers && data.employers.length > 0) {
           setEmployerData(data.employers[0]); // Assuming there's only one employer in the response
         } else {

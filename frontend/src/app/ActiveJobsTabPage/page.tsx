@@ -45,13 +45,10 @@ export default function ActiveJobsTabPage(props: any) {
   }, []);
 
   const fetchJobData = async () => {
-    console.log("employerName", employerName);
     try {
       const response = await fetch(`http://localhost:8080/getJobsByCompany/${employerName}`);
       const data = await response.json();
-      console.log("data", data);
       setJobData(data.jobs);
-      console.log("jobData", jobData);
     } catch (error) {
       console.error('Error fetching job data:', error);
       setJobData([]);

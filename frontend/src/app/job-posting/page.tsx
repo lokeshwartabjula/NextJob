@@ -155,11 +155,9 @@ export default function JobPosting() {
       jobCompanyLogo:
         "https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800",
     };
-    console.log("jobData ==>", jobData);
     axios
       .post("http://localhost:8080/createJob", jobData)
       .then((response) => {
-        console.log(response);
         setSnackBarVisible(true);
       })
       .catch((error) => {

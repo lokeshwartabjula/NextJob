@@ -123,7 +123,6 @@ export default function EditJobPosting() {
   };
 
   const onPlaceChange = (place: any) => {
-    console.log("place ==>", place);
     let locationInfo: locationInfoType = {
       placeName: place.formatted_address,
       placeId: place.place_id,
@@ -139,7 +138,6 @@ export default function EditJobPosting() {
       .get(`http://localhost:8080/getJob/${jobId}`)
       .then((response) => {
         const jobData = response.data.jobs[0];
-        console.log("jobData ==>", jobData);
         setjobTitle(jobData.jobTitle);
         setCompanyName("Temp Company"); // modify this according to your requirement
         setLocation({
@@ -182,8 +180,7 @@ export default function EditJobPosting() {
 
     axios
       .put("http://localhost:8080/updateJob", updatedJobData)
-      .then((response) => {
-        console.log("res ==>", response);
+      .then((response) => {;
         setSnackBarVisible(true);
       })
       .catch((error) => {

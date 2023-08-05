@@ -58,7 +58,6 @@ const JobRadiusPage = () => {
         if (map.isLoaded && dropPinToCoordinate?.lat && dropPinToCoordinate?.lng) {
             axiosInstance.get(getJobsByRadius + dropPinToCoordinate?.lat + '/' + dropPinToCoordinate?.lng)
                 .then(res => {
-                    console.log('res =>', res)
                     setMarkerPoints(res.data.jobs)
                     setMarkerJobs(res.data.jobs)
                 })
@@ -76,17 +75,10 @@ const JobRadiusPage = () => {
 
     const onSearchPress = () => {
         setViewJobModal(!viewJobModal)
-        console.log('searchLocationData =>', searchLocationData)
         setDropPinToCoordinate({ lat: searchLocationData?.geometry?.location?.lat(), lng: searchLocationData?.geometry?.location?.lng() })
     }
 
     const onShowDetails = () => {
-        console.log('onShowDetails')
-        // const data = { show: "sparrow" }
-        // router.
-        // router.push('/home/job-details')
-
-        // navigate to job-details page and also pass parameters to that page.
         router.push('/home/job-details')
     }
 

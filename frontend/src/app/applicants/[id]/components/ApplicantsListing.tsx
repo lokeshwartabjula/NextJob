@@ -66,8 +66,6 @@ export default function ApplicantsListing(props:{ id: string}) {
                     const response = await axiosInstance.get(`api/seeker/${applicants[i]}`);
                     seekers.push(response.data.seekers[0]);
                     setLoading(false);
-                    console.log("seekers" );
-                    console.log(seekers);
                 } catch (error) {
                     console.error('Error fetching seeker data:', error);
                 }
@@ -107,8 +105,6 @@ export default function ApplicantsListing(props:{ id: string}) {
       const handleClose = () => {
         setJobDetailsOpen(false);
       };
-
-  console.log("applicantDetails",applicantDetails);
   
   return (
     <>

@@ -25,9 +25,6 @@ const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
             const name = place.name;
             const status = place.business_status;
             const formattedAddress = place.formatted_address;
-            console.log(`Name: ${name}`);
-            console.log(`Business Status: ${status}`);
-            console.log(`Formatted Address: ${formattedAddress}`);
             props.onPlaceChanged(place);
         } else {
             alert("Please enter text");
