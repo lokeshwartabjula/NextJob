@@ -29,6 +29,7 @@ import * as Yup from "yup";
 import { axiosInstance } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
+import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
 
 interface FormType {
   email: string;
@@ -193,9 +194,8 @@ const OnBoardingForm: React.FC = () => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Education ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Education ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -339,9 +339,8 @@ const OnBoardingForm: React.FC = () => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Experience ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Experience ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -554,7 +553,8 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
-            dispatch({...state, loginType: "seeker"})
+            dispatch({ ...state, loginType: "seeker" })
+            setUserDataByName("loginType", "seeker");
             router.push("/dashboard");
           })
           .catch((err) => {

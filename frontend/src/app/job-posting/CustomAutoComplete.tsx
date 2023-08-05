@@ -15,7 +15,7 @@ interface CustomAutoCompleteProps {
 
 const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
   const [searchResult, setSearchResult] =
-    useState<google.maps.places.Autocomplete>("Result: none");
+    useState<google.maps.places.Autocomplete>();
 
   const GOOGLE_MAPS_API_KEY = "AIzaSyD68WiiOkLTkfqzyg24wpJjhNuEjILBdj8";
   const GOOGLE_PLACES_API_KEY = "AIzaSyCWjxMcjuvFjJs0UQYjmfOJjn3Yy7GvD2o";

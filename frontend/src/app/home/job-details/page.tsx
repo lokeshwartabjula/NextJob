@@ -12,12 +12,14 @@ import { Alert, Button, Snackbar } from "@mui/material";
 import { JobCard } from "../../../../components/JobCard/types";
 import { UserContext } from "@/app/(context)/UserContext";
 import { axiosInstance } from "../../../../api";
+import { useRouter } from "next/navigation";
 
 const JobDetailsPage = () => {
     const data: any = useSearchParams()
     const [job, setJob] = useState<JobCard>()
     const { state } = useContext(UserContext)
     const [snackBarVisible, setSnackBarVisible] = React.useState(false);
+    const router = useRouter()
 
     useEffect(() => {
         if (data) {
@@ -25,20 +27,9 @@ const JobDetailsPage = () => {
         }
     }, [])
 
-    useEffect(() => {
-        if (job) {
-            console.log('job ==>', job)
-            console.log('type ==>', typeof job.openDate)
-        }
-    }, [job])
-
     const onApplyBttn = () => {
-
-        console.log('onApplyBttn', state)
         axiosInstance.get('/api/seeker/' + state.id)
             .then(res => {
-                console.log('ers==>', res)
-
                 const requestObject = {
                     userID: state.id,
                     jobID: job?.id,
@@ -54,8 +45,8 @@ const JobDetailsPage = () => {
 
                 axiosInstance.post('/api/apply', requestObject)
                     .then(res => {
-                        console.log('res==>', res)
                         setSnackBarVisible(true)
+                        router.push('/home/jobRadius')
                     })
             })
     }

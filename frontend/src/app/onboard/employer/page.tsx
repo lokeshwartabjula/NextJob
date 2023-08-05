@@ -29,6 +29,7 @@ import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { message } from "antd";
+import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
 
 interface FormType {
   jobTitle: string;
@@ -335,6 +336,9 @@ const OnBoardingForm: React.FC = () => {
               companyName: values.companyName,
               companyLogo: companyLogoURL,
             });
+            setUserDataByName("loginType", "employer");
+            setUserDataByName("companyName", values.companyName);
+            setUserDataByName("companyLogo", companyLogoURL);
             router.push("/dashboard");
           })
           .catch((err) => {
@@ -353,54 +357,54 @@ const OnBoardingForm: React.FC = () => {
             sx={{ flex: "1 1 auto" }}
             spacing={1}
           >
-              {!isHydrated ? (
-                <CircularProgress />
-              ) : (
-                <>
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Employer Details" />
-                      <CardContent>
-                        {renderPersonalDetails(errors, touched)}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Company Details" />
-                      <CardContent>
-                        {renderBasicDetails(errors, touched, values)}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Company Address" />
-                      <CardContent>
-                        {renderAddressDetails(errors, touched)}
-                      </CardContent>
-                    </Card>
-                  </Grid>
+            {!isHydrated ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Employer Details" />
+                    <CardContent>
+                      {renderPersonalDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Details" />
+                    <CardContent>
+                      {renderBasicDetails(errors, touched, values)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Address" />
+                    <CardContent>
+                      {renderAddressDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
 
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Company Logo" />
-                      <CardContent>{renderLogoComponent()}</CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid xs={11} md={8}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      // disabled={isSubmitting}
-                      sx={{ mt: 2, py: 1, minWidth: 150 }}
-                    >
-                      Submit
-                    </Button>
-                  </Grid>
-                </>
-              )}
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Logo" />
+                    <CardContent>{renderLogoComponent()}</CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    // disabled={isSubmitting}
+                    sx={{ mt: 2, py: 1, minWidth: 150 }}
+                  >
+                    Submit
+                  </Button>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Form>
       )}

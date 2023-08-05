@@ -142,7 +142,7 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {NavOptions.map((page) => (
+                {navList.map((page) => (
                   <MenuItem
                     key={page.label}
                     onClick={() => handleNavClick(page.route)}

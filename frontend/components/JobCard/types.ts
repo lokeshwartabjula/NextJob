@@ -17,4 +17,5 @@ export type JobCard = {
     salary: string;
     skills: string[];
     jobCompany: string;
+    employerEmail?: string
 }
