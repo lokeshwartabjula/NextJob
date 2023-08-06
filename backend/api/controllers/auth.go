@@ -25,12 +25,12 @@ func Register(c *gin.Context) {
 	var requestPayload payload.CreateUserPayload
 	c.ShouldBindBodyWith(&requestPayload, binding.JSON)
 
-	ok, errMsg := utils.ValidateRequest(c, &payload.CreateUserPayload{})
+	// ok, errMsg := utils.ValidateRequest(c, &payload.CreateUserPayload{})
 
-	if !ok {
-		c.JSON(http.StatusBadRequest, errMsg)
-		return
-	}
+	// if !ok {
+	// 	c.JSON(http.StatusBadRequest, errMsg)
+	// 	return
+	// }
 
 	coll := configs.Client.Database("jobportal").Collection("users")
 	result := coll.FindOne(context.TODO(), bson.M{
@@ -71,12 +71,12 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	var requestPayload payload.LoginUserPayload
 	c.ShouldBindBodyWith(&requestPayload, binding.JSON)
-	ok, errMsg := utils.ValidateRequest(c, &payload.LoginUserPayload{})
+	// ok, errMsg := utils.ValidateRequest(c, &payload.LoginUserPayload{})
 
-	if !ok {
-		c.JSON(http.StatusBadRequest, errMsg)
-		return
-	}
+	// if !ok {
+	// 	c.JSON(http.StatusBadRequest, errMsg)
+	// 	return
+	// }
 	fmt.Println("login apiiii ====>>>>", requestPayload)
 	coll := configs.Client.Database("jobportal").Collection("users")
 	result := coll.FindOne(context.TODO(), bson.M{

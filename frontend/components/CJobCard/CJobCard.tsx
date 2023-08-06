@@ -39,7 +39,7 @@ const CJobCard = (props: CJobCardProps) => {
                     </div>
 
                     <div className='company-logo'>
-                        <img src={"data:image/png;base64," + props.companyLogo} />
+                        <img src={props.companyLogo} />
                     </div>
                 </div>
 

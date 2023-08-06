@@ -63,5 +63,8 @@ func main() {
 
 	protected.GET("/getEmployers", api.GetEmployers)
 
+	protected.POST("/review", api.WriteReview)
+	protected.GET("/getReview/:companyId", api.GetReviewByCompany)
+
 	router.Run(":8080")
 }

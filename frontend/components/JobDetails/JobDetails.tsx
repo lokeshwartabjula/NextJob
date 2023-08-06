@@ -45,7 +45,7 @@ export default function JobDetails({
   const theme = useTheme();
   const { state } = useContext(UserContext);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const date = new Date(jobData.openDate);
+  const date = new Date(jobData?.openDate || new Date());
   date.setDate(date.getDate() + 1);
   const formattedDate = format(date, "MMMM d, yyyy");
   const [responseMessage, setResponseMessage] = useState("");
@@ -64,15 +64,15 @@ export default function JobDetails({
       console.error("Failed to get seeker data:", error);
     }
     const userID = state.id;
-    const jobID = jobData.id;
+    const jobID = jobData?.id;
     const candidateFullName = state.firstName + " " + state.lastName;
     const candidateEmail = state.email;
     const contact = seekerData.phone;
-    const employerName = jobData.jobCompany;
-    const jobTitle = jobData.jobTitle;
-    const jobType = jobData.jobType;
+    const employerName = jobData?.jobCompany;
+    const jobTitle = jobData?.jobTitle;
+    const jobType = jobData?.jobType;
     const applicationDate = formattedDate;
-    const employerEmail = jobData.employerEmail;
+    const employerEmail = jobData?.employerEmail;
 
     try {
       const response = await axiosInstance.post("/api/apply", {
@@ -113,7 +113,7 @@ export default function JobDetails({
         onClose={handleClose}
         aria-labelledby="job-details"
       >
-        <DialogTitle id="job-details">{`${jobData.jobTitle} - Job Details`}</DialogTitle>
+        <DialogTitle id="job-details">{`${jobData?.jobTitle} - Job Details`}</DialogTitle>
         <DialogContent>
           <Card>
             <CardHeader
@@ -125,7 +125,7 @@ export default function JobDetails({
                   src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800"
                 />
               }
-              title={jobData.jobCompany}
+              title={jobData?.jobCompany}
               titleTypographyProps={{ variant: "subtitle1" }}
               subheader={formattedDate}
               subheaderTypographyProps={{ variant: "subtitle2" }}
@@ -143,7 +143,7 @@ export default function JobDetails({
                     <WorkIcon />
                   </ListItemIcon>
                   <ListItemText primary="Experience Required:" />
-                  <ListItemText secondary={`${jobData.experience} years`} />
+                  <ListItemText secondary={`${jobData?.experience} years`} />
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -151,7 +151,7 @@ export default function JobDetails({
                     <WorkspacesIcon />
                   </ListItemIcon>
                   <ListItemText primary="Employment Type:" />
-                  <ListItemText secondary={jobData.jobType} />
+                  <ListItemText secondary={jobData?.jobType} />
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -159,7 +159,7 @@ export default function JobDetails({
                     <AttachMoneyIcon />
                   </ListItemIcon>
                   <ListItemText primary="Salary Package:" />
-                  <ListItemText secondary={`\$ ${jobData.salary} per annum`} />
+                  <ListItemText secondary={`\$ ${jobData?.salary} per annum`} />
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -177,7 +177,7 @@ export default function JobDetails({
                           sx={{ flexWrap: "wrap", justifyContent: "center" }}
                           spacing={1}
                         >
-                          {jobData.skills.map(
+                          {jobData?.skills.map(
                             (skill: string, index: number) => {
                               return (
                                 <Grid item key={index}>
@@ -202,7 +202,7 @@ export default function JobDetails({
                       <ListItemText primary="Job Role & Responsibilities:" />
                     </Grid>
                     <Grid item xs={12}>
-                      <ListItemText secondary={`${jobData.jobDescription}`} />
+                      <ListItemText secondary={`${jobData?.jobDescription}`} />
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -213,7 +213,7 @@ export default function JobDetails({
                   </ListItemIcon>
                   <ListItemText primary="Vacancies Available:" />
                   <ListItemText
-                    secondary={`${jobData.noOfPositions} openings`}
+                    secondary={`${jobData?.noOfPositions} openings`}
                   />
                 </ListItem>
                 <Divider />
@@ -222,7 +222,7 @@ export default function JobDetails({
                     <LocationOnIcon />
                   </ListItemIcon>
                   <ListItemText primary="Work Location:" />
-                  <ListItemText secondary={`${jobData.location.placeName}`} />
+                  <ListItemText secondary={`${jobData?.location.placeName}`} />
                 </ListItem>
               </List>
             </CardContent>

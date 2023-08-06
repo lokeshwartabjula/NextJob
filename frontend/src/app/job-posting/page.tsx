@@ -28,10 +28,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import InputField from "./input-field";
 import SelectField from "./select-field";
 import CustomAutoComplete from "./CustomAutoComplete";
-import axios from "axios";
 import moment from "moment";
 import { axiosInstance } from "../../../api";
 import { UserContext } from "../(context)/UserContext";
+import { useRouter } from "next/navigation";
 
 const JOB_TYPES: string[] = ["Full Time", "Part Time", "Intern", "Contract"];
 
@@ -91,6 +91,7 @@ export default function JobPosting() {
   const [snackBarVisible, setSnackBarVisible] = React.useState(false);
 
   const { state } = React.useContext(UserContext);
+  const router = useRouter()
 
   const handleChange = (event: SelectChangeEvent<typeof selectedSkills>) => {
     const {
@@ -167,12 +168,11 @@ export default function JobPosting() {
       jobCompanyLogo: state.companyLogo,
       employerEmail: state.email,
     };
-    console.log("jobData ==>", jobData);
     axiosInstance
-      .post("http://localhost:8080/api/createJob", jobData)
+      .post("api/createJob", jobData)
       .then((response) => {
-        console.log(response);
         setSnackBarVisible(true);
+        router.push('/job-information')
       })
       .catch((error) => {
         console.log("api error ==>", error);

@@ -51,7 +51,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 
-export default function JobListings() {
+interface Props {
+  companyName?: string | undefined
+}
+const JobListings: React.FC<Props> = (props) => {
   const theme = useTheme();
   const { state } = useContext(UserContext);
   const captionSize = useMediaQuery(theme.breakpoints.down("md"));
@@ -67,13 +70,15 @@ export default function JobListings() {
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleleId] = useState("");
 
+  console.log('state', state)
   var router = useRouter();
-  const companyName = state.companyName;
+  const companyName = props?.companyName;
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const res = await axiosInstance.get("api/getJobs");
+        console.log('res ==>', res)
         setJobs(res.data.jobs);
         setLoading(false);
       } catch (error) {
@@ -120,6 +125,7 @@ export default function JobListings() {
     setFilteredJobs(result);
   }, [searchTitle, searchLocation, jobStatus, jobs]);
 
+  console.log('filtered jobs ==>', filteredJobs)
   const handleDelete = async (id: string) => {
     try {
       const response = await axiosInstance.delete(`api/deleteJob/${id}`);
@@ -151,10 +157,10 @@ export default function JobListings() {
           jobStatus: updatedJob.jobStatus,
           noOfPositions: updatedJob.noOfPositions,
           jobType: updatedJob.jobType,
-          location : {
+          location: {
             lng: updatedJob.location.coordinates[0],
-            lat:updatedJob.location.coordinates[1],
-            placeId: updatedJob.location.placeId, 
+            lat: updatedJob.location.coordinates[1],
+            placeId: updatedJob.location.placeId,
             placeName: updatedJob.location.placeName,
             city: updatedJob.location.city,
             state: updatedJob.location.state,
@@ -217,27 +223,27 @@ export default function JobListings() {
               sx={
                 captionSize
                   ? {
-                      margin: "0% 5% 5% 5%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D4D2D0",
-                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                      borderRadius: "5px",
-                    }
+                    margin: "0% 5% 5% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px",
+                  }
                   : {
-                      margin: "0% 5%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D4D2D0",
-                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                      borderRadius: "5px",
-                    }
+                    margin: "0% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px",
+                  }
               }
             >
               <CardContent>
@@ -527,3 +533,5 @@ export default function JobListings() {
     </>
   );
 }
+
+export default JobListings;

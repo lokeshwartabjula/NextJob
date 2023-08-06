@@ -5,5 +5,6 @@ Email ID: jt429386@dal.ca
 */
 
 export const BASE_URL = "http://localhost:8080/"
+// export const BASE_URL = "https://group1-assignment3.onrender.com/"
 
 export const getJobsByRadius = BASE_URL + "api/getJobByRadius/"

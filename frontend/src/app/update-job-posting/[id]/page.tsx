@@ -79,7 +79,6 @@ type locationInfoType = {
 
 export default function EditJobPosting({ params }: { params: { id: string } }) {
   const jobId = params.id;
-  console.log("jobId ==>", jobId);
   const router = useRouter();
 
   const [jobType, setJobType] = useState("Full Time");
@@ -137,7 +136,6 @@ export default function EditJobPosting({ params }: { params: { id: string } }) {
   };
 
   const onPlaceChange = (place: any) => {
-    console.log("place ==>", place);
     let locationInfo: locationInfoType = {
       placeName: place.formatted_address,
       placeId: place.place_id,
@@ -153,7 +151,6 @@ export default function EditJobPosting({ params }: { params: { id: string } }) {
       .get(`api/getJob/${jobId}`)
       .then((response) => {
         const jobData = response.data.jobs[0];
-        console.log("jobData ==>", jobData);
         setjobTitle(jobData.jobTitle);
         setCompanyName(jobData.jobCompany); // modify this according to your requirement
         setLocation({
@@ -200,7 +197,6 @@ export default function EditJobPosting({ params }: { params: { id: string } }) {
     axiosInstance
       .put("api/updateJob", updatedJobData)
       .then((response) => {
-        console.log("res ==>", response);
         setSnackBarVisible(true);
         router.push(`/job-information`);
       })
