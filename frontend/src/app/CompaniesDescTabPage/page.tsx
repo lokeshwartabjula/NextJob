@@ -1,3 +1,8 @@
+/*
+  Author: Lokeshwar Kumar Tabjula
+  Banner Id: B00936909
+  email id: lk544219@dal.ca
+*/
 'use client';
 import { Typography } from '@mui/material';
 import * as React from 'react';
@@ -15,13 +20,16 @@ interface CompanyData {
 
 export default function CompaniesDescTabPage( props: any) {
 
-    const {companyId, website, hq, orgSize, type, industry, foundedYear} = props;
+    const {companyId, website, hq, orgSize, type, industry, foundedYear, description} = props;
 
     return (
         <div className="des-container">
             <div className="des-grid1">
             <Typography variant="h6" gutterBottom sx = {{ minWidth:200, fontWeight:'bold'  }}>Website: </Typography>      
-            <Typography variant="subtitle1" gutterBottom className='valueAlign'>{website} </Typography>            
+            <Typography variant="subtitle1" gutterBottom className='valueAlign'>
+                <a href={website} target="_blank" rel="noreferrer"> {website} </a>
+                {/* {website}  */}
+                </Typography>            
             </div>
 
             <div className="des-grid2">
@@ -57,19 +65,19 @@ export default function CompaniesDescTabPage( props: any) {
             <div className="des-grid8">
 
             </div>
-            <div className="des-grid9">
+            {/* <div className="des-grid9">
             des-grid9
 
             </div>
             <div className="des-grid10">
             des-grid10
 
-            </div>
+            </div> */}
             <div className="overview-title-grid">
             <Typography variant="h5" gutterBottom>Overview: </Typography>
             </div>
             <div className="overview-desc-grid">
-            overview-desc-grid
+            {description}
             </div>
         </div>
     );

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "./JobCard.css";
 import { Avatar, Button } from "@mui/material";
 import JobDetails from "../JobDetails/JobDetails";
-import { JobData } from "@/app/job-listings/types";
+import { JobData } from "../../src/app/job-listings/types";
 
 const JobCard = (props: JobData) => {
   const [jobDetailsOpen, setJobDetailsOpen] = useState(false);
@@ -74,6 +74,7 @@ const JobCard = (props: JobData) => {
         jobDetailsOpen={jobDetailsOpen}
         handleClose={handleClose}
         jobData={props}
+        isClickedByEmployer={false}
       />
     </>
   );

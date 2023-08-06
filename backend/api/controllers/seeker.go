@@ -1,21 +1,25 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 package api
 
 import (
 	"backend/configs"
 	"backend/models/payload"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"encoding/json"
-	
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Api to update seeker in mongodb with request type SeekerUpdate
-func UpdateSeekerById(c *gin.Context){
+func UpdateSeekerById(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10<<20) // 10 MB
 	err := c.Request.ParseMultipartForm(10 << 20)
 	if err != nil {
@@ -30,6 +34,7 @@ func UpdateSeekerById(c *gin.Context){
 		Address2:   c.PostForm("address2"),
 		State:      c.PostForm("state"),
 		PostalCode: c.PostForm("postalCode"),
+		UserId:     c.PostForm("userId"),
 	}
 
 	fmt.Println("seekerPayload ==>", seekerPayload)
@@ -54,7 +59,6 @@ func UpdateSeekerById(c *gin.Context){
 		return
 	}
 
-
 	// file, _, err := c.Request.FormFile("resume")
 	// if err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -72,9 +76,7 @@ func UpdateSeekerById(c *gin.Context){
 
 	collection := configs.Client.Database("jobportal").Collection("seekers")
 
-
-
-	_, err = collection.UpdateOne(context.Background(), bson.M{"_id": seekerPayload.ID}, bson.D{{"$set", seekerPayload}})
+	_, err = collection.UpdateOne(context.Background(), bson.M{"userId": seekerPayload.UserId}, bson.D{{"$set", seekerPayload}})
 
 	fmt.Println("seekerPayload ==>", seekerPayload)
 	fmt.Println("err ==>", err)
@@ -93,15 +95,14 @@ func UpdateSeekerById(c *gin.Context){
 	})
 }
 
-
 // GetSeekerById to get seeker by id
-func GetSeekerById(c *gin.Context){
+func GetSeekerById(c *gin.Context) {
 	requestId := c.Param("id")
 
 	collection := configs.Client.Database("jobportal").Collection("seekers")
-	objectId, _ := primitive.ObjectIDFromHex(requestId)
+	// objectId, _ := primitive.ObjectIDFromHex(requestId)
 
-	cursor, _ := collection.Find(context.Background(), bson.M{"_id": objectId})
+	cursor, _ := collection.Find(context.Background(), bson.M{"userId": requestId})
 
 	var seekers payload.SeekerUpdate
 	var seekersList []payload.SeekerUpdate
@@ -115,7 +116,6 @@ func GetSeekerById(c *gin.Context){
 		"seekers": seekersList,
 	})
 }
-
 
 // Api to save new seeker in mongodb and resume as file with type of post request and url of http://localhost:8080/addSeeker
 func AddSeeker(c *gin.Context) {
@@ -133,6 +133,7 @@ func AddSeeker(c *gin.Context) {
 		Address2:   c.PostForm("address2"),
 		State:      c.PostForm("state"),
 		PostalCode: c.PostForm("postalCode"),
+		UserId:     c.PostForm("userId"),
 	}
 
 	// Read and unmarshal educations from JSON string
@@ -150,7 +151,6 @@ func AddSeeker(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 
 	file, _, err := c.Request.FormFile("resume")
 	if err != nil {

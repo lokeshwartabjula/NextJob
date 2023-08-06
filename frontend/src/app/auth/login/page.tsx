@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import Head from "next/head";
@@ -16,13 +20,55 @@ import {
   Typography,
 } from "@mui/material";
 import AuthLayout from "../layout";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useContext } from "react";
 import BusinessIcon from "@mui/icons-material/Business";
 import PersonIcon from "@mui/icons-material/Person";
+import { axiosInstance } from "../../../../api";
+import { UserContext } from "@/app/(context)/UserContext";
+import { setUserData } from "@/app/(context)/LocatStorageManager";
+
+interface LoginResponseType {
+  token: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  id: string;
+  isSeeker: boolean;
+  isEmployer: boolean;
+  companyId?: string;
+  companyName?: string;
+  loginType?: "seeker" | "employer";
+}
 
 function Page(): ReactElement {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = React.useState(false);
+
+  const userContext = useContext(UserContext);
+  
+  const { dispatch } = userContext;
+
+  const handleLoginAndRedirect = (value: {
+    loginType: string;
+    email: string;
+    password: string;
+  }) => {
+    axiosInstance
+      .post("/pub/login", {...value, submit: undefined})
+      .then((res) => {
+        const data: LoginResponseType = res.data.response;
+        setUserData(data);
+        dispatch(data);
+        if (value.loginType==="seeker" && !data.isSeeker) {
+          router.push("/onboard/seeker");
+        } else if (value.loginType==="employer" && !data.isEmployer) {
+          router.push("/onboard/employer");
+        } else {
+          router.push("/dashboard");
+        }
+      })
+      .catch((err) => {});
+  };
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -43,8 +89,7 @@ function Page(): ReactElement {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        // Login backend call
-        router.push("/");
+        handleLoginAndRedirect(values);
       } catch (err: any) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });

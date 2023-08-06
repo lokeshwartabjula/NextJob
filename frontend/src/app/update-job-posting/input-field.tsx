@@ -1,3 +1,10 @@
+/*
+  Author:-
+  Name: Maulik Gajipara    
+  Banner Id: B00934641
+  Email id: ml477880@dal.ca
+*/
+
 import React, { useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -41,6 +48,8 @@ const InputField: React.FC<InputFieldProps> = ({
         onChange={handleInputChange}
         placeholder={placeHolder}
         value={value}
+        disabled={label === "Company Name" ? true : false}
+        defaultValue={label === "Company Name" ? value : ""}
       />
     </Box>
   );

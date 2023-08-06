@@ -1,16 +1,21 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 "use client";
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import './jobRadius.css'
 import React, { useEffect, useState } from 'react';
-import SearchSharpIcon from '@mui/icons-material/SearchSharp';
-import JobCard from '../../../../components/JobCard/JobCard';
 import CModal from '../../../../components/CModal/CModal';
 import CustomAutoComplete from '../../../../components/CustomAutoComplete/CustomAutoComplete';
-import { GOOGLE_MAPS_API_KEY } from '../../../../utils/constants';
 import { axiosInstance } from '../../../../api';
 import { getJobsByRadius } from '../../../../api/routes';
 import { Button, Result } from 'antd';
 import { useRouter } from 'next/navigation';
+import CJobCard from '../../../../components/CJobCard/CJobCard';
+import { GOOGLE_MAPS_API_KEY } from '../../../../utils/CONSTANTS';
 
 
 const randomPoints = Array.from({ length: 100 }, () => {
@@ -58,7 +63,6 @@ const JobRadiusPage = () => {
         if (map.isLoaded && dropPinToCoordinate?.lat && dropPinToCoordinate?.lng) {
             axiosInstance.get(getJobsByRadius + dropPinToCoordinate?.lat + '/' + dropPinToCoordinate?.lng)
                 .then(res => {
-                    console.log('res =>', res)
                     setMarkerPoints(res.data.jobs)
                     setMarkerJobs(res.data.jobs)
                 })
@@ -76,17 +80,10 @@ const JobRadiusPage = () => {
 
     const onSearchPress = () => {
         setViewJobModal(!viewJobModal)
-        console.log('searchLocationData =>', searchLocationData)
         setDropPinToCoordinate({ lat: searchLocationData?.geometry?.location?.lat(), lng: searchLocationData?.geometry?.location?.lng() })
     }
 
     const onShowDetails = () => {
-        console.log('onShowDetails')
-        // const data = { show: "sparrow" }
-        // router.
-        // router.push('/home/job-details')
-
-        // navigate to job-details page and also pass parameters to that page.
         router.push('/home/job-details')
     }
 
@@ -143,7 +140,7 @@ const JobRadiusPage = () => {
                     {markerJobs?.length > 0 ? markerJobs?.map((card: any, index) => {
 
                         return (
-                            <JobCard
+                            <CJobCard
                                 key={index}
                                 jobTitle={card.jobTitle}
                                 jobCompany={card.jobCompany}

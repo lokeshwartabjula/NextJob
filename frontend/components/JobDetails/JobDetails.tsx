@@ -22,6 +22,7 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Groups2Icon from "@mui/icons-material/Groups2";
+import { axiosInstance } from "../../api";
 import {
   Alert,
   Backdrop,
@@ -33,15 +34,18 @@ import {
   Snackbar,
   Stack,
 } from "@mui/material";
+import { useContext } from "react";
+import { UserContext } from "@/app/(context)/UserContext";
 export default function JobDetails({
   jobDetailsOpen,
   handleClose,
   jobData,
-  isClickedByEmployer
+  isClickedByEmployer,
 }: any) {
   const theme = useTheme();
+  const { state } = useContext(UserContext);
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const date = new Date(jobData.openDate);
+  const date = new Date(jobData?.openDate || new Date());
   date.setDate(date.getDate() + 1);
   const formattedDate = format(date, "MMMM d, yyyy");
   const [responseMessage, setResponseMessage] = useState("");
@@ -52,44 +56,46 @@ export default function JobDetails({
 
   const handleApply = async () => {
     setIsLoading(true);
-    const userID = "yourUserIasdasdD1";
-    const jobID = jobData.id;
-    const candidateFullName = "John Doe";
-    const candidateEmail = "johndoe@example.com";
-    const contact = "+1 123 456 7890";
-    const employerName = "Jane Smith";
-    const jobTitle = jobData.jobTitle;
-    const jobType = jobData.jobType;
+    var seekerData;
+    try {
+      const res = await axiosInstance.get(`/api/seeker/${state.id}`);
+      seekerData = res.data.seekers[0];
+    } catch (error) {
+      console.error("Failed to get seeker data:", error);
+    }
+    const userID = state.id;
+    const jobID = jobData?.id;
+    const candidateFullName = state.firstName + " " + state.lastName;
+    const candidateEmail = state.email;
+    const contact = seekerData.phone;
+    const employerName = jobData?.jobCompany;
+    const jobTitle = jobData?.jobTitle;
+    const jobType = jobData?.jobType;
     const applicationDate = formattedDate;
-    const employerEmail = "patelkishan9286@gmail.com";
+    const employerEmail = jobData?.employerEmail;
 
     try {
-      const response = await fetch("http://localhost:8080/apply", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userID,
-          jobID,
-          candidateFullName,
-          candidateEmail,
-          contact,
-          employerName,
-          jobTitle,
-          jobType,
-          applicationDate,
-          employerEmail,
-        }),
+      const response = await axiosInstance.post("/api/apply", {
+        userID,
+        jobID,
+        candidateFullName,
+        candidateEmail,
+        contact,
+        employerName,
+        jobTitle,
+        jobType,
+        applicationDate,
+        employerEmail,
       });
-
-      const data = await response.json();
+      const data = await response.data;
       setIsLoading(false);
       setResponseMessage(data.message);
+      setIsError(false);
       setOpenSnackbar(true);
     } catch (error) {
-      setIsLoading(false);
+      console.error(error);
       setIsError(true);
+      setIsLoading(false);
       setResponseMessage("An error occurred while applying for the job");
       setOpenSnackbar(true);
     }
@@ -107,7 +113,7 @@ export default function JobDetails({
         onClose={handleClose}
         aria-labelledby="job-details"
       >
-        <DialogTitle id="job-details">{`${jobData.jobTitle} - Job Details`}</DialogTitle>
+        <DialogTitle id="job-details">{`${jobData?.jobTitle} - Job Details`}</DialogTitle>
         <DialogContent>
           <Card>
             <CardHeader
@@ -119,7 +125,7 @@ export default function JobDetails({
                   src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800"
                 />
               }
-              title="Amazon"
+              title={jobData?.jobCompany}
               titleTypographyProps={{ variant: "subtitle1" }}
               subheader={formattedDate}
               subheaderTypographyProps={{ variant: "subtitle2" }}
@@ -137,7 +143,7 @@ export default function JobDetails({
                     <WorkIcon />
                   </ListItemIcon>
                   <ListItemText primary="Experience Required:" />
-                  <ListItemText secondary={`${jobData.experience} years`} />
+                  <ListItemText secondary={`${jobData?.experience} years`} />
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -145,7 +151,7 @@ export default function JobDetails({
                     <WorkspacesIcon />
                   </ListItemIcon>
                   <ListItemText primary="Employment Type:" />
-                  <ListItemText secondary={jobData.jobType} />
+                  <ListItemText secondary={jobData?.jobType} />
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -153,7 +159,7 @@ export default function JobDetails({
                     <AttachMoneyIcon />
                   </ListItemIcon>
                   <ListItemText primary="Salary Package:" />
-                  <ListItemText secondary={`\$ ${jobData.salary} per annum`} />
+                  <ListItemText secondary={`\$ ${jobData?.salary} per annum`} />
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -171,7 +177,7 @@ export default function JobDetails({
                           sx={{ flexWrap: "wrap", justifyContent: "center" }}
                           spacing={1}
                         >
-                          {jobData.skills.map(
+                          {jobData?.skills.map(
                             (skill: string, index: number) => {
                               return (
                                 <Grid item key={index}>
@@ -196,7 +202,7 @@ export default function JobDetails({
                       <ListItemText primary="Job Role & Responsibilities:" />
                     </Grid>
                     <Grid item xs={12}>
-                      <ListItemText secondary={`${jobData.jobDescription}`} />
+                      <ListItemText secondary={`${jobData?.jobDescription}`} />
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -207,7 +213,7 @@ export default function JobDetails({
                   </ListItemIcon>
                   <ListItemText primary="Vacancies Available:" />
                   <ListItemText
-                    secondary={`${jobData.noOfPositions} openings`}
+                    secondary={`${jobData?.noOfPositions} openings`}
                   />
                 </ListItem>
                 <Divider />
@@ -216,18 +222,18 @@ export default function JobDetails({
                     <LocationOnIcon />
                   </ListItemIcon>
                   <ListItemText primary="Work Location:" />
-                  <ListItemText secondary={`${jobData.location.placeName}`} />
+                  <ListItemText secondary={`${jobData?.location.placeName}`} />
                 </ListItem>
               </List>
             </CardContent>
           </Card>
         </DialogContent>
         <DialogActions>
-          {isClickedByEmployer ? null :
+          {isClickedByEmployer ? null : (
             <Button variant="outlined" onClick={handleApply}>
               Apply
             </Button>
-          }
+          )}
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={isLoading}

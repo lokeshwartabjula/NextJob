@@ -1,3 +1,10 @@
+/*
+  Author:-
+  Name: Maulik Gajipara    
+  Banner Id: B00934641
+  Email id: ml477880@dal.ca
+*/
+
 "use client";
 
 import * as React from "react";
@@ -21,8 +28,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import InputField from "./input-field";
 import SelectField from "./select-field";
 import CustomAutoComplete from "./CustomAutoComplete";
-import axios from "axios";
 import moment from "moment";
+import { axiosInstance } from "../../../api";
+import { UserContext } from "../(context)/UserContext";
+import { useRouter } from "next/navigation";
 
 const JOB_TYPES: string[] = ["Full Time", "Part Time", "Intern", "Contract"];
 
@@ -81,6 +90,9 @@ export default function JobPosting() {
   const [noOfPositions, setNoOfPositions] = useState("");
   const [snackBarVisible, setSnackBarVisible] = React.useState(false);
 
+  const { state } = React.useContext(UserContext);
+  const router = useRouter()
+
   const handleChange = (event: SelectChangeEvent<typeof selectedSkills>) => {
     const {
       target: { value },
@@ -124,13 +136,14 @@ export default function JobPosting() {
       lat: place.geometry?.location?.lat(),
       lng: place.geometry?.location?.lng(),
       city: place.address_components.filter((values: any) => {
-        if (values.types[0] === 'locality') return values.long_name
+        if (values.types[0] === "locality") return values.long_name;
       })[0].long_name,
       state: place.address_components.filter((values: any) => {
-        if (values.types[0] === 'administrative_area_level_1') return values.long_name
+        if (values.types[0] === "administrative_area_level_1")
+          return values.long_name;
       })[0].long_name,
       country: place.address_components.filter((values: any) => {
-        if (values.types[0] === 'country') return values.long_name
+        if (values.types[0] === "country") return values.long_name;
       })[0].long_name,
     };
     setLocation(locationInfo);
@@ -150,20 +163,19 @@ export default function JobPosting() {
       experience: experience,
       noOfPositions: noOfPositions,
       salary: salary,
-      employerId: "64b880be2b859d863465867e",
-      jobCompany: "Amazon",
-      jobCompanyLogo:
-        "https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800",
+      employerId: state.id,
+      jobCompany: state.companyName,
+      jobCompanyLogo: state.companyLogo,
+      employerEmail: state.email,
     };
-    console.log("jobData ==>", jobData);
-    axios
-      .post("http://localhost:8080/createJob", jobData)
+    axiosInstance
+      .post("api/createJob", jobData)
       .then((response) => {
-        console.log(response);
         setSnackBarVisible(true);
+        router.push('/job-information')
       })
       .catch((error) => {
-        console.log('api error ==>', error);
+        console.log("api error ==>", error);
         alert("Error in creating job");
       });
   };

@@ -1,13 +1,20 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 package api
 
 import (
 	"backend/configs"
 	"backend/utils"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"log"
 	"net/http"
 	"net/smtp"
+
+	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -58,7 +65,6 @@ func ApplyJob(c *gin.Context) {
 	}
 
 	collection := configs.Client.Database("jobportal").Collection("job_applications")
-
 	_, err := collection.InsertOne(c, bson.M{"userId": requestData.UserID, "jobId": requestData.JobID})
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
@@ -79,17 +85,8 @@ func ApplyJob(c *gin.Context) {
 func GetJobApplicantIdsByJobId(c *gin.Context) {
 	jobId := c.Param("id")
 	collection := configs.Client.Database("jobportal").Collection("job_applications")
-	//objectId, errObjectId := primitive.ObjectIDFromHex(jobId)
-	//fmt.Println(objectId)
-	//if errObjectId != nil {
-	//	c.IndentedJSON(500, gin.H{
-	//		"message": "Error while getting job 111",
-	//	})
-	//	return
-	//}
 
 	cursor, err := collection.Find(c, bson.M{"jobId": jobId})
-	fmt.Println(cursor)
 	if err != nil {
 		c.IndentedJSON(500, gin.H{
 			"message": "Error while getting job applications",

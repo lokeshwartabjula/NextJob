@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import {
@@ -17,45 +21,46 @@ import {
   ErrorMessage,
   FormikTouched,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../api";
 import { EmployerFormType, EmployerProps } from "./types";
+import { UserContext } from "../(context)/UserContext";
+import { message } from "antd";
 
 const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const { state } = useContext(UserContext);
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
 
-  const validationSchema: Yup.ObjectSchema<EmployerFormType> = Yup.object().shape({
-    jobTitle: Yup.string().required("Required"),
-    phone: Yup.string().required("Required"),
-    companyName: Yup.string().required("Required"),
-    industry: Yup.string().required("Required"),
-    foundedYear: Yup.string().required("Required"),
-    companySize: Yup.string().required("Required"),
-    companyType: Yup.string().required("Required"),
-    description: Yup.string().required("Required"),
-    websiteURL: Yup.string().url("Invalid URL"),
-    streetAddress: Yup.string().required("Required"),
-    city: Yup.string().required("Required"),
-    state: Yup.string().required("Required"),
-    postalCode: Yup.string().required("Required"),
-    country: Yup.string().required("Required"),
-    // companyLogo: Yup.mixed()
-    //   .required("A file is required")
-    //   .test(
-    //     "fileFormat",
-    //     "Unsupported Format",
-    //     (value) =>
-    //       value &&
-    //       ["image/jpg", "image/jpeg", "image/png"].includes(
-    //         (value as File).type
-    //       )
-    //   ),
-  });
+  const validationSchema: Yup.ObjectSchema<EmployerFormType> =
+    Yup.object().shape({
+      jobTitle: Yup.string().required("Job title is required"),
+      phone: Yup.string()
+        .min(10, "Phone number is too short")
+        .max(15, "Phone number is too long")
+        .required("Phone number is required"),
+      companyName: Yup.string().required("Company name is required"),
+      industry: Yup.string().required("Industry is required"),
+      foundedYear: Yup.number()
+        .min(1000, "Invalid year")
+        .max(new Date().getFullYear(), "Invalid year")
+        .required("Founded year is required"),
+      companySize: Yup.string().required("Company size is required"),
+      companyType: Yup.string().required("Company type is required"),
+      description: Yup.string().required("Company description is required"),
+      websiteURL: Yup.string()
+        .url("Invalid URL")
+        .required("Website URL is required"),
+      streetAddress: Yup.string().required("Street address is required"),
+      city: Yup.string().required("City is required"),
+      state: Yup.string().required("State is required"),
+      postalCode: Yup.string().required("Postal code is required"),
+      country: Yup.string().required("Country is required"),
+    });
 
   const renderBasicDetails = (
     errors: FormikErrors<EmployerFormType>,
@@ -252,14 +257,13 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
       initialValues={props}
       validationSchema={validationSchema}
       onSubmit={(values: EmployerFormType) => {
-        console.log("values=>", values);
         const formData = new FormData();
         formData.append("ID", props.id);
         formData.append("jobTitle", values.jobTitle);
         formData.append("phone", values.phone);
         formData.append("companyName", values.companyName);
         formData.append("industry", values.industry);
-        formData.append("foundedYear", values.foundedYear);
+        formData.append("foundedYear", values.foundedYear.toString());
         formData.append("companySize", values.companySize);
         formData.append("companyType", values.companyType);
         formData.append("description", values.description);
@@ -269,16 +273,17 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
         formData.append("state", values.state);
         formData.append("postalCode", values.postalCode);
         formData.append("country", values.country);
+        formData.append("userId", state.id);
         // formData.append("companyLogo", values.companyLogo);
 
         axiosInstance
-          .put(`employer`, formData, {
+          .put(`api/employer`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log("res=>", res);
+            message.success("Profile updated successfully");
           })
           .catch((err) => {
             console.log("err=>", err);

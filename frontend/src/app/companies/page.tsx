@@ -1,3 +1,8 @@
+/*
+  Author: Lokeshwar Kumar Tabjula
+  Banner Id: B00936909
+  email id: lk544219@dal.ca
+*/
 'use client';
 import * as React from 'react';
 import "./styles.css";
@@ -56,20 +61,12 @@ export default function companiesPage( ) {
       // Replace 'API_ENDPOINT' with the actual endpoint of your API
       const response = await fetch(`http://localhost:8080/employer/64bc0f0a85645b8733a7e95c`);
       const data = await response.json();
-      console.log("data", data);
       setCompanyData(data);
     } catch (error) {
       console.error('Error fetching company data:', error);
       setCompanyData(null);
     }
   };
-
-  // const handleViewButtonClick = () => {
-  //   if (companyId) {
-  //     router.push(`/companies/${companyId}`);
-  //   }
-  // };
-
 
   return (
     <div className="mainContainer">

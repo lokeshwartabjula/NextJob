@@ -1,3 +1,9 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 package payload
 
 type CreateUserPayload struct {
@@ -8,6 +14,7 @@ type CreateUserPayload struct {
 }
 
 type LoginUserPayload struct {
-	Email    string `json:"email" binding:"required,email" msg:"Invalid Email Address"`
-	Password string `json:"password" binding:"required,alphanum" msg:"Password must contain alphabets and numbers only"`
+	Email     string `json:"email" binding:"required,email" msg:"Invalid Email Address"`
+	Password  string `json:"password"`
+	LoginType string `json:"loginType"`
 }

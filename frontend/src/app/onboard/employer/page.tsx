@@ -1,6 +1,11 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import {
+  Avatar,
   Button,
   Card,
   CardContent,
@@ -17,16 +22,20 @@ import {
   ErrorMessage,
   FormikTouched,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../../api";
+import { UserContext } from "@/app/(context)/UserContext";
+import { useRouter } from "next/navigation";
+import { message } from "antd";
+import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
 
 interface FormType {
   jobTitle: string;
   phone: string;
   companyName: string;
   industry: string;
-  foundedYear: string;
+  foundedYear?: number;
   companySize: string;
   companyType: string;
   description: string;
@@ -36,7 +45,6 @@ interface FormType {
   state: string;
   postalCode: string;
   country: string;
-  companyLogo: any | null;
 }
 
 const initialValues: FormType = {
@@ -44,7 +52,6 @@ const initialValues: FormType = {
   phone: "",
   companyName: "",
   industry: "",
-  foundedYear: "",
   companySize: "",
   companyType: "",
   description: "",
@@ -54,47 +61,48 @@ const initialValues: FormType = {
   state: "",
   postalCode: "",
   country: "",
-  companyLogo: null,
 };
 
 const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const [companyLogoURL, setCompanyLogoURL] = React.useState("");
+
+  const { state, dispatch } = useContext(UserContext);
+  const router = useRouter();
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
-    jobTitle: Yup.string().required("Required"),
-    phone: Yup.string().required("Required"),
-    companyName: Yup.string().required("Required"),
-    industry: Yup.string().required("Required"),
-    foundedYear: Yup.string().required("Required"),
-    companySize: Yup.string().required("Required"),
-    companyType: Yup.string().required("Required"),
-    description: Yup.string().required("Required"),
-    websiteURL: Yup.string().url("Invalid URL"),
-    streetAddress: Yup.string().required("Required"),
-    city: Yup.string().required("Required"),
-    state: Yup.string().required("Required"),
-    postalCode: Yup.string().required("Required"),
-    country: Yup.string().required("Required"),
-    companyLogo: Yup.mixed()
-      .required("A file is required")
-      .test(
-        "fileFormat",
-        "Unsupported Format",
-        (value) =>
-          value &&
-          ["image/jpg", "image/jpeg", "image/png"].includes(
-            (value as File).type
-          )
-      ),
+    jobTitle: Yup.string().required("Job title is required"),
+    phone: Yup.string()
+      .min(10, "Phone number is too short")
+      .max(15, "Phone number is too long")
+      .required("Phone number is required"),
+    companyName: Yup.string().required("Company name is required"),
+    industry: Yup.string().required("Industry is required"),
+    foundedYear: Yup.number()
+      .min(1000, "Invalid year")
+      .max(new Date().getFullYear(), "Invalid year")
+      .required("Founded year is required"),
+    companySize: Yup.string().required("Company size is required"),
+    companyType: Yup.string().required("Company type is required"),
+    description: Yup.string().required("Company description is required"),
+    websiteURL: Yup.string()
+      .url("Invalid URL")
+      .required("Website URL is required"),
+    streetAddress: Yup.string().required("Street address is required"),
+    city: Yup.string().required("City is required"),
+    state: Yup.string().required("State is required"),
+    postalCode: Yup.string().required("Postal code is required"),
+    country: Yup.string().required("Country is required"),
   });
 
   const renderBasicDetails = (
     errors: FormikErrors<FormType>,
-    touched: FormikTouched<FormType>
+    touched: FormikTouched<FormType>,
+    values: FormType
   ) => (
     <Grid container spacing={2}>
       <Grid xs={12} md={6}>
@@ -105,6 +113,21 @@ const OnBoardingForm: React.FC = () => {
           error={touched.companyName && !!errors.companyName}
           helperText={<ErrorMessage name="companyName" />}
           label="Company Name"
+          onBlur={async () => {
+            if (values.companyName.length > 3) {
+              const response = await axios.get(
+                "https://api.brandfetch.io/v2/search/" + values.companyName,
+                {
+                  headers: {
+                    Authorization:
+                      "Bearer 89CHWV0oBGHuH2idEvLbMUM0rYb/nEZABMx8Qu1ZlAI=",
+                  },
+                }
+              );
+
+              setCompanyLogoURL(response?.data[0]?.icon || "");
+            }
+          }}
         />
       </Grid>
       <Grid xs={12} md={6}>
@@ -261,39 +284,32 @@ const OnBoardingForm: React.FC = () => {
   const renderLogoComponent = () => (
     <Grid container spacing={2}>
       <Grid xs={12}>
-        <Field name="companyLogo" component={FileUploadField} />
-        <ErrorMessage
-          style={{ color: "red" }}
-          name="companyLogo"
-          component="div"
-        />
+        {companyLogoURL ? (
+          <Avatar
+            src={companyLogoURL}
+            sx={{ width: 100, height: 100, mb: 2 }}
+          />
+        ) : null}
       </Grid>
     </Grid>
   );
-
-  const FileUploadField = ({ field, form, ...props }: any) => {
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.currentTarget.files?.[0];
-      form.setFieldValue(field.name, file);
-    };
-
-    return (
-      <input type="file" accept="image/*" onChange={handleChange} {...props} />
-    );
-  };
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values: FormType) => {
-        console.log("values=>", values);
+        if (!companyLogoURL) {
+          message.error("Please enter valid company name");
+          return;
+        }
         const formData = new FormData();
         formData.append("jobTitle", values.jobTitle);
         formData.append("phone", values.phone);
         formData.append("companyName", values.companyName);
         formData.append("industry", values.industry);
-        formData.append("foundedYear", values.foundedYear);
+        values.foundedYear &&
+          formData.append("foundedYear", values.foundedYear.toString());
         formData.append("companySize", values.companySize);
         formData.append("companyType", values.companyType);
         formData.append("description", values.description);
@@ -303,16 +319,26 @@ const OnBoardingForm: React.FC = () => {
         formData.append("state", values.state);
         formData.append("postalCode", values.postalCode);
         formData.append("country", values.country);
-        formData.append("companyLogo", values.companyLogo);
+        formData.append("companyLogo", companyLogoURL);
+        formData.append("userId", state.id);
 
         axiosInstance
-          .post("employer", formData, {
+          .post("api/employer", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log("res=>", res);
+            dispatch({
+              ...state,
+              loginType: "employer",
+              companyName: values.companyName,
+              companyLogo: companyLogoURL,
+            });
+            setUserDataByName("loginType", "employer");
+            setUserDataByName("companyName", values.companyName);
+            setUserDataByName("companyLogo", companyLogoURL);
+            router.push("/dashboard");
           })
           .catch((err) => {
             console.log("err=>", err);
@@ -322,7 +348,7 @@ const OnBoardingForm: React.FC = () => {
         console.log(errors);
       }}
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, values }) => (
         <Form>
           <Grid
             container
@@ -346,7 +372,7 @@ const OnBoardingForm: React.FC = () => {
                   <Card>
                     <CardHeader title="Company Details" />
                     <CardContent>
-                      {renderBasicDetails(errors, touched)}
+                      {renderBasicDetails(errors, touched, values)}
                     </CardContent>
                   </Card>
                 </Grid>
@@ -361,7 +387,7 @@ const OnBoardingForm: React.FC = () => {
 
                 <Grid xs={11} md={8}>
                   <Card>
-                    <CardHeader title="Upload Logo" />
+                    <CardHeader title="Company Logo" />
                     <CardContent>{renderLogoComponent()}</CardContent>
                   </Card>
                 </Grid>

@@ -1,3 +1,7 @@
+// Author: Aayush Dakwala
+// Banner: B00945308
+// Email:  ay383119@dal.ca
+
 "use client";
 
 import {
@@ -20,9 +24,12 @@ import {
   FieldArray,
   FieldArrayRenderProps,
 } from "formik";
-import React from "react";
+import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../../api";
+import { UserContext } from "@/app/(context)/UserContext";
+import { useRouter } from "next/navigation";
+import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
 
 interface FormType {
   email: string;
@@ -51,43 +58,48 @@ interface FormType {
 
 const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const router = useRouter();
 
+  const { state, dispatch } = useContext(UserContext);
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
-    email: Yup.string().email("Invalid email").required("Required"),
-    phone: Yup.string().required("Required"),
-    address1: Yup.string().required("Required"),
-    address2: Yup.string().required("Required"),
-    state: Yup.string().required("Required"),
-    postalCode: Yup.string().required("Required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone: Yup.string()
+      .min(10, "Phone number is too short")
+      .max(12, "Phone number is too long")
+      .required("Phone number is required"),
+    address1: Yup.string().required("Address line 1 is required"),
+    address2: Yup.string().required("Address line 2 is required"),
+    state: Yup.string().required("State is required"),
+    postalCode: Yup.string().required("Postal code is required"),
     educations: Yup.array()
       .of(
         Yup.object().shape({
-          school: Yup.string().required("Required"),
-          degree: Yup.string().required("Required"),
-          fieldOfStudy: Yup.string().required("Required"),
-          startDate: Yup.string().required("Required"),
+          school: Yup.string().required("School name is required"),
+          degree: Yup.string().required("Degree is required"),
+          fieldOfStudy: Yup.string().required("Field of study is required"),
+          startDate: Yup.string().required("Start date is required"),
           endDate: Yup.string(),
         })
       )
-      .required("Required")
+      .required("At least one education item is required")
       .max(3, "You can add up to 3 educations"),
     experiences: Yup.array()
       .of(
         Yup.object().shape({
-          company: Yup.string().required("Required"),
-          title: Yup.string().required("Required"),
-          location: Yup.string().required("Required"),
-          startDate: Yup.string().required("Required"),
+          company: Yup.string().required("Company name is required"),
+          title: Yup.string().required("Job title is required"),
+          location: Yup.string().required("Location is required"),
+          startDate: Yup.string().required("Start date is required"),
           endDate: Yup.string(),
           details: Yup.string(),
         })
       )
-      .required("Required")
-      .max(3, "You can add up to 3 experiences"),
+      .required("At least one work experience item is required")
+      .max(3, "You can add up to 3 work experiences"),
     resume: Yup.mixed()
       .required("A file is required")
       .test(
@@ -182,9 +194,8 @@ const OnBoardingForm: React.FC = () => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Education ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Education ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -328,9 +339,8 @@ const OnBoardingForm: React.FC = () => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Experience ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Experience ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -350,7 +360,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Company"
                     fullWidth
-                    error={touched.experiences && touched.experiences[index]?.company && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.company &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].company`} />
                     }
@@ -362,7 +376,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Title"
                     fullWidth
-                    error={touched.experiences && touched.experiences[index]?.title && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.title &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].title`} />
                     }
@@ -374,7 +392,11 @@ const OnBoardingForm: React.FC = () => {
                     as={TextField}
                     label="Location"
                     fullWidth
-                    error={touched.experiences && touched.experiences[index]?.location && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.location &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].location`} />
                     }
@@ -390,7 +412,11 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.experiences && touched.experiences[index]?.startDate && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.startDate &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].startDate`} />
                     }
@@ -406,7 +432,11 @@ const OnBoardingForm: React.FC = () => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    error={touched.experiences && touched.experiences[index]?.endDate && !!errors.experiences}
+                    error={
+                      touched.experiences &&
+                      touched.experiences[index]?.endDate &&
+                      !!errors.experiences
+                    }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].endDate`} />
                     }
@@ -505,8 +535,6 @@ const OnBoardingForm: React.FC = () => {
       }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        // handle form submission
-        console.log(values);
         const formData = new FormData();
         formData.append("email", values.email);
         formData.append("phone", values.phone);
@@ -517,13 +545,17 @@ const OnBoardingForm: React.FC = () => {
         values.resume && formData.append("resume", values.resume);
         formData.append("educations", JSON.stringify(values.educations));
         formData.append("experiences", JSON.stringify(values.experiences));
-        axiosInstance.post("seeker", formData, {
+        formData.append("userId", state.id);
+        axiosInstance
+          .post("api/seeker", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
           .then((res) => {
-            console.log(res);
+            dispatch({ ...state, loginType: "seeker" })
+            setUserDataByName("loginType", "seeker");
+            router.push("/dashboard");
           })
           .catch((err) => {
             console.log(err);

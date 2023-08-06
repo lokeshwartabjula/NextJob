@@ -62,6 +62,7 @@ func CreateJob(c *gin.Context) {
 		EmployerId:     requestPayload.EmployerId,
 		JobCompany:     requestPayload.JobCompany,
 		JobCompanyLogo: requestPayload.JobCompanyLogo,
+		EmployerEmail: requestPayload.EmployerEmail,
 	})
 
 	if err != nil {
@@ -117,6 +118,7 @@ func UpdateJob(c *gin.Context) {
 			EmployerId:     requestPayload.EmployerId,
 			JobCompany:     requestPayload.JobCompany,
 			JobCompanyLogo: requestPayload.JobCompanyLogo,
+			EmployerEmail: requestPayload.EmployerEmail,
 		},
 	})
 
@@ -164,6 +166,11 @@ func DeleteJob(c *gin.Context) {
 	})
 }
 
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
 func GetJobByRadius(c *gin.Context) {
 	latParam := c.Param("lat")
 	lngParam := c.Param("lng")

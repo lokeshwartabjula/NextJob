@@ -1,14 +1,19 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
+
 import React, { useState } from "react";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
-import { GOOGLE_MAPS_API_KEY } from "../../utils/constants";
+import { GOOGLE_MAPS_API_KEY } from "../../utils/CONSTANTS";
 
 interface CustomAutoCompleteProps {
     onPlaceChanged: (place: google.maps.places.AutocompleteOptions) => void;
 }
 
 const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
-    // @ts-ignore
-    const [searchResult, setSearchResult] = useState<google.maps.places.Autocomplete>("Result: none");
+    const [searchResult, setSearchResult] = useState<google.maps.places.Autocomplete>();
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -25,9 +30,6 @@ const CustomAutoComplete = (props: CustomAutoCompleteProps) => {
             const name = place.name;
             const status = place.business_status;
             const formattedAddress = place.formatted_address;
-            console.log(`Name: ${name}`);
-            console.log(`Business Status: ${status}`);
-            console.log(`Formatted Address: ${formattedAddress}`);
             props.onPlaceChanged(place);
         } else {
             alert("Please enter text");
