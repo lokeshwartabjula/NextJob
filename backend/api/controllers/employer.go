@@ -110,9 +110,9 @@ func GetEmployerById(c *gin.Context) {
 	requestId := c.Param("id")
 
 	collection := configs.Client.Database("jobportal").Collection("employers")
-	// objectId, _ := primitive.ObjectIDFromHex(requestId)
+	objectId, _ := primitive.ObjectIDFromHex(requestId)
 
-	cursor, _ := collection.Find(context.Background(), bson.M{"userId": requestId})
+	cursor, _ := collection.Find(context.Background(), bson.M{"_id": objectId})
 
 	var employers payload.EmployerUpdate
 	var employersList []payload.EmployerUpdate

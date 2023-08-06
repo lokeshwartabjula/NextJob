@@ -27,7 +27,6 @@ import * as Yup from "yup";
 import { axiosInstance } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { message } from "antd";
 import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
 

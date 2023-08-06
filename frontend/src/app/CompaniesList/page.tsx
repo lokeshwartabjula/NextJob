@@ -6,7 +6,7 @@
 'use client';
 import * as React from 'react';
 import "./companies-list.css";
-import { Box, Grid, Typography, useTheme, useMediaQuery, Container, Toolbar, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, AppBar, IconButton, Drawer, FormGroup, FormControlLabel, Checkbox, FormLabel} from '@mui/material';
+import { Box, Grid, Typography, useTheme, useMediaQuery, Container, Toolbar, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, AppBar, IconButton, Drawer, FormGroup, FormControlLabel, Checkbox, FormLabel } from '@mui/material';
 import Button from '@mui/material/Button';
 import CompanyCard from '../CompanyCard/CompanyCard';
 import { useRouter } from 'next/navigation';
@@ -30,6 +30,7 @@ interface CompanyData {
   state: string;
   postalCode: string;
   country: string;
+  companyLogo: string;
 }
 
 
@@ -37,39 +38,40 @@ interface CompanyData {
 
 
 export default function CompaniesList(props: any) {
-    const { window } = props;
+  const { window } = props;
 
- 
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const container = window !== undefined ? () => window().document.body : undefined;
-  
-    const [companyData, setCompanyData] = useState<CompanyData[]>([]);
-    const [filteredCompanyData, setFilteredCompanyData] = useState<CompanyData[]>([]);
-    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  
 
-    const fetchCompanyData = async () => {
-      try {
-        const response = await axiosInstance.get('api/getEmployers');
-        const data = await response.data;
-        setCompanyData(data.employers);
-        setFilteredCompanyData(data.employers); // Initialize filtered data with all companies
-      } catch (error) {
-        console.error('Error fetching company data:', error);
-        setCompanyData([]);
-        setFilteredCompanyData([]);
-      }
-    };
-  
-    useEffect(() => {
-      fetchCompanyData();
-    }, []);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const container = window !== undefined ? () => window().document.body : undefined;
+
+  const [companyData, setCompanyData] = useState<CompanyData[]>([]);
+  const [filteredCompanyData, setFilteredCompanyData] = useState<CompanyData[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+
+  const fetchCompanyData = async () => {
+    try {
+      const response = await axiosInstance.get('api/getEmployers');
+      const data = await response.data;
+      console.log('Company data:', response)
+      setCompanyData(data.employers);
+      setFilteredCompanyData(data.employers); // Initialize filtered data with all companies
+    } catch (error) {
+      console.error('Error fetching company data:', error);
+      setCompanyData([]);
+      setFilteredCompanyData([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCompanyData();
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-   // Handle checkbox change
+  // Handle checkbox change
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const filterValue = event.target.value;
     const updatedFilters = selectedFilters.includes(filterValue)
@@ -92,48 +94,48 @@ export default function CompaniesList(props: any) {
   }, [selectedFilters, companyData]);
 
 
-    const theme = useTheme();
-    const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme();
+  const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
 
-    //companydata to be fetched here
+  //companydata to be fetched here
 
-     
-    const drawer = (
-      <div className="indentation">
-        <FormLabel component="legend">Industry Based Filter</FormLabel>
-        <FormGroup>
-          {Array.from(new Set(companyData.map((company) => company.industry))).map((industry) => (
-            <FormControlLabel
-              key={industry}
-              control={
-                <Checkbox
-                  checked={selectedFilters.includes(industry)}
-                  onChange={handleCheckboxChange}
-                  value={industry}
-                />
-              }
-              label={industry}
-            />
-          ))}
-        </FormGroup>
-      </div>
-    );
 
-       // State variable to hold the selected companyId
-        const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  const drawer = (
+    <div className="indentation">
+      <FormLabel component="legend">Industry Based Filter</FormLabel>
+      <FormGroup>
+        {Array.from(new Set(companyData.map((company) => company.industry))).map((industry) => (
+          <FormControlLabel
+            key={industry}
+            control={
+              <Checkbox
+                checked={selectedFilters.includes(industry)}
+                onChange={handleCheckboxChange}
+                value={industry}
+              />
+            }
+            label={industry}
+          />
+        ))}
+      </FormGroup>
+    </div>
+  );
 
-        const router = useRouter();
+  // State variable to hold the selected companyId
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
-       const handleViewButtonClick = (companyId: string) => {
-        setSelectedCompanyId(companyId);
-        router.push(`/companies/${companyId}`);
-      };
-        
-     
+  const router = useRouter();
 
-    return (
+  const handleViewButtonClick = (companyId: string) => {
+    setSelectedCompanyId(companyId);
+    router.push(`/companies/${companyId}`);
+  };
 
-      <Box sx={{ display: 'flex' }}>
+
+
+  return (
+
+    <Box sx={{ display: 'flex' }}>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -150,7 +152,7 @@ export default function CompaniesList(props: any) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width:drawerWidth},
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
           {drawer}
@@ -159,7 +161,7 @@ export default function CompaniesList(props: any) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top:'94px' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: '94px' },
           }}
           open
         >
@@ -172,63 +174,64 @@ export default function CompaniesList(props: any) {
       >
         {/* <Toolbar /> */}
         <Box sx={{
-            backgroundColor: '#F0F4FC',
+          backgroundColor: '#F0F4FC',
         }}>
-            <Box
-                sx = {{
-                    textAlign: 'left',  
-                    padding: '3% 0%',      
-                    width: '100%',
-                }}
-            >  
-                <Typography component="div" gutterBottom
-                    sx={ captionSize ? { fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.2px', fontSize: '28px', color: '#003060', textAlign:'center' }: {
-                        fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.5px', fontSize: '34px', color: '#003060', textAlign:'center'
-                    }}
-                >
-                    Companies
-                </Typography>
-            </Box> 
-            
+          <Box
+            sx={{
+              textAlign: 'left',
+              padding: '3% 0%',
+              width: '100%',
+            }}
+          >
+            <Typography component="div" gutterBottom
+              sx={captionSize ? { fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.2px', fontSize: '28px', color: '#003060', textAlign: 'center' } : {
+                fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.5px', fontSize: '34px', color: '#003060', textAlign: 'center'
+              }}
+            >
+              Companies
+            </Typography>
+          </Box>
+
         </Box>
-        <Box sx={{ display:'flex', mr: 2 
-        // , justifyContent:'center'
+        <Box sx={{
+          display: 'flex', mr: 2
+          // , justifyContent:'center'
         }}>
-              <div>
-               
+          <div>
 
-                <Button 
-                  variant="outlined"
-                  onClick={handleDrawerToggle}
-                  sx={{ mr: 2, display: { sm: 'none' } }}>Apply Filter</Button>
-              </div>
 
-            </Box>
-        <Box sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'space-around'}}>
-       
+            <Button
+              variant="outlined"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}>Apply Filter</Button>
+          </div>
 
-        {filteredCompanyData.map((company) => (
-      <CompanyCard
-        companyId={company.id}
-        key={company.id}
-        companyDate={company.foundedYear}
-        companyTitle={company.companyName}
-        companyCompany={company.companyName}
-        companyType={company.companyType}
-        salary={company.description}
-        companyLocation={company.city}
-        companyLogo={company.companyName}
-        onViewButtonClick={() => { handleViewButtonClick(company.id); }}
-      />
-    ))}
         </Box>
-       
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+
+
+          {filteredCompanyData.map((company) => (
+            <CompanyCard
+              companyId={company.id}
+              key={company.id}
+              companyDate={company.foundedYear}
+              companyTitle={company.companyName}
+              companyCompany={company.companyName}
+              companyType={company.companyType}
+              salary={company.description}
+              companyLocation={company.city}
+              companyLogo={company.companyLogo}
+              onViewButtonClick={() => { handleViewButtonClick(company.id); }}
+            />
+          ))}
+        </Box>
+
       </Box>
     </Box>
-        
-        
-           
-        
-    );
+
+
+
+
+  );
 
 }
