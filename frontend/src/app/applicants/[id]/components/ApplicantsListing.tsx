@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -27,7 +33,6 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "../(constants)/applicants.module.css";
-import { alignProperty } from "@mui/material/styles/cssUtils";
 
 export default function ApplicantsListing(props:{ id: string}) {
     const jobId = props.id;
@@ -214,7 +219,7 @@ export default function ApplicantsListing(props:{ id: string}) {
               <Table>
                 <TableHead sx={{ height: "80px" }}>
                   <TableRow>
-                    <TableCell className={styles.titles}>Name</TableCell>
+                    <TableCell className={styles.titles}>Email</TableCell>
                     <TableCell className={styles.titles}>Recent Experience</TableCell>
                     <TableCell className={styles.titles}>Field of study</TableCell>
                     <TableCell className={styles.titles}>Degree</TableCell>

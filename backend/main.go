@@ -1,3 +1,8 @@
+/*
+Author: Jeet Mehta
+Banner ID: B00945900
+Email ID: jt429386@dal.ca
+*/
 // Author: Aayush Dakwala
 // Banner: B00945308
 // Email:  ay383119@dal.ca
@@ -57,6 +62,9 @@ func main() {
 	protected.POST("/apply", api.ApplyJob)
 
 	protected.GET("/getEmployers", api.GetEmployers)
+
+	protected.POST("/review", api.WriteReview)
+	protected.GET("/getReview/:companyId", api.GetReviewByCompany)
 
 	router.Run(":8080")
 }

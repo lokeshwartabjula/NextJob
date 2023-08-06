@@ -48,7 +48,7 @@ function Page(): ReactElement {
             router.push("/auth/login");
           })
           .catch((err) => {
-            message.error(err.response.data.message);
+            message.error(err?.response?.data?.message);
             message.error("Error while regestring user");
           });
       } catch (err: any) {

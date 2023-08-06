@@ -1,11 +1,17 @@
+/*
+  Author: Lokeshwar Kumar Tabjula
+  Banner Id: B00936909
+  email id: lk544219@dal.ca
+*/
 'use client';
 import * as React from 'react';
 import "./companies-list.css";
-import { Box, Grid, Typography, useTheme, useMediaQuery, Container, Toolbar, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, AppBar, IconButton, Drawer, FormGroup, FormControlLabel, Checkbox, FormLabel} from '@mui/material';
+import { Box, Grid, Typography, useTheme, useMediaQuery, Container, Toolbar, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, CssBaseline, AppBar, IconButton, Drawer, FormGroup, FormControlLabel, Checkbox, FormLabel } from '@mui/material';
 import Button from '@mui/material/Button';
 import CompanyCard from '../CompanyCard/CompanyCard';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { axiosInstance } from '../../../api';
 
 const drawerWidth = 240;
 
@@ -24,6 +30,7 @@ interface CompanyData {
   state: string;
   postalCode: string;
   country: string;
+  companyLogo: string;
 }
 
 
@@ -31,22 +38,28 @@ interface CompanyData {
 
 
 export default function CompaniesList(props: any) {
-    const { window } = props;
+  const { window } = props;
+
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
   const container = window !== undefined ? () => window().document.body : undefined;
 
   const [companyData, setCompanyData] = useState<CompanyData[]>([]);
+  const [filteredCompanyData, setFilteredCompanyData] = useState<CompanyData[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
 
   const fetchCompanyData = async () => {
     try {
-      const response = await fetch('http://localhost:8080/getEmployers');
-      const data = await response.json();
+      const response = await axiosInstance.get('api/getEmployers');
+      const data = await response.data;
+      console.log('Company data:', response)
       setCompanyData(data.employers);
+      setFilteredCompanyData(data.employers); // Initialize filtered data with all companies
     } catch (error) {
       console.error('Error fetching company data:', error);
       setCompanyData([]);
+      setFilteredCompanyData([]);
     }
   };
 
@@ -58,90 +71,71 @@ export default function CompaniesList(props: any) {
     setMobileOpen(!mobileOpen);
   };
 
-    // State variables for filters
-    const [mediumSize, setMediumSize] = React.useState(false);
-    const [largeSize, setLargeSize] = React.useState(false);
-    const [halifaxLocation, setHalifaxLocation] = React.useState(false);
-    const [newYorkLocation, setNewYorkLocation] = React.useState(false);
+  // Handle checkbox change
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const filterValue = event.target.value;
+    const updatedFilters = selectedFilters.includes(filterValue)
+      ? selectedFilters.filter((filter) => filter !== filterValue)
+      : [...selectedFilters, filterValue];
 
-    // // Function to filter companies based on selected filters
-    // const filterCompanies = () => {
-    //   return companyData.filter((company) => {
-    //     return (
-    //       (!mediumSize || company.companySize === 'Medium') &&
-    //       (!largeSize || company.companySize === 'Large') &&
-    //       (!halifaxLocation || company.companyLocation === 'Halifax') &&
-    //       (!newYorkLocation || company.companyLocation === 'New York')
-    //     );
-    //   });
-    // };
+    setSelectedFilters(updatedFilters);
+  };
 
-    const handleMediumSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMediumSize(event.target.checked);
-      };
-    
-      const handleLargeSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLargeSize(event.target.checked);
-      };
-    
-      const handleHalifaxLocationChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-      ) => {
-        setHalifaxLocation(event.target.checked);
-      };
-    
-      const handleNewYorkLocationChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-      ) => {
-        setNewYorkLocation(event.target.checked);
-      };
+  // Apply filters and update filteredCompanyData
+  useEffect(() => {
+    if (selectedFilters.length > 0) {
+      const filteredData = companyData.filter((company) =>
+        selectedFilters.includes(company.industry) // Customize this based on your actual filter criteria
+      );
+      setFilteredCompanyData(filteredData);
+    } else {
+      setFilteredCompanyData(companyData);
+    }
+  }, [selectedFilters, companyData]);
 
 
-    const theme = useTheme();
-    const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme();
+  const captionSize = useMediaQuery(theme.breakpoints.down('sm'));
 
-    //companydata to be fetched here
+  //companydata to be fetched here
 
-     
-       const drawer = (
-        <div className="indentation">
-        <FormLabel component="legend">Apply Filter</FormLabel>
-        <FormGroup>
+
+  const drawer = (
+    <div className="indentation">
+      <FormLabel component="legend">Industry Based Filter</FormLabel>
+      <FormGroup>
+        {Array.from(new Set(companyData.map((company) => company.industry))).map((industry) => (
           <FormControlLabel
-            control={<Checkbox checked={mediumSize} onChange={handleMediumSizeChange} />}
-            label="Medium size company"
+            key={industry}
+            control={
+              <Checkbox
+                checked={selectedFilters.includes(industry)}
+                onChange={handleCheckboxChange}
+                value={industry}
+              />
+            }
+            label={industry}
           />
-          <FormControlLabel
-            control={<Checkbox checked={largeSize} onChange={handleLargeSizeChange} />}
-            label="Large Size Company"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={halifaxLocation} onChange={handleHalifaxLocationChange} />}
-            label="Halifax Based Companies"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={newYorkLocation} onChange={handleNewYorkLocationChange} />}
-            label="New York Based Companies"
-          />
-        </FormGroup>
-      </div>
-       );
+        ))}
+      </FormGroup>
+    </div>
+  );
 
-       // State variable to hold the selected companyId
-        const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  // State variable to hold the selected companyId
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
-        const router = useRouter();
+  const router = useRouter();
 
-       const handleViewButtonClick = (companyId: string) => {
-        setSelectedCompanyId(companyId);
-        router.push(`/companies/${companyId}`);
-      };
-        
-     
+  const handleViewButtonClick = (companyId: string) => {
+    setSelectedCompanyId(companyId);
+    router.push(`/companies/${companyId}`);
+  };
 
-    return (
 
-      <Box sx={{ display: 'flex' }}>
+
+  return (
+
+    <Box sx={{ display: 'flex' }}>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
@@ -158,7 +152,7 @@ export default function CompaniesList(props: any) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width:drawerWidth},
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
           {drawer}
@@ -167,7 +161,7 @@ export default function CompaniesList(props: any) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top:'94px' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: '94px' },
           }}
           open
         >
@@ -180,63 +174,64 @@ export default function CompaniesList(props: any) {
       >
         {/* <Toolbar /> */}
         <Box sx={{
-            backgroundColor: '#F0F4FC',
+          backgroundColor: '#F0F4FC',
         }}>
-            <Box
-                sx = {{
-                    textAlign: 'left',  
-                    padding: '3% 0%',      
-                    width: '100%',
-                }}
-            >  
-                <Typography component="div" gutterBottom
-                    sx={ captionSize ? { fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.2px', fontSize: '28px', color: '#003060', textAlign:'center' }: {
-                        fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.5px', fontSize: '34px', color: '#003060', textAlign:'center'
-                    }}
-                >
-                    Companies
-                </Typography>
-            </Box> 
-            
+          <Box
+            sx={{
+              textAlign: 'left',
+              padding: '3% 0%',
+              width: '100%',
+            }}
+          >
+            <Typography component="div" gutterBottom
+              sx={captionSize ? { fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.2px', fontSize: '28px', color: '#003060', textAlign: 'center' } : {
+                fontFamily: 'Arial', fontWeight: '500', letterSpacing: '1.5px', fontSize: '34px', color: '#003060', textAlign: 'center'
+              }}
+            >
+              Companies
+            </Typography>
+          </Box>
+
         </Box>
-        <Box sx={{ display:'flex', mr: 2 
-        // , justifyContent:'center'
+        <Box sx={{
+          display: 'flex', mr: 2
+          // , justifyContent:'center'
         }}>
-              <div>
-               
+          <div>
 
-                <Button 
-                  variant="outlined"
-                  onClick={handleDrawerToggle}
-                  sx={{ mr: 2, display: { sm: 'none' } }}>Apply Filter</Button>
-              </div>
 
-            </Box>
-        <Box sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'space-around'}}>
-       
+            <Button
+              variant="outlined"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}>Apply Filter</Button>
+          </div>
 
-      {companyData.map((company) => (
-        <CompanyCard
-          companyId={company.id}
-          key={company.id} // Make sure to provide a unique key for each companyCard
-          companyDate={company.foundedYear}
-          companyTitle={company.jobTitle}
-          companyCompany={company.companyName}
-          companyType={company.companyType}
-          salary={company.description}
-          companyLocation={company.city}
-          companyLogo={company.companyName}
-          onViewButtonClick={() => { handleViewButtonClick(company.id); }}
-        />
-      ))}
         </Box>
-       
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+
+
+          {filteredCompanyData.map((company) => (
+            <CompanyCard
+              companyId={company.id}
+              key={company.id}
+              companyDate={company.foundedYear}
+              companyTitle={company.companyName}
+              companyCompany={company.companyName}
+              companyType={company.companyType}
+              salary={company.description}
+              companyLocation={company.city}
+              companyLogo={company.companyLogo}
+              onViewButtonClick={() => { handleViewButtonClick(company.id); }}
+            />
+          ))}
+        </Box>
+
       </Box>
     </Box>
-        
-        
-           
-        
-    );
+
+
+
+
+  );
 
 }

@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 
 import * as React from "react";
@@ -37,15 +43,18 @@ import { JobInformation } from "../(constants)/jobListings";
 import styles from "../(constants)/joblisting.module.css";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { UserContext } from "@/app/(context)/UserContext";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
 
-export default function JobListings() {
+interface Props {
+  companyName?: string | undefined
+}
+const JobListings: React.FC<Props> = (props) => {
   const theme = useTheme();
   const { state } = useContext(UserContext);
   const captionSize = useMediaQuery(theme.breakpoints.down("md"));
@@ -59,14 +68,17 @@ export default function JobListings() {
   const [jobDetailsOpen, setJobDetailsOpen] = useState(false);
   const [jobDetails, setJobDetails] = useState<JobInformation>();
   const [open, setOpen] = useState(false);
-  const [ deleteId, setDeleleId] = useState("");
+  const [deleteId, setDeleleId] = useState("");
+
+  console.log('state', state)
   var router = useRouter();
-  const companyName = state.companyName;
+  const companyName = props?.companyName;
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const res = await axiosInstance.get("api/getJobs");
+        console.log('res ==>', res)
         setJobs(res.data.jobs);
         setLoading(false);
       } catch (error) {
@@ -113,6 +125,7 @@ export default function JobListings() {
     setFilteredJobs(result);
   }, [searchTitle, searchLocation, jobStatus, jobs]);
 
+  console.log('filtered jobs ==>', filteredJobs)
   const handleDelete = async (id: string) => {
     try {
       const response = await axiosInstance.delete(`api/deleteJob/${id}`);
@@ -134,8 +147,32 @@ export default function JobListings() {
     });
     if (jobToUpdate) {
       const updatedJob = { ...jobToUpdate, jobStatus: status };
+      console.log('updated job ==>', updatedJob)
       try {
-        const response = await axiosInstance.put(`api/updateJob`, updatedJob);
+        const response = await axiosInstance.put(`api/updateJob`, {
+          id: updatedJob.id,
+          jobTitle: updatedJob.jobTitle,
+          jobDescription: updatedJob.jobDescription,
+          skills: updatedJob.skills,
+          jobStatus: updatedJob.jobStatus,
+          noOfPositions: updatedJob.noOfPositions,
+          jobType: updatedJob.jobType,
+          location: {
+            lng: updatedJob.location.coordinates[0],
+            lat: updatedJob.location.coordinates[1],
+            placeId: updatedJob.location.placeId,
+            placeName: updatedJob.location.placeName,
+            city: updatedJob.location.city,
+            state: updatedJob.location.state,
+            country: updatedJob.location.country,
+          },
+          salary: updatedJob.salary,
+          experience: updatedJob.experience,
+          openDate: updatedJob.openDate,
+          employerId: updatedJob.employerId,
+          jobCompany: updatedJob.jobCompany,
+          jobCompanyLogo: updatedJob.jobCompanyLogo
+        });
         setJobs(updatedJobs);
       } catch (error) {
         console.error("API request failed", error);
@@ -159,25 +196,23 @@ export default function JobListings() {
     setOpen(true);
   };
 
-  const handleDialogClose = (response : string) => {
-    if(response == "yes"){
+  const handleDialogClose = (response: string) => {
+    if (response == "yes") {
       handleDelete(deleteId);
-    }else{
+    } else {
     }
-      setOpen(false);
-      location.reload();
+    setOpen(false);
+    location.reload();
   };
 
   const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
       children: React.ReactElement<any, any>;
     },
-    ref: React.Ref<unknown>,
+    ref: React.Ref<unknown>
   ) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
-
-
 
   return (
     <>
@@ -188,27 +223,27 @@ export default function JobListings() {
               sx={
                 captionSize
                   ? {
-                      margin: "0% 5% 5% 5%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D4D2D0",
-                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                      borderRadius: "5px",
-                    }
+                    margin: "0% 5% 5% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px",
+                  }
                   : {
-                      margin: "0% 5%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D4D2D0",
-                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                      borderRadius: "5px",
-                    }
+                    margin: "0% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px",
+                  }
               }
             >
               <CardContent>
@@ -426,54 +461,66 @@ export default function JobListings() {
                               <Grid item xs={6} lg={3}>
                                 <Button>
                                   <DeleteIcon
-                                      sx={{ color: "red" }}
-                                      onClick={() => { handleDialogOpen(job.id) } }
+                                    sx={{ color: "red" }}
+                                    onClick={() => {
+                                      handleDialogOpen(job.id);
+                                    }}
                                   />
                                 </Button>
                               </Grid>
                             </Grid>
                           </TableCell>
                         </TableRow>
-                        
                       ) : (
                         <></>
                       );
                     })}
-                    { 
-                      jobs === null &&
-                        <Box sx={{ textAlign :"center", width: "100%" }} >
-                            <h3 >No Applicants applied for this job.</h3>
-                        </Box>
-                       
-                    }
-                    {
-                       jobs && jobs.length == 0 &&
-                        <Box sx={{ textAlign :"center", width: "100%" }}>
-                            <h3 >No Applicants applied for this job.</h3>
-                        </Box>
-                    }
                 </TableBody>
               </Table>
             </TableContainer>
+            {jobs === null && (
+              <Box sx={{ textAlign: "center", width: "100%" }}>
+                <h3>No Applicants applied for this job.</h3>
+              </Box>
+            )}
+            {jobs && jobs.length == 0 && (
+              <Box sx={{ textAlign: "center", width: "100%" }}>
+                <h3>No Applicants applied for this job.</h3>
+              </Box>
+            )}
           </Grid>
         </Grid>
         <Dialog
-            open={open}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <br />
+          open={open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <br />
 
-            <DialogTitle>{"Are you sure you want to delete the listing? "}</DialogTitle>
-            <DialogActions>
+          <DialogTitle>
+            {"Are you sure you want to delete the listing? "}
+          </DialogTitle>
+          <DialogActions>
             <br />
             <br />
-              <Button onClick={() => { handleDialogClose("no") } }>No</Button>
-              <Button onClick={() => { handleDialogClose("yes") }}>Yes</Button>
-        </DialogActions>
-      </Dialog>
+            <Button
+              onClick={() => {
+                handleDialogClose("no");
+              }}
+            >
+              No
+            </Button>
+            <Button
+              onClick={() => {
+                handleDialogClose("yes");
+              }}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
         {jobDetails && (
           <JobDetails
             jobDetailsOpen={jobDetailsOpen}
@@ -486,3 +533,5 @@ export default function JobListings() {
     </>
   );
 }
+
+export default JobListings;

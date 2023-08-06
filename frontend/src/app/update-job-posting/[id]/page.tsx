@@ -1,3 +1,10 @@
+/*
+  Author:-
+  Name: Maulik Gajipara    
+  Banner Id: B00934641
+  Email id: ml477880@dal.ca
+*/
+
 "use client";
 
 import * as React from "react";
@@ -25,7 +32,8 @@ import { axiosInstance } from "../../../../api";
 import moment from "moment";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { UserContext } from "@/app/(context)/UserContext";
 
 const JOB_TYPES: string[] = ["Full Time", "Part Time", "Intern", "Contract"];
 
@@ -69,7 +77,7 @@ type locationInfoType = {
   lng: string;
 };
 
-export default function EditJobPosting({params}:{params: { id: string}}) {
+export default function EditJobPosting({ params }: { params: { id: string } }) {
   const jobId = params.id;
   const router = useRouter();
 
@@ -84,6 +92,9 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
   const [noOfPositions, setNoOfPositions] = useState("");
   const [loading, setLoading] = useState(true);
   const [snackBarVisible, setSnackBarVisible] = React.useState(false);
+  const [openDate, setOpenDate] = useState();
+
+  const { state } = React.useContext(UserContext);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedSkills>) => {
     const {
@@ -137,11 +148,11 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
   // fetch job data when component mounts
   useEffect(() => {
     axiosInstance
-      .get(`pub/getJob/${jobId}`)
+      .get(`api/getJob/${jobId}`)
       .then((response) => {
         const jobData = response.data.jobs[0];
         setjobTitle(jobData.jobTitle);
-        setCompanyName("Temp Company"); // modify this according to your requirement
+        setCompanyName(jobData.jobCompany); // modify this according to your requirement
         setLocation({
           placeName: jobData.location.placeName,
           placeId: jobData.location.placeId,
@@ -155,6 +166,7 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
         setExperience(jobData.experience);
         setNoOfPositions(jobData.noOfPositions);
         setLoading(false);
+        setOpenDate(jobData.openDate);
       })
       .catch((error) => {
         console.error(error);
@@ -176,12 +188,14 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
       location,
       salary,
       experience,
-      openDate: moment().format("YYYY-MM-DD").toString(),
-      employerId: "64b880be2b859d863465867e",
+      openDate: openDate,
+      employerId: state.id,
+      jobCompany: state.companyName,
+      jobCompanyLogo: state.companyLogo,
     };
 
     axiosInstance
-      .put("pub/updateJob", updatedJobData)
+      .put("api/updateJob", updatedJobData)
       .then((response) => {
         setSnackBarVisible(true);
         router.push(`/job-information`);
@@ -189,6 +203,20 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
       .catch((error) => {
         console.error(error);
         alert("Error in updating job");
+      });
+  };
+
+  const onDeleteJobPosting = () => {
+    axiosInstance
+      .delete(`api/deleteJob/${jobId}`)
+      .then((res) => {
+        console.log("res ==>", res);
+        setSnackBarVisible(true);
+        router.push(`/job-information`);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Error in deleting job");
       });
   };
 
@@ -255,10 +283,12 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
                   <Typography>Location</Typography>
                   <Typography color="red">*</Typography>
                 </Box>
-                {location && <CustomAutoComplete
-                  onPlaceChanged={onPlaceChange}
-                  location={location.placeName}
-                />}
+                {location && (
+                  <CustomAutoComplete
+                    onPlaceChanged={onPlaceChange}
+                    location={location.placeName}
+                  />
+                )}
               </Box>
               <Box width={isTablet ? 250 : 350} mx={2}>
                 <Box display="flex" flexDirection={"row"} marginTop={2.5}>
@@ -384,6 +414,16 @@ export default function EditJobPosting({params}:{params: { id: string}}) {
             variant="contained"
           >
             Submit
+          </Button>
+
+          <Button
+            type="button"
+            variant="contained"
+            color="error"
+            onClick={onDeleteJobPosting}
+            style={{ marginBottom: 10 }}
+          >
+            Delete Job Posting
           </Button>
         </Box>
       </form>

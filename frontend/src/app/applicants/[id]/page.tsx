@@ -1,3 +1,9 @@
+/*
+  Author: Kruti Panchal
+  Banner Id: B00930563
+  email id: kr946702@dal.ca
+*/
+
 "use client";
 import * as React from 'react';
 import { Box, Grid, Typography, useTheme, useMediaQuery, Container} from '@mui/material';

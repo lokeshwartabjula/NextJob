@@ -44,6 +44,21 @@ export const getUserDataByName = (
   return localStorage.getItem(key);
 };
 
+export const setUserDataByName = (
+  key:
+    | "token"
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "id"
+    | "companyId"
+    | "companyName"
+    | "loginType"
+    | "companyLogo", value: string
+) => {
+  return localStorage.setItem(key, value);
+};
+
 export const getUserDataFromLocal = (): UserMeteData => {
   if (typeof window === "undefined")
     return {

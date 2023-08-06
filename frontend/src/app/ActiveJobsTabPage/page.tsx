@@ -1,9 +1,15 @@
+/*
+  Author: Lokeshwar Kumar Tabjula
+  Banner Id: B00936909
+  email id: lk544219@dal.ca
+*/
 'use client';
 import { Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Typography } from '@mui/material';
 import * as React from 'react';
 import JobCard from '../JobCard/JobCard';
 import "./styles.css";
 import { useEffect, useState } from 'react';
+import { axiosInstance } from '../../../api';
 
 
 interface JobData {
@@ -46,8 +52,8 @@ export default function ActiveJobsTabPage(props: any) {
 
   const fetchJobData = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/getJobsByCompany/${employerName}`);
-      const data = await response.json();
+      const response = await axiosInstance.get(`/api/getJobsByCompany/${employerName}`);
+      const data = await response.data.response.json();
       setJobData(data.jobs);
     } catch (error) {
       console.error('Error fetching job data:', error);

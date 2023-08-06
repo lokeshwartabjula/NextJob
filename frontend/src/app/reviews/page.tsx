@@ -12,25 +12,21 @@ import {
 } from "@mui/material";
 import { Button } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Textarea from "@mui/joy/Textarea";
+import { axiosInstance } from "../../../api";
+import { getUserDataFromLocal } from "../(context)/LocatStorageManager";
 
-type Review = {
-  name: string;
-  review: string;
-};
+interface Props {
+  companyId: string;
+}
 
-const data: Review[] = [
-  { name: "John Doe", review: "This is a review" },
-  { name: "Jane Doe", review: "This is another review" },
-];
-
-function App() {
-  const [open, setOpen] = useState(false);
-  const [review, setReview] = useState({ name: "", review: "" });
-  const [error, setError] = useState(false);
-
-  const userName = "John Doe";
+function ReviewComponent({ companyId }: Props) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [review, setReview] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [reviews, setReviews] = useState<any>([])
+  const userData = getUserDataFromLocal()
 
   const handleOpen = () => {
     setOpen(true);
@@ -42,26 +38,46 @@ function App() {
   };
 
   const handleSubmit = () => {
-    if (review.review.trim() === "") {
+    if (review.trim() === "") {
       setError(true);
     } else {
-      alert(review.review);
-      data.push(review);
-      setReview({ name: "", review: "" });
+      setReview("");
+      setReviews([...reviews, {
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
+        email: userData?.email,
+        review: review.trim(),
+        companyId: companyId
+      }])
       setOpen(false);
+      axiosInstance.post("api/review", {
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
+        email: userData?.email,
+        review: review.trim(),
+        companyId: companyId
+      })
     }
   };
+
+  useEffect(() => {
+    axiosInstance.get(`api/getReview/${companyId}`)
+      .then(res => {
+        setReviews(res?.data?.reviews)
+      })
+      .catch(err => console.log('errror while fetching review ==>', err))
+  }, [])
 
   const handleReviewChange = (e: any) => {
     if (e.target.value.trim() !== "") {
       setError(false);
     }
-    setReview({ ...review, name: userName, review: e.target.value });
+    setReview(e.target.value);
   };
 
   return (
     <>
-      <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Button
           variant="contained"
           style={{
@@ -74,11 +90,11 @@ function App() {
           <CreateIcon style={{ marginRight: 8 }} /> Write Review
         </Button>
       </Box>
-      <Box>
-        {data.map((item, index: number) => (
-          <div style={{ width: 330 }}>
-            <ReviewCard key={index} title={item.name} subheader={item.review} />
-            {index !== data.length - 1 && <Divider />}
+      <Box sx={{ alignSelf: 'center', paddingTop: 6 }}>
+        {reviews?.map((item: any, index: number) => (
+          <div style={{ width: 500 }}>
+            <ReviewCard key={index} title={item?.firstName + " " + item?.lastName} subheader={item.review} />
+            {index !== reviews?.length - 1 && <Divider />}
           </div>
         ))}
       </Box>
@@ -114,4 +130,4 @@ function App() {
     </>
   );
 }
-export default App;
+export default ReviewComponent;
