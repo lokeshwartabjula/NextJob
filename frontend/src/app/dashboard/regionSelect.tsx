@@ -6,6 +6,7 @@
 
 import {
   Autocomplete,
+  Button,
   Divider,
   MenuItem,
   Select,
@@ -15,22 +16,38 @@ import {
 } from "@mui/material";
 import { GraphType, ICity, ICountry, IState } from "./types";
 import { City, Country, State } from "country-state-city";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { GraphTypeOptions } from "./constants";
 
 export const RegionSelect = (props: {
   handleChange: (value: string | null) => void;
+  selectedPlace: {
+    country?: string[] | undefined;
+    state?: string[] | undefined;
+    city?: string[] | undefined;
+  };
+  setSelectedPlace: Dispatch<
+    SetStateAction<{
+      country?: string[] | undefined;
+      state?: string[] | undefined;
+      city?: string[] | undefined;
+    }>
+  >;
 }) => {
   const countries: ICountry[] = Country.getAllCountries().map((country) => {
     return { name: country.name, isoCode: country.isoCode };
   });
+
+  const { selectedPlace, setSelectedPlace } = props;
 
   const [city, setCity] = useState<ICity[]>([]);
   const [state, setState] = useState<IState[]>([]);
 
   const hanldleCountryChange = (value: ICountry[]) => {
     var states: IState[] = [];
+    let countries: string[] = [];
     value.forEach((country) => {
+      countries.push(country.name);
       states.push(
         ...State.getStatesOfCountry(country.isoCode).map((state) => {
           return {
@@ -41,12 +58,15 @@ export const RegionSelect = (props: {
         })
       );
     });
+    setSelectedPlace({ ...selectedPlace, country: countries });
     setState(states);
   };
 
   const handleStateChange = (value: IState[]) => {
     var cities: ICity[] = [];
+    let states: string[] = [];
     value.forEach((state) => {
+      states.push(state.name);
       cities.push(
         ...City.getCitiesOfState(state.isoCountryCode, state.isoCode).map(
           (city) => {
@@ -59,7 +79,16 @@ export const RegionSelect = (props: {
         )
       );
     });
+    setSelectedPlace({ ...selectedPlace, state: states });
     setCity(cities);
+  };
+
+  const handleCityChange = (value: ICity[]) => {
+    var cities: string[] = [];
+    value.forEach((city) => {
+      cities.push(city.name);
+    });
+    setSelectedPlace({ ...selectedPlace, city: cities });
   };
 
   return (
@@ -68,7 +97,7 @@ export const RegionSelect = (props: {
         <Divider textAlign="left">Change View</Divider>
         <Autocomplete
           id="tags-outlined"
-          disableClearable  
+          disableClearable
           options={GraphTypeOptions}
           filterSelectedOptions
           defaultValue={GraphTypeOptions[0]}
@@ -127,6 +156,9 @@ export const RegionSelect = (props: {
           renderInput={(params) => (
             <TextField {...params} label="Cities" placeholder="Cities" />
           )}
+          onChange={(_, value) => {
+            handleCityChange(value);
+          }}
         />
       </Stack>
     </>

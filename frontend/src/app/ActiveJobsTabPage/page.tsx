@@ -51,13 +51,10 @@ export default function ActiveJobsTabPage(props: any) {
   }, []);
 
   const fetchJobData = async () => {
-    console.log("employerName", employerName);
     try {
       const response = await axiosInstance.get(`/api/getJobsByCompany/${employerName}`);
       const data = await response.data.response.json();
-      console.log("data", data);
       setJobData(data.jobs);
-      console.log("jobData", jobData);
     } catch (error) {
       console.error('Error fetching job data:', error);
       setJobData([]);

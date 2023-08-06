@@ -4,7 +4,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -15,22 +15,88 @@ import {
 } from "@mui/material";
 import { categories, data, useChartOptions } from "./constants";
 import { RegionSelect } from "./regionSelect";
-import { ApexOptionsModified, GraphType } from "./types";
+import { ApexOptionsModified, GraphType, RawJobType } from "./types";
 import RenderChart from "./renderChart";
 import OverviewTile from "./overviewTile";
+import { axiosInstance } from "../../../api";
+import {
+  convertRawDataToOpeningGraphStats,
+  convertRawDataToSalaryGraphStats,
+  convertRawDataToSkillsGraphStats,
+  getTilesData,
+} from "./utils";
+import { Spin } from "antd";
 
 export default function Dashboard() {
   const [options, setOptions] = useState<ApexOptionsModified>(
     useChartOptions(categories)
   );
 
+  const chartTile = ["Salary", "Openings", "Skills"];
   const [activeTile, setActiveTile] = useState<number>(0);
+  const [selectedPlace, setSelectedPlace] = useState<{
+    country?: string[];
+    state?: string[];
+    city?: string[];
+  }>({});
+
+  const [jobDataArr, setJobDataArr] = useState<RawJobType[]>([]);
+  const [displayStats, setDisplayStats] = useState<{
+    labels: string[];
+    data: number[];
+  }>();
+
+  const [tilesData, setTilesData] = useState<{
+    totalJobs: number;
+    avgSalary: number;
+    totalSkills: number;
+  }>({
+    totalJobs: 0,
+    avgSalary: 0,
+    totalSkills: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/api/getJobs");
+        setJobDataArr(response.data.jobs);
+        setTilesData(getTilesData(response.data.jobs));
+      } catch (error) {
+        console.error("An error occurred while fetching job data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    switch (activeTile) {
+      case 0:
+        setDisplayStats(
+          convertRawDataToSalaryGraphStats(jobDataArr, selectedPlace)
+        );
+        break;
+      case 1:
+        setDisplayStats(
+          convertRawDataToOpeningGraphStats(jobDataArr, selectedPlace)
+        );
+        break;
+      case 2:
+        setDisplayStats(
+          convertRawDataToSkillsGraphStats(jobDataArr, selectedPlace)
+        );
+        break;
+      default:
+        setDisplayStats(convertRawDataToSalaryGraphStats(jobDataArr));
+
+        break;
+    }
+  }, [jobDataArr, activeTile, options, selectedPlace]);
 
   const handleChange = (value: string | null) => {
     let newOptions = { ...options };
     newOptions.chart!.type = value as GraphType;
-    console.log(newOptions);
-
     setOptions(newOptions);
   };
 
@@ -48,21 +114,24 @@ export default function Dashboard() {
             <Grid xs={12} sm>
               <OverviewTile
                 active={activeTile === 0}
-                value="$24k"
+                title="Average Salary"
+                value={"$ " + tilesData.avgSalary/1000 + "K"}
                 onClick={() => setActiveTile(0)}
               />
             </Grid>
             <Grid xs={12} sm>
               <OverviewTile
                 active={activeTile === 1}
-                value="1.6k"
+                title="Openings"
+                value={tilesData.totalJobs.toString()}
                 onClick={() => setActiveTile(1)}
               />
             </Grid>
             <Grid xs={12} sm>
               <OverviewTile
                 active={activeTile === 2}
-                value={"75.5"}
+                title="Skills"
+                value={tilesData.totalSkills.toString()}
                 onClick={() => setActiveTile(2)}
               />
             </Grid>
@@ -70,16 +139,27 @@ export default function Dashboard() {
           <Grid container spacing={{ xs: 4, sm: 3, md: 10 }}>
             <Grid xs={12} lg={8}>
               <Card sx={{ height: "100%" }}>
-                <CardHeader title="Sales" />
+                <CardHeader title={chartTile[activeTile]} />
                 <CardContent>
-                  <RenderChart options={options} />
+                  {displayStats ? (
+                    <RenderChart
+                      options={options}
+                      displayStats={displayStats}
+                    />
+                  ) : (
+                    <Spin />
+                  )}
                 </CardContent>
               </Card>
             </Grid>
             <Grid xs={12} lg={4}>
               <Card sx={{ height: "100%" }}>
                 <CardContent>
-                  <RegionSelect handleChange={handleChange} />
+                  <RegionSelect
+                    handleChange={handleChange}
+                    selectedPlace={selectedPlace}
+                    setSelectedPlace={setSelectedPlace}
+                  />
                 </CardContent>
               </Card>
             </Grid>

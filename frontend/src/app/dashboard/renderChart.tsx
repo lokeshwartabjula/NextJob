@@ -13,24 +13,31 @@ import { ApexOptionsModified } from "./types";
 
 export default function RenderChart({
   options,
+  displayStats,
 }: {
   options: ApexOptionsModified;
+  displayStats: {
+    labels: string[];
+    data: number[];
+  };
 }): JSX.Element {
   switch (options.chart?.type?.toLocaleLowerCase()) {
     case "line":
-      return <LineChart
-        options={options}
-        title="Count"
-        labels={categories}
-        data={data}
-      />;
+      return (
+        <LineChart
+          options={options}
+          title="Count"
+          labels={displayStats.labels}
+          data={displayStats.data}
+        />
+      );
     case "bar":
       return (
         <BarChart
           options={options}
           title="Count"
-          labels={categories}
-          data={data}
+          labels={displayStats.labels}
+          data={displayStats.data}
         />
       );
     case "donut":
@@ -38,8 +45,8 @@ export default function RenderChart({
         <DonutChart
           options={options}
           title="Count"
-          labels={categories}
-          data={data}
+          labels={displayStats.labels}
+          data={displayStats.data}
         />
       );
     case "pie":
@@ -47,8 +54,8 @@ export default function RenderChart({
         <PieChart
           options={options}
           title="Count"
-          labels={categories}
-          data={data}
+          labels={displayStats.labels}
+          data={displayStats.data}
         />
       );
     default:
@@ -56,8 +63,8 @@ export default function RenderChart({
         <BarChart
           options={options}
           title="Count"
-          labels={categories}
-          data={data}
+          labels={displayStats.labels}
+          data={displayStats.data}
         />
       );
   }

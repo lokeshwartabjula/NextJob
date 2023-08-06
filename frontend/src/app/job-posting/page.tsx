@@ -168,11 +168,9 @@ export default function JobPosting() {
       jobCompanyLogo: state.companyLogo,
       employerEmail: state.email,
     };
-    console.log("jobData ==>", jobData);
     axiosInstance
       .post("api/createJob", jobData)
       .then((response) => {
-        console.log(response);
         setSnackBarVisible(true);
         router.push('/job-information')
       })

@@ -9,7 +9,7 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
 
 export default function OverviewTile(props:any) {
-  const { sx = { height: "100%", cursor: 'pointer' }, value, active, onClick } = props;
+  const { sx = { height: "100%", cursor: 'pointer' }, value, active, onClick, title } = props;
   const activeStyle = active ? { backgroundColor: 'lightgray' } : {};
   return (
     <Card sx={{...sx, ...activeStyle}} onClick={onClick}>
@@ -25,7 +25,7 @@ export default function OverviewTile(props:any) {
               color="text.secondary"
               variant="overline"
             >
-              Total Customers
+              {title}
             </Typography>
             <Typography variant="h4">
               {value}
@@ -53,6 +53,7 @@ OverviewTile.propTypes = {
   value: PropTypes.string.isRequired,
   sx: PropTypes.object,
   active: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  title: PropTypes.string.isRequired
 };
 

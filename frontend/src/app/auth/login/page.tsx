@@ -89,7 +89,6 @@ function Page(): ReactElement {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        console.log(values);
         handleLoginAndRedirect(values);
       } catch (err: any) {
         helpers.setStatus({ success: false });
