@@ -6,7 +6,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { axiosInstance } from "../../../../../api";
 import { useRouter } from 'next/navigation';
 import { ApplicantsType } from "../(constants)/ApplicantInformation";
@@ -33,14 +33,29 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "../(constants)/applicants.module.css";
+import { Console } from "console";
+import { UserContext } from "@/app/(context)/UserContext";
 
 export default function ApplicantsListing(props:{ id: string}) {
+
+    interface userInformation{
+      firstName :string;
+      lastName :  string;
+      email    : string;
+      password : string;
+      id       : string;
+    }
+
     const jobId = props.id;
     const [loading, setLoading] = useState(true);
     var router = useRouter();
     const theme = useTheme();
     const captionSize = useMediaQuery(theme.breakpoints.down('md'));
+    const { state } = useContext(UserContext);
+    console.log("state => ", state);
   
+    const [isHydrated, setIsHydrated] = useState(false);
+    const [users, setUsers] = useState<userInformation[]>([]);
     const [ applicants, setApplicants] = useState([]);
     const [ seekersData, setSeekersData] = useState<ApplicantsType[]>([]);
     const [ filteredSeekers, setFilteredSeekers] = useState<ApplicantsType[]>([]);
@@ -51,10 +66,17 @@ export default function ApplicantsListing(props:{ id: string}) {
     const [ applicantDetails, setJobDetails ] = useState<ApplicantsType>();
 
     useEffect(() => {
+      setIsHydrated(true);
+    }, []);
+
+    useEffect(() => {
         const fetchApplicants = async () => {
             try {
                 const response = await axiosInstance.get(`api/getJobApplicantIdsByJobId/${jobId}`);
                 setApplicants(response.data.applicants);
+                // console.log("applicants => ", response.data.applicants);
+                setFilteredSeekers(response.data.applicants);
+
             } catch (error) {
                 console.error('Error fetching applicant data:', error);
             }
@@ -70,12 +92,23 @@ export default function ApplicantsListing(props:{ id: string}) {
                 try {
                     const response = await axiosInstance.get(`api/seeker/${applicants[i]}`);
                     seekers.push(response.data.seekers[0]);
+                    // console.log("seekers => ", seekers[0].userId); 
+
+                    // const usersData = [];
+                    // for (const seeker of seekers) {
+                    //   const response = await axiosInstance.get(`api/getUser/${seeker.userId}`);
+                    //   console.log ("response => ", response.data.user);
+                    //   usersData.push(response.data.user);
+                    // }
+                    // console.log("usersData => ", usersData);
+                    // setUsers(usersData);
                     setLoading(false);
                 } catch (error) {
                     console.error('Error fetching seeker data:', error);
                 }
             }
             setSeekersData(seekers);
+            setFilteredSeekers(seekers);
         }
 
         if (applicants !==null) {
@@ -84,12 +117,14 @@ export default function ApplicantsListing(props:{ id: string}) {
         }
     }, [applicants]);
 
+    // console.log("users => ", users);
+    // console.log("seekersData => ", seekersData);
     useEffect(() => {
         let result = [...seekersData];
         
-        if (searchRecentExperience) {
-          result = result.filter(seeker => seeker.experiences[0].title.toLowerCase().includes(searchRecentExperience.toLowerCase()));
-        }
+        // if (searchRecentExperience || searchRecentExperience.length <= 0 || searchRecentExperience ) {
+        //   result = result.filter(seeker => seeker.experiences[0].title.toLowerCase().includes(searchRecentExperience.toLowerCase()));
+        // }
         
         if (searchFieldOfStudy) {
           result = result.filter(seeker => seeker.educations[0].fieldOfStudy.toLowerCase().includes(searchFieldOfStudy.toLowerCase()));
@@ -110,10 +145,10 @@ export default function ApplicantsListing(props:{ id: string}) {
       const handleClose = () => {
         setJobDetailsOpen(false);
       };
-  
+  // console.log("filteredSeekers => ", filteredSeekers);
   return (
     <>
-      <Box>
+      {isHydrated && <Box>
         <Grid container sx={{ margin: "0px" }}>
           <Grid item xs={12} sm={12} md={3} lg={3}>
             <Card
@@ -227,8 +262,9 @@ export default function ApplicantsListing(props:{ id: string}) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {!loading &&
-                    filteredSeekers.map((seeker) => (
+                  { !loading && 
+                    filteredSeekers.map((seeker) => { 
+                      return seeker && (
                       <TableRow
                         key={seeker.id}
                         className={styles.description}
@@ -237,15 +273,29 @@ export default function ApplicantsListing(props:{ id: string}) {
                         <TableCell className={styles.description}>
                           {seeker.email}
                         </TableCell>
+                        {(seeker.experiences && seeker.experiences[0].title !== '') ? (
                         <TableCell className={styles.description}>
-                          {seeker.experiences[0].title}
+                          { seeker.experiences[0].title}
                         </TableCell>
+                        ):
+                        <TableCell></TableCell>
+                        }
+                        {(seeker.educations && seeker.educations[0].fieldOfStudy !== '') ? (
                         <TableCell className={styles.description} >
-                            {seeker.educations[0].fieldOfStudy}
+                            { seeker.educations[0].fieldOfStudy}
                         </TableCell>
+                        ) :
+                          <TableCell></TableCell>
+                      }
+                        {(seeker.educations && seeker.educations[0].fieldOfStudy !== '' ) ? (
                         <TableCell>
                             {seeker.educations[0].degree}
                         </TableCell>
+                        ):(
+                        <TableCell></TableCell>
+                        )
+                      
+                      }
                         <TableCell>
                             <Button
                                 variant="contained"
@@ -256,7 +306,7 @@ export default function ApplicantsListing(props:{ id: string}) {
                             </Button>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )})} 
                     { 
                       applicants === null &&
                         <Box sx={{ textAlign :"center", width: "100%" }} >
@@ -282,7 +332,7 @@ export default function ApplicantsListing(props:{ id: string}) {
               applicantData={applicantDetails}
             />
         }
-      </Box>
+      </Box>}
     </>
   );
 }

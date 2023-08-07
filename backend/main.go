@@ -58,6 +58,7 @@ func main() {
 	protected.POST("/employer", api.AddEmployer)
 	protected.PUT("/employer", api.UpdateEmployerById)
 	protected.GET("/employer/:id", api.GetEmployerById)
+	protected.GET("/employerByUserId/:id", api.GetEmployerByUserId)
 	protected.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
 	protected.POST("/apply", api.ApplyJob)
 
@@ -65,6 +66,6 @@ func main() {
 
 	protected.POST("/review", api.WriteReview)
 	protected.GET("/getReview/:companyId", api.GetReviewByCompany)
-
+	protected.GET("/getUser/:id", api.GetUserById)
 	router.Run(":8080")
 }

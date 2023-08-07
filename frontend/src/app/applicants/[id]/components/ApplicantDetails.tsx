@@ -95,7 +95,7 @@ export default function JobDetails({
                     />
                   </ListItem>
 
-                  {applicantData.educations.map((edu: any, index: any) => (
+                  { applicantData.educations && applicantData.educations.map((edu: any, index: any) => (
                     <div key={index}>
                       <ListItem>
                         <ListItemIcon>
@@ -109,7 +109,7 @@ export default function JobDetails({
                     </div>
                   ))}
 
-                  {applicantData.experiences.map((exp: any, index: any) => (
+                  {applicantData.experiences &&  applicantData.experiences.map((exp: any, index: any) => (
                     <div key={index}>
                       <ListItem>
                         <ListItemIcon>
