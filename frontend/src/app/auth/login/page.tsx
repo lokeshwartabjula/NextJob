@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
+  Alert,
   Box,
   Button,
   Link,
@@ -26,6 +27,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { axiosInstance } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { setUserData } from "@/app/(context)/LocatStorageManager";
+import { set } from "date-fns";
 
 interface LoginResponseType {
   token: string;
@@ -40,12 +42,15 @@ interface LoginResponseType {
   loginType?: "seeker" | "employer";
 }
 
+const LOGIN_ERROR_MESSAGE = "Invalid email or password";
+
 function Page(): ReactElement {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = React.useState(false);
-
+  const [loginType, setLoginType] = React.useState('seeker');
   const userContext = useContext(UserContext);
-  
+  const [isLoginError, setIsLoginError] = React.useState(false);
+
   const { dispatch } = userContext;
 
   const handleLoginAndRedirect = (value: {
@@ -53,22 +58,28 @@ function Page(): ReactElement {
     email: string;
     password: string;
   }) => {
+    setIsLoginError(false);
     axiosInstance
-      .post("/pub/login", {...value, submit: undefined})
+      .post("/pub/login", { ...value, submit: undefined })
       .then((res) => {
         const data: LoginResponseType = res.data.response;
         setUserData(data);
         dispatch(data);
-        if (value.loginType==="seeker" && !data.isSeeker) {
+        if (value.loginType === "seeker" && !data.isSeeker) {
           router.push("/onboard/seeker");
-        } else if (value.loginType==="employer" && !data.isEmployer) {
+        } else if (value.loginType === "employer" && !data.isEmployer) {
           router.push("/onboard/employer");
         } else {
           router.push("/dashboard");
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        setIsLoginError(true);
+
+      });
   };
+
+
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -97,6 +108,16 @@ function Page(): ReactElement {
       }
     },
   });
+
+  const handleLoginTypeStateHandler = (
+    event: React.MouseEvent<HTMLElement>,
+    newLoginType: string | null,
+  ) => {
+    if (newLoginType !== null) {
+      setLoginType(newLoginType);
+      formik.setFieldValue("loginType", newLoginType);
+    }
+  };
 
   return (
     <>
@@ -137,9 +158,7 @@ function Page(): ReactElement {
                     <ToggleButtonGroup
                       value={formik.values.loginType}
                       exclusive
-                      onChange={(event, newLoginType) => {
-                        formik.setFieldValue("loginType", newLoginType);
-                      }}
+                      onChange={handleLoginTypeStateHandler}
                       aria-label="login type"
                       size="large"
                     >
@@ -169,6 +188,7 @@ function Page(): ReactElement {
                         </Typography>
                       </ToggleButton>
                     </ToggleButtonGroup>
+
                   </Box>
                   <TextField
                     error={!!(formik.touched.email && formik.errors.email)}
@@ -196,6 +216,8 @@ function Page(): ReactElement {
                     type="password"
                     value={formik.values.password}
                   />
+
+                  {isLoginError && (<Alert severity="error">{LOGIN_ERROR_MESSAGE}</Alert>)}
                 </Stack>
               )}
 
@@ -227,7 +249,7 @@ function Page(): ReactElement {
             </form>
           </div>
         </Box>
-      </Box>
+      </Box >
     </>
   );
 }

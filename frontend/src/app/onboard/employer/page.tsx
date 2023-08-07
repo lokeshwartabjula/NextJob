@@ -29,6 +29,9 @@ import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
 import { message } from "antd";
 import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
+import axios from "axios";
+import { isValidURL } from "../../../../utils";
+
 
 interface FormType {
   jobTitle: string;
@@ -90,7 +93,7 @@ const OnBoardingForm: React.FC = () => {
     companyType: Yup.string().required("Company type is required"),
     description: Yup.string().required("Company description is required"),
     websiteURL: Yup.string()
-      .url("Invalid URL")
+      .test('valid-url', 'Invalid URL', isValidURL)
       .required("Website URL is required"),
     streetAddress: Yup.string().required("Street address is required"),
     city: Yup.string().required("City is required"),
@@ -115,17 +118,10 @@ const OnBoardingForm: React.FC = () => {
           label="Company Name"
           onBlur={async () => {
             if (values.companyName.length > 3) {
-              const response = await axiosInstance.get(
-                "https://api.brandfetch.io/v2/search/" + values.companyName,
-                {
-                  headers: {
-                    Authorization:
-                      "Bearer 89CHWV0oBGHuH2idEvLbMUM0rYb/nEZABMx8Qu1ZlAI=",
-                  },
-                }
-              );
+              const response = await axios.get(
+                "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + values.companyName);
 
-              setCompanyLogoURL(response?.data[0]?.icon || "");
+              setCompanyLogoURL(response?.data[0]?.logo || "");
             }
           }}
         />

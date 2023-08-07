@@ -13,6 +13,7 @@ import AuthLayout from "../layout";
 import React, { ReactElement } from "react";
 import { axiosInstance } from "../../../../api";
 import { message } from "antd";
+import { tr } from "date-fns/locale";
 
 function Page(): ReactElement {
   const router = useRouter();
@@ -31,12 +32,18 @@ function Page(): ReactElement {
       password: "",
       submit: null,
     },
+    validateOnBlur: true,
+
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Must be a valid email")
         .max(255)
         .required("Email is required"),
-      firstName: Yup.string().max(255).required("First name is required"),
+      firstName: Yup
+        .string()
+        .matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9 ]+$/, 'First name must contain only alphabets or a combination of alphabets, numbers, and spaces')
+        .max(40)
+        .required(),
       lastName: Yup.string().max(255).required("Last name is required"),
       password: Yup.string().max(255).required("Password is required"),
     }),
@@ -99,6 +106,8 @@ function Page(): ReactElement {
               {isHydrated && (
                 <Stack spacing={3}>
                   <TextField
+                    id="firstName"
+                    type="text"
                     error={
                       !!(formik.touched.firstName && formik.errors.firstName)
                     }

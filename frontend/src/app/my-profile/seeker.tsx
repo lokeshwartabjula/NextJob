@@ -27,7 +27,7 @@ import {
 import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../api";
-import { SeekerFormType, SeekerProps } from "./types";
+import { SeekerFormType, SeekerFormTypeEducation, SeekerFormTypeExperience, SeekerProps } from "./types";
 import { UserContext } from "../(context)/UserContext";
 import { message } from "antd";
 
@@ -168,9 +168,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Education ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Education ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -192,7 +191,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.school &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.school
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].school`} />
@@ -208,7 +207,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.degree &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.degree
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].degree`} />
@@ -224,7 +223,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.fieldOfStudy &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.fieldOfStudy
                     }
                     helperText={
                       <ErrorMessage
@@ -246,7 +245,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.startDate &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.startDate
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].startDate`} />
@@ -266,7 +265,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.endDate &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.endDate
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].endDate`} />
@@ -277,7 +276,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             </div>
           ))}
           <Grid xs={12} textAlign={"right"}>
-            {values.educations?.length < 3 && (
+            {!values.educations || values.educations.length < 3 ? (
               <Button
                 type="button"
                 variant="contained"
@@ -295,7 +294,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
               >
                 Add Education
               </Button>
-            )}
+            ) : null}
           </Grid>
         </>
       )}
@@ -314,9 +313,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Experience ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Experience ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -339,7 +337,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.company &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.company
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].company`} />
@@ -355,7 +353,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.title &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.title
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].title`} />
@@ -371,7 +369,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.location &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.location
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].location`} />
@@ -391,7 +389,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.startDate &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.startDate
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].startDate`} />
@@ -411,7 +409,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.endDate &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.endDate
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].endDate`} />
@@ -432,7 +430,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             </div>
           ))}
           <Grid xs={12} textAlign={"right"}>
-            {values.experiences?.length < 3 && (
+            {!values.experiences || values.experiences.length < 3 ? (
               <Button
                 type="button"
                 variant="contained"
@@ -449,7 +447,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
               >
                 Add Experience
               </Button>
-            )}
+            ) : null}
           </Grid>
         </>
       )}
