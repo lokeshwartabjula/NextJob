@@ -235,7 +235,7 @@ export default function CompaniesList(props: any) {
           </div>
 
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
 
 
           {filteredCompanyData.map((company) => (
