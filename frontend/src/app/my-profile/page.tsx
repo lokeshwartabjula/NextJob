@@ -25,10 +25,12 @@ const MyProfile: React.FC = () => {
   const fetchUserData = async () => {
     if (userType === "seeker") {
       const res = await axiosInstance.get(`/api/seeker/${userId}`);
+      console.log("seeker data ==> ",res.data);
       res.data?.seekers[0] != null && setSeekerData(res.data?.seekers[0]);
     } else if (userType === "employer") {
-      const res = await axiosInstance.get(`/api/employer/${userId}`);
-      res.data?.employers[0] != null && setEmployerData(res.data?.employers[0]);
+      const res = await axiosInstance.get(`/api/employerByUserId/${userId}`);
+      console.log("employer data ==> ",res.data);
+      res.data.employers &&  res.data?.employers[0] != null && setEmployerData(res.data?.employers[0]);
     }
   };
 

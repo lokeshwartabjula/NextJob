@@ -72,7 +72,8 @@ const JobListings: React.FC<Props> = (props) => {
 
   console.log('state', state)
   var router = useRouter();
-  const companyName = props?.companyName;
+  const companyName = state?.companyName;
+  console.log('companyName', companyName);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -80,6 +81,7 @@ const JobListings: React.FC<Props> = (props) => {
         const res = await axiosInstance.get("api/getJobs");
         console.log('res ==>', res)
         setJobs(res.data.jobs);
+        setFilteredJobs(res.data.jobs);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch jobs", error);
