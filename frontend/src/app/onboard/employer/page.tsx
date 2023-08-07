@@ -115,7 +115,7 @@ const OnBoardingForm: React.FC = () => {
           label="Company Name"
           onBlur={async () => {
             if (values.companyName.length > 3) {
-              const response = await axios.get(
+              const response = await axiosInstance.get(
                 "https://api.brandfetch.io/v2/search/" + values.companyName,
                 {
                   headers: {
