@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"backend/configs"
-	"backend/models/db"
+	"backend/models/payload"
 )
 
 func GetUserById(c *gin.Context) {
@@ -33,7 +33,7 @@ func GetUserById(c *gin.Context) {
 
 	filter := bson.M{"_id": objectID}
 
-	var user db.User
+	var user payload.GetUser
 	err := collection.FindOne(context.Background(), filter).Decode(&user)
 
 	if err != nil {
