@@ -117,8 +117,8 @@ export default function ApplicantsListing(props:{ id: string}) {
     }, [applicants]);
 
     const getUserById = (userId : string) => {
-      const user =  users.find((user) => user.Id === userId);
-      const userFullName = user?.FirstName + " " + user?.LastName;
+      const user =  users.find((user) => user.id === userId);
+      const userFullName = user?.firstName + " " + user?.lastName;
       return userFullName;
     };
    

@@ -17,16 +17,13 @@ import Textarea from "@mui/joy/Textarea";
 import { axiosInstance } from "../../../api";
 import { getUserDataFromLocal } from "../(context)/LocatStorageManager";
 
-interface Props {
-  companyId: string;
-}
+export default function ReviewComponent({ companyId }: any) {
 
-function ReviewComponent({ companyId }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [review, setReview] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
-  const [reviews, setReviews] = useState<any>([])
-  const userData = getUserDataFromLocal()
+  const [reviews, setReviews] = useState<any>([]);
+  const userData = getUserDataFromLocal();
 
   const handleOpen = () => {
     setOpen(true);
@@ -42,31 +39,35 @@ function ReviewComponent({ companyId }: Props) {
       setError(true);
     } else {
       setReview("");
-      setReviews([...reviews, {
-        firstName: userData?.firstName,
-        lastName: userData?.lastName,
-        email: userData?.email,
-        review: review.trim(),
-        companyId: companyId
-      }])
+      setReviews([
+        ...reviews,
+        {
+          firstName: userData?.firstName,
+          lastName: userData?.lastName,
+          email: userData?.email,
+          review: review.trim(),
+          companyId: companyId,
+        },
+      ]);
       setOpen(false);
       axiosInstance.post("api/review", {
         firstName: userData?.firstName,
         lastName: userData?.lastName,
         email: userData?.email,
         review: review.trim(),
-        companyId: companyId
-      })
+        companyId: companyId,
+      });
     }
   };
 
   useEffect(() => {
-    axiosInstance.get(`api/getReview/${companyId}`)
-      .then(res => {
-        setReviews(res?.data?.reviews)
+    axiosInstance
+      .get(`api/getReview/${companyId}`)
+      .then((res) => {
+        setReviews(res?.data?.reviews);
       })
-      .catch(err => console.log('errror while fetching review ==>', err))
-  }, [])
+      .catch((err) => console.log("errror while fetching review ==>", err));
+  }, []);
 
   const handleReviewChange = (e: any) => {
     if (e.target.value.trim() !== "") {
@@ -77,7 +78,7 @@ function ReviewComponent({ companyId }: Props) {
 
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Button
           variant="contained"
           style={{
@@ -90,10 +91,14 @@ function ReviewComponent({ companyId }: Props) {
           <CreateIcon style={{ marginRight: 8 }} /> Write Review
         </Button>
       </Box>
-      <Box sx={{ alignSelf: 'center', paddingTop: 6 }}>
+      <Box sx={{ alignSelf: "center", paddingTop: 6 }}>
         {reviews?.map((item: any, index: number) => (
           <div style={{ width: 500 }}>
-            <ReviewCard key={index} title={item?.firstName + " " + item?.lastName} subheader={item.review} />
+            <ReviewCard
+              key={index}
+              title={item?.firstName + " " + item?.lastName}
+              subheader={item.review}
+            />
             {index !== reviews?.length - 1 && <Divider />}
           </div>
         ))}
@@ -130,4 +135,3 @@ function ReviewComponent({ companyId }: Props) {
     </>
   );
 }
-export default ReviewComponent;
