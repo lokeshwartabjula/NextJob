@@ -34,7 +34,8 @@ export default function JobDetails({
   applicantDataOpen,
   handleClose,
   applicantData,
-}: {applicantDataOpen: boolean, handleClose: () => void, applicantData: ApplicantsType}) {
+  userName
+}: {applicantDataOpen: boolean, handleClose: () => void, applicantData: ApplicantsType, userName: string}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [responseMessage, setResponseMessage] = useState("");
@@ -55,7 +56,7 @@ export default function JobDetails({
           onClose={handleClose}
           aria-labelledby="applicant-details"
         >
-          <DialogTitle>{`Applicant Details - ${applicantData.id}`}</DialogTitle>
+          <DialogTitle>{`Applicant Details - ${userName}`}</DialogTitle>
           <DialogContent>
             <Card>
               <CardHeader

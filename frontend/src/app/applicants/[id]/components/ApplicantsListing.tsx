@@ -52,7 +52,7 @@ export default function ApplicantsListing(props:{ id: string}) {
     const theme = useTheme();
     const captionSize = useMediaQuery(theme.breakpoints.down('md'));
     const { state } = useContext(UserContext);
-    console.log("state => ", state);
+    // console.log("state => ", state);
   
     const [isHydrated, setIsHydrated] = useState(false);
     const [users, setUsers] = useState<userInformation[]>([]);
@@ -64,6 +64,7 @@ export default function ApplicantsListing(props:{ id: string}) {
     const [ searchDegree, setSearchDegree] = useState("");
     const [ applicantDetailsOpen, setJobDetailsOpen ] = useState(false);
     const [ applicantDetails, setJobDetails ] = useState<ApplicantsType>();
+    const [ userName, setUserName] = useState(""); 
 
     useEffect(() => {
       setIsHydrated(true);
@@ -92,17 +93,15 @@ export default function ApplicantsListing(props:{ id: string}) {
                 try {
                     const response = await axiosInstance.get(`api/seeker/${applicants[i]}`);
                     seekers.push(response.data.seekers[0]);
-                    // console.log("seekers => ", seekers[0].userId); 
 
-                    // const usersData = [];
-                    // for (const seeker of seekers) {
-                    //   const response = await axiosInstance.get(`api/getUser/${seeker.userId}`);
-                    //   console.log ("response => ", response.data.user);
-                    //   usersData.push(response.data.user);
-                    // }
-                    // console.log("usersData => ", usersData);
-                    // setUsers(usersData);
                     setLoading(false);
+
+                    const usersData = [];
+                    for (const seeker of seekers) {
+                      const response = await axiosInstance.get(`api/getUser/${seeker.userId}`);
+                      usersData.push(response.data.user);
+                    }
+                    setUsers(usersData);
                 } catch (error) {
                     console.error('Error fetching seeker data:', error);
                 }
@@ -117,6 +116,12 @@ export default function ApplicantsListing(props:{ id: string}) {
         }
     }, [applicants]);
 
+    const getUserById = (userId : string) => {
+      const user =  users.find((user) => user.Id === userId);
+      const userFullName = user?.FirstName + " " + user?.LastName;
+      return userFullName;
+    };
+   
     // console.log("users => ", users);
     // console.log("seekersData => ", seekersData);
     useEffect(() => {
@@ -137,15 +142,16 @@ export default function ApplicantsListing(props:{ id: string}) {
         setFilteredSeekers(result);
       }, [searchRecentExperience, searchFieldOfStudy, searchDegree, seekersData]);
 
-      const handleClickOpen = (event: any, applicant: ApplicantsType) => {
+      const handleClickOpen = (event: any, applicant: ApplicantsType, userName :string) => {
         setJobDetails(applicant);
         setJobDetailsOpen(true);
+        setUserName(userName);
       };
     
       const handleClose = () => {
         setJobDetailsOpen(false);
       };
-  // console.log("filteredSeekers => ", filteredSeekers);
+
   return (
     <>
       {isHydrated && <Box>
@@ -254,7 +260,7 @@ export default function ApplicantsListing(props:{ id: string}) {
               <Table>
                 <TableHead sx={{ height: "80px" }}>
                   <TableRow>
-                    <TableCell className={styles.titles}>Email</TableCell>
+                    <TableCell className={styles.titles}>Name</TableCell>
                     <TableCell className={styles.titles}>Recent Experience</TableCell>
                     <TableCell className={styles.titles}>Field of study</TableCell>
                     <TableCell className={styles.titles}>Degree</TableCell>
@@ -271,7 +277,7 @@ export default function ApplicantsListing(props:{ id: string}) {
                         sx={{ height: "100px" }}
                       >
                         <TableCell className={styles.description}>
-                          {seeker.email}
+                          {  getUserById(seeker.userId) }
                         </TableCell>
                         {(seeker.experiences && seeker.experiences[0].title !== '') ? (
                         <TableCell className={styles.description}>
@@ -300,7 +306,7 @@ export default function ApplicantsListing(props:{ id: string}) {
                             <Button
                                 variant="contained"
                                 className={styles.buttonApplicants}
-                                onClick={(event) => handleClickOpen(event, seeker)}
+                                onClick={(event) => handleClickOpen(event, seeker, getUserById(seeker.userId))}
                             >
                                 View Details
                             </Button>
@@ -327,9 +333,10 @@ export default function ApplicantsListing(props:{ id: string}) {
         </Grid>
         { applicantDetails &&       
             <ApplicantDetails
-            applicantDataOpen={applicantDetailsOpen}
+              applicantDataOpen={applicantDetailsOpen}
               handleClose={handleClose}
               applicantData={applicantDetails}
+              userName={userName}
             />
         }
       </Box>}
