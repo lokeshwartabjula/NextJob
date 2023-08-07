@@ -39,11 +39,11 @@ import { UserContext } from "@/app/(context)/UserContext";
 export default function ApplicantsListing(props:{ id: string}) {
 
     interface userInformation{
-      firstName :string;
-      lastName :  string;
-      email    : string;
-      password : string;
-      id       : string;
+      FirstName :string;
+      LastName :  string;
+      Email    : string;
+      Password : string;
+      Id       : string;
     }
 
     const jobId = props.id;
@@ -117,8 +117,8 @@ export default function ApplicantsListing(props:{ id: string}) {
     }, [applicants]);
 
     const getUserById = (userId : string) => {
-      const user =  users.find((user) => user.id === userId);
-      const userFullName = user?.firstName + " " + user?.lastName;
+      const user =  users.find((user) => user.Id === userId);
+      const userFullName = user?.FirstName + " " + user?.LastName;
       return userFullName;
     };
    
