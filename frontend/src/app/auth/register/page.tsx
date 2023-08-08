@@ -13,7 +13,6 @@ import AuthLayout from "../layout";
 import React, { ReactElement } from "react";
 import { axiosInstance } from "../../../../api";
 import { message } from "antd";
-import { tr } from "date-fns/locale";
 
 function Page(): ReactElement {
   const router = useRouter();
@@ -30,6 +29,7 @@ function Page(): ReactElement {
       firstName: "",
       lastName: "",
       password: "",
+      confirmPassword: "",
       submit: null,
     },
     validateOnBlur: true,
@@ -37,18 +37,39 @@ function Page(): ReactElement {
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Must be a valid email")
-        .max(255)
+        .max(255, "Email must be at most 255 characters")
         .required("Email is required"),
-      firstName: Yup
-        .string()
-        .matches(/^(?=.*[a-zA-Z])[a-zA-Z0-9 ]+$/, 'First name must contain only alphabets or a combination of alphabets, numbers, and spaces')
-        .max(40)
-        .required(),
-      lastName: Yup.string().max(255).required("Last name is required"),
-      password: Yup.string().max(255).required("Password is required"),
+      firstName: Yup.string()
+        .matches(
+          /^[a-zA-Z ]+$/,
+          "First name must contain only alphabets or spaces"
+        )
+        .max(40, "First name must be at most 40 characters")
+        .required("First name is required"),
+      lastName: Yup.string()
+        .matches(
+          /^[a-zA-Z ]+$/,
+          "Last name must contain only alphabets or spaces"
+        )
+        .max(40, "Last name must be at most 40 characters")
+        .required("Last name is required"),
+      password: Yup.string()
+        .max(255, "Password must be at most 255 characters")
+        .required("Password is required")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character"
+        ),
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), ""], "Passwords must match")
+        .required("Confirm Password is required"),
     }),
     onSubmit: async (values, helpers) => {
       try {
+        if (values.password !== values.confirmPassword) {
+          helpers.setErrors({ confirmPassword: "Passwords must match" });
+          return;
+        }
         axiosInstance
           .post("/pub/register", { ...values, submit: undefined })
           .then((res) => {
@@ -106,7 +127,7 @@ function Page(): ReactElement {
               {isHydrated && (
                 <Stack spacing={3}>
                   <TextField
-                    id="firstName"
+                    // id="firstName"
                     type="text"
                     error={
                       !!(formik.touched.firstName && formik.errors.firstName)
@@ -160,6 +181,25 @@ function Page(): ReactElement {
                     onChange={formik.handleChange}
                     type="password"
                     value={formik.values.password}
+                  />
+                  <TextField
+                    error={
+                      !!(
+                        formik.touched.confirmPassword &&
+                        formik.errors.confirmPassword
+                      )
+                    }
+                    fullWidth
+                    helperText={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                    }
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    type="password"
+                    value={formik.values.confirmPassword}
                   />
                 </Stack>
               )}

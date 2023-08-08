@@ -22,7 +22,7 @@ export const useChartOptions = (categories: string[]): ApexOptionsModified => {
   const theme = useTheme();
   return {
     chart: {
-      type: "line",
+      type: "donut",
       background: "transparent",
       stacked: false,
       toolbar: {
@@ -135,4 +135,4 @@ export const useChartOption = (categories: string[]): ApexOptionsModified => {
   };
 };
 
-export const GraphTypeOptions = ["Line", "Bar", "Pie", "Donut"];
+export const GraphTypeOptions = ["Donut", "Bar", "Pie", "Line"];

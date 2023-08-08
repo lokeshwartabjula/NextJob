@@ -27,7 +27,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import { axiosInstance } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { setUserData } from "@/app/(context)/LocatStorageManager";
-import { set } from "date-fns";
 
 interface LoginResponseType {
   token: string;
@@ -75,7 +74,6 @@ function Page(): ReactElement {
       })
       .catch((err) => {
         setIsLoginError(true);
-
       });
   };
 
