@@ -141,6 +141,7 @@ const OnBoardingForm: React.FC = () => {
           name="email"
           as={TextField}
           label="Email"
+          disabled
           fullWidth
           error={touched.email && !!errors.email}
           helperText={<ErrorMessage name="email" />}
@@ -537,7 +538,7 @@ const OnBoardingForm: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        email: "",
+        email: localStorage.getItem("email") || "",
         phone: "",
         address1: "",
         address2: "",
