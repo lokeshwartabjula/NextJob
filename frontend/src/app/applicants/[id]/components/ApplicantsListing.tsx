@@ -39,11 +39,11 @@ import { UserContext } from "@/app/(context)/UserContext";
 export default function ApplicantsListing(props:{ id: string}) {
 
     interface userInformation{
-      FirstName :string;
-      LastName :  string;
-      Email    : string;
-      Password : string;
-      Id       : string;
+      firstName :string;
+      lastName :  string;
+      email    : string;
+      password : string;
+      id       : string;
     }
 
     const jobId = props.id;
@@ -117,19 +117,19 @@ export default function ApplicantsListing(props:{ id: string}) {
     }, [applicants]);
 
     const getUserById = (userId : string) => {
-      const user =  users.find((user) => user.Id === userId);
-      const userFullName = user?.FirstName + " " + user?.LastName;
+      const user =  users.find((user) => user.email === userId);
+      const userFullName = user?.firstName + " " + user?.lastName;
       return userFullName;
     };
    
-    // console.log("users => ", users);
+    console.log("users => ", users);
     // console.log("seekersData => ", seekersData);
     useEffect(() => {
         let result = [...seekersData];
         
-        // if (searchRecentExperience || searchRecentExperience.length <= 0 || searchRecentExperience ) {
-        //   result = result.filter(seeker => seeker.experiences[0].title.toLowerCase().includes(searchRecentExperience.toLowerCase()));
-        // }
+        if (searchRecentExperience || searchRecentExperience.length <= 0 || searchRecentExperience ) {
+          result = result.filter(seeker => seeker.experiences[0].title.toLowerCase().includes(searchRecentExperience.toLowerCase()));
+        }
         
         if (searchFieldOfStudy) {
           result = result.filter(seeker => seeker.educations[0].fieldOfStudy.toLowerCase().includes(searchFieldOfStudy.toLowerCase()));
@@ -277,7 +277,7 @@ export default function ApplicantsListing(props:{ id: string}) {
                         sx={{ height: "100px" }}
                       >
                         <TableCell className={styles.description}>
-                          {  getUserById(seeker.userId) }
+                          {  getUserById(seeker.email) }
                         </TableCell>
                         {(seeker.experiences && seeker.experiences[0].title !== '') ? (
                         <TableCell className={styles.description}>
@@ -306,7 +306,7 @@ export default function ApplicantsListing(props:{ id: string}) {
                             <Button
                                 variant="contained"
                                 className={styles.buttonApplicants}
-                                onClick={(event) => handleClickOpen(event, seeker, getUserById(seeker.userId))}
+                                onClick={(event) => handleClickOpen(event, seeker, getUserById(seeker.email))}
                             >
                                 View Details
                             </Button>
