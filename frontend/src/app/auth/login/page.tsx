@@ -19,6 +19,9 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import AuthLayout from "../layout";
 import React, { ReactElement, useContext } from "react";
@@ -47,10 +50,12 @@ const LOGIN_ERROR_MESSAGE = "Invalid email or password";
 function Page(): ReactElement {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = React.useState(false);
-  const [loginType, setLoginType] = React.useState('seeker');
+  const [loginType, setLoginType] = React.useState("seeker");
   const userContext = useContext(UserContext);
   const [isLoginError, setIsLoginError] = React.useState(false);
-
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
   const { dispatch } = userContext;
 
   const handleLoginAndRedirect = (value: {
@@ -58,10 +63,14 @@ function Page(): ReactElement {
     email: string;
     password: string;
   }) => {
+    setIsLoading(true);
     setIsLoginError(false);
     axiosInstance
       .post("/pub/login", { ...value, submit: undefined })
       .then((res) => {
+        setResponseMessage("Login Successfully!");
+        setOpenSnackbar(true);
+        setIsLoading(false);
         const data: LoginResponseType = res.data.response;
         setUserData(data);
         dispatch(data);
@@ -74,12 +83,14 @@ function Page(): ReactElement {
         }
       })
       .catch((err) => {
+        setIsLoading(false);
         setIsLoginError(true);
-
       });
   };
 
-
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -111,7 +122,7 @@ function Page(): ReactElement {
 
   const handleLoginTypeStateHandler = (
     event: React.MouseEvent<HTMLElement>,
-    newLoginType: string | null,
+    newLoginType: string | null
   ) => {
     if (newLoginType !== null) {
       setLoginType(newLoginType);
@@ -188,7 +199,6 @@ function Page(): ReactElement {
                         </Typography>
                       </ToggleButton>
                     </ToggleButtonGroup>
-
                   </Box>
                   <TextField
                     error={!!(formik.touched.email && formik.errors.email)}
@@ -217,7 +227,9 @@ function Page(): ReactElement {
                     value={formik.values.password}
                   />
 
-                  {isLoginError && (<Alert severity="error">{LOGIN_ERROR_MESSAGE}</Alert>)}
+                  {isLoginError && (
+                    <Alert severity="error">{LOGIN_ERROR_MESSAGE}</Alert>
+                  )}
                 </Stack>
               )}
 
@@ -235,6 +247,28 @@ function Page(): ReactElement {
               >
                 Login
               </Button>
+              <Backdrop
+                open={isLoading}
+                sx={{
+                  zIndex: (theme) => theme.zIndex.drawer + 1,
+                  color: "#fff",
+                }}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
+              <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+              >
+                <Alert
+                  onClose={handleCloseSnackbar}
+                  severity="success"
+                  elevation={3}
+                >
+                  {responseMessage}
+                </Alert>
+              </Snackbar>
               <Typography color="text.secondary" variant="body2">
                 Don&apos;t have an account? &nbsp;
                 <Link
@@ -249,7 +283,7 @@ function Page(): ReactElement {
             </form>
           </div>
         </Box>
-      </Box >
+      </Box>
     </>
   );
 }

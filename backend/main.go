@@ -61,7 +61,7 @@ func main() {
 	protected.GET("/employerByUserId/:id", api.GetEmployerByUserId)
 	protected.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
 	protected.POST("/apply", api.ApplyJob)
-
+	protected.POST("/scheduleInterview", api.ScheduleInterview)
 	protected.GET("/getEmployers", api.GetEmployers)
 
 	protected.POST("/review", api.WriteReview)

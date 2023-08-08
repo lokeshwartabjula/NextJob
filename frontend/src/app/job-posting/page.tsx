@@ -19,6 +19,8 @@ import {
   OutlinedInput,
   Snackbar,
   Alert,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import Textarea from "@mui/joy/Textarea";
 import "./styles.css";
@@ -89,9 +91,9 @@ export default function JobPosting() {
   const [experience, setExperience] = useState("");
   const [noOfPositions, setNoOfPositions] = useState("");
   const [snackBarVisible, setSnackBarVisible] = React.useState(false);
-
+  const [isLoading, setIsLoading] = React.useState(false);
   const { state } = React.useContext(UserContext);
-  const router = useRouter()
+  const router = useRouter();
 
   const handleChange = (event: SelectChangeEvent<typeof selectedSkills>) => {
     const {
@@ -151,7 +153,7 @@ export default function JobPosting() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    setIsLoading(true);
     const jobData = {
       jobTitle: jobTitle,
       jobDescription: jobDescription,
@@ -172,11 +174,13 @@ export default function JobPosting() {
       .post("api/createJob", jobData)
       .then((response) => {
         setSnackBarVisible(true);
-        router.push('/job-information')
+        setIsLoading(false);
+        router.push("/job-information");
       })
       .catch((error) => {
         console.log("api error ==>", error);
         alert("Error in creating job");
+        setIsLoading(false);
       });
   };
 
@@ -195,6 +199,12 @@ export default function JobPosting() {
           Job Posted Successfully.
         </Alert>
       </Snackbar>
+      <Backdrop
+        open={isLoading}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <form onSubmit={handleSubmit}>
         <Box
           display="flex"

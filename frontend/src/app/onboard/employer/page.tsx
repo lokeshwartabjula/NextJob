@@ -12,6 +12,9 @@ import {
   CardHeader,
   CircularProgress,
   TextField,
+  Backdrop,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import {
@@ -31,7 +34,6 @@ import { message } from "antd";
 import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
 import axios from "axios";
 import { isValidURL } from "../../../../utils";
-
 
 interface FormType {
   jobTitle: string;
@@ -69,13 +71,19 @@ const initialValues: FormType = {
 const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const [companyLogoURL, setCompanyLogoURL] = React.useState("");
-
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
   const { state, dispatch } = useContext(UserContext);
   const router = useRouter();
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
     jobTitle: Yup.string().required("Job title is required"),
@@ -93,7 +101,7 @@ const OnBoardingForm: React.FC = () => {
     companyType: Yup.string().required("Company type is required"),
     description: Yup.string().required("Company description is required"),
     websiteURL: Yup.string()
-      .test('valid-url', 'Invalid URL', isValidURL)
+      .test("valid-url", "Invalid URL", isValidURL)
       .required("Website URL is required"),
     streetAddress: Yup.string().required("Street address is required"),
     city: Yup.string().required("City is required"),
@@ -119,7 +127,9 @@ const OnBoardingForm: React.FC = () => {
           onBlur={async () => {
             if (values.companyName.length > 3) {
               const response = await axios.get(
-                "https://autocomplete.clearbit.com/v1/companies/suggest?query=" + values.companyName);
+                "https://autocomplete.clearbit.com/v1/companies/suggest?query=" +
+                  values.companyName
+              );
 
               setCompanyLogoURL(response?.data[0]?.logo || "");
             }
@@ -299,6 +309,7 @@ const OnBoardingForm: React.FC = () => {
           message.error("Please enter valid company name");
           return;
         }
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("jobTitle", values.jobTitle);
         formData.append("phone", values.phone);
@@ -325,6 +336,9 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
+            setResponseMessage("Accouted Details Added Successfully!");
+            setOpenSnackbar(true);
+            setIsLoading(false);
             dispatch({
               ...state,
               loginType: "employer",
@@ -338,6 +352,7 @@ const OnBoardingForm: React.FC = () => {
           })
           .catch((err) => {
             console.log("err=>", err);
+            setIsLoading(false);
           });
       }}
       onErrors={(errors: FormikErrors<FormType>) => {
@@ -397,6 +412,28 @@ const OnBoardingForm: React.FC = () => {
                   >
                     Submit
                   </Button>
+                  <Backdrop
+                    open={isLoading}
+                    sx={{
+                      color: "#fff",
+                      zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                  >
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                  >
+                    <Alert
+                      onClose={handleCloseSnackbar}
+                      severity="success"
+                      elevation={3}
+                    >
+                      {responseMessage}
+                    </Alert>
+                  </Snackbar>
                 </Grid>
               </>
             )}
