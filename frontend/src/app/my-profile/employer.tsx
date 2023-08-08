@@ -11,6 +11,9 @@ import {
   CardHeader,
   CircularProgress,
   TextField,
+  Backdrop,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import {
@@ -27,10 +30,13 @@ import { axiosInstance } from "../../../api";
 import { EmployerFormType, EmployerProps } from "./types";
 import { UserContext } from "../(context)/UserContext";
 import { message } from "antd";
-
+import { set } from "date-fns";
 const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const { state } = useContext(UserContext);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -141,6 +147,10 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
       </Grid>
     </Grid>
   );
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const renderPersonalDetails = (
     errors: FormikErrors<EmployerFormType>,
@@ -253,106 +263,127 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
   };
 
   return (
-    <Formik
-      initialValues={props}
-      validationSchema={validationSchema}
-      onSubmit={(values: EmployerFormType) => {
-        const formData = new FormData();
-        formData.append("ID", props.id);
-        formData.append("jobTitle", values.jobTitle);
-        formData.append("phone", values.phone);
-        formData.append("companyName", values.companyName);
-        formData.append("industry", values.industry);
-        formData.append("foundedYear", values.foundedYear.toString());
-        formData.append("companySize", values.companySize);
-        formData.append("companyType", values.companyType);
-        formData.append("description", values.description);
-        values.websiteURL && formData.append("websiteURL", values.websiteURL);
-        formData.append("streetAddress", values.streetAddress);
-        formData.append("city", values.city);
-        formData.append("state", values.state);
-        formData.append("postalCode", values.postalCode);
-        formData.append("country", values.country);
-        formData.append("userId", state.id);
-        // formData.append("companyLogo", values.companyLogo);
+    <>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" elevation={3}>
+          {responseMessage}
+        </Alert>
+      </Snackbar>
+      <Formik
+        initialValues={props}
+        validationSchema={validationSchema}
+        onSubmit={(values: EmployerFormType) => {
+          setIsLoading(true);
+          const formData = new FormData();
+          formData.append("ID", props.id);
+          formData.append("jobTitle", values.jobTitle);
+          formData.append("phone", values.phone);
+          formData.append("companyName", values.companyName);
+          formData.append("industry", values.industry);
+          formData.append("foundedYear", values.foundedYear.toString());
+          formData.append("companySize", values.companySize);
+          formData.append("companyType", values.companyType);
+          formData.append("description", values.description);
+          values.websiteURL && formData.append("websiteURL", values.websiteURL);
+          formData.append("streetAddress", values.streetAddress);
+          formData.append("city", values.city);
+          formData.append("state", values.state);
+          formData.append("postalCode", values.postalCode);
+          formData.append("country", values.country);
+          formData.append("userId", state.id);
+          // formData.append("companyLogo", values.companyLogo);
 
-        axiosInstance
-          .put(`api/employer`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            message.success("Profile updated successfully");
-          })
-          .catch((err) => {
-            console.log("err=>", err);
-          });
-      }}
-      onErrors={(errors: FormikErrors<EmployerFormType>) => {
-        console.log(errors);
-      }}
-    >
-      {({ errors, touched }) => (
-        <Form>
-          <Grid
-            container
-            justifyContent="center"
-            sx={{ flex: "1 1 auto" }}
-            spacing={1}
-          >
-            {!isHydrated ? (
-              <CircularProgress />
-            ) : (
-              <>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Employer Details" />
-                    <CardContent>
-                      {renderPersonalDetails(errors, touched)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Company Details" />
-                    <CardContent>
-                      {renderBasicDetails(errors, touched)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Company Address" />
-                    <CardContent>
-                      {renderAddressDetails(errors, touched)}
-                    </CardContent>
-                  </Card>
-                </Grid>
+          axiosInstance
+            .put(`api/employer`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((res) => {
+              setResponseMessage("Profile updated successfully");
+              setOpenSnackbar(true);
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              console.log("err=>", err);
+              setIsLoading(false);
+            });
+        }}
+        onErrors={(errors: FormikErrors<EmployerFormType>) => {
+          console.log(errors);
+        }}
+      >
+        {({ errors, touched }) => (
+          <Form>
+            <Grid
+              container
+              justifyContent="center"
+              sx={{ flex: "1 1 auto" }}
+              spacing={1}
+            >
+              {!isHydrated ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Employer Details" />
+                      <CardContent>
+                        {renderPersonalDetails(errors, touched)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Company Details" />
+                      <CardContent>
+                        {renderBasicDetails(errors, touched)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Company Address" />
+                      <CardContent>
+                        {renderAddressDetails(errors, touched)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
 
-                {/* <Grid xs={11} md={8}>
+                  {/* <Grid xs={11} md={8}>
                   <Card>
                     <CardHeader title="Upload Logo" />
                     <CardContent>{renderLogoComponent()}</CardContent>
                   </Card>
                 </Grid> */}
-                <Grid xs={11} md={8}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    // disabled={isSubmitting}
-                    sx={{ mt: 2, py: 1, minWidth: 150 }}
-                  >
-                    Submit
-                  </Button>
-                </Grid>
-              </>
-            )}
-          </Grid>
-        </Form>
-      )}
-    </Formik>
+                  <Grid xs={11} md={8}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      // disabled={isSubmitting}
+                      sx={{ mt: 2, py: 1, minWidth: 150 }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                </>
+              )}
+            </Grid>
+          </Form>
+        )}
+      </Formik>{" "}
+    </>
   );
 };
 

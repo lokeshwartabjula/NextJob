@@ -9,6 +9,10 @@ import {
   DialogActions,
   Divider,
   FormHelperText,
+  Snackbar,
+  CircularProgress,
+  Backdrop,
+  Alert,
 } from "@mui/material";
 import { Button } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
@@ -18,15 +22,19 @@ import { axiosInstance } from "../../../api";
 import { getUserDataFromLocal } from "../(context)/LocatStorageManager";
 
 export default function ReviewComponent({ companyId }: any) {
-
   const [open, setOpen] = useState<boolean>(false);
   const [review, setReview] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [reviews, setReviews] = useState<any>([]);
   const userData = getUserDataFromLocal();
-
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const handleOpen = () => {
     setOpen(true);
+  };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   const handleClose = () => {
@@ -38,9 +46,10 @@ export default function ReviewComponent({ companyId }: any) {
     if (review.trim() === "") {
       setError(true);
     } else {
+      setIsLoading(true);
       setReview("");
-      setReviews([
-        ...reviews ? reviews : [],
+      setReviews((prevReviews: any) => [
+        ...(Array.isArray(prevReviews) ? prevReviews : []),
         {
           firstName: userData?.firstName,
           lastName: userData?.lastName,
@@ -49,14 +58,26 @@ export default function ReviewComponent({ companyId }: any) {
           companyId: companyId,
         },
       ]);
+
       setOpen(false);
-      axiosInstance.post("api/review", {
-        firstName: userData?.firstName,
-        lastName: userData?.lastName,
-        email: userData?.email,
-        review: review.trim(),
-        companyId: companyId,
-      });
+      axiosInstance
+        .post("api/review", {
+          firstName: userData?.firstName,
+          lastName: userData?.lastName,
+          email: userData?.email,
+          review: review.trim(),
+          companyId: companyId,
+        })
+        .then((res) => {
+          setResponseMessage("Review added successfully!");
+          setOpenSnackbar(true);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          setResponseMessage("Something went wrong!");
+          setOpenSnackbar(true);
+          setIsLoading(false);
+        });
     }
   };
 
@@ -132,6 +153,21 @@ export default function ReviewComponent({ companyId }: any) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Backdrop
+        open={isLoading}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" elevation={3}>
+          {responseMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

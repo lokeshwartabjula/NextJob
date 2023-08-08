@@ -12,6 +12,9 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  Snackbar,
+  Alert,
+  Backdrop,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import {
@@ -30,7 +33,11 @@ import { axiosInstance } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
 import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
-import { SeekerFormType, SeekerFormTypeEducation, SeekerFormTypeExperience } from "@/app/my-profile/types";
+import {
+  SeekerFormType,
+  SeekerFormTypeEducation,
+  SeekerFormTypeExperience,
+} from "@/app/my-profile/types";
 
 interface FormType {
   email: string;
@@ -60,11 +67,18 @@ interface FormType {
 const OnBoardingForm: React.FC = () => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const router = useRouter();
-
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
   const { state, dispatch } = useContext(UserContext);
+
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -198,8 +212,9 @@ const OnBoardingForm: React.FC = () => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Education ${index + 1
-                    }`}</Typography>
+                  <Typography variant="h6">{`Education ${
+                    index + 1
+                  }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -221,7 +236,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.school &&
-                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.school
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.school
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].school`} />
@@ -237,7 +253,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.degree &&
-                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.degree
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.degree
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].degree`} />
@@ -253,7 +270,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.fieldOfStudy &&
-                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.fieldOfStudy
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.fieldOfStudy
                     }
                     helperText={
                       <ErrorMessage
@@ -275,7 +293,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.startDate &&
-                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.startDate
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.startDate
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].startDate`} />
@@ -295,7 +314,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.endDate &&
-                      !!(errors.educations?.[index] as SeekerFormTypeEducation)?.endDate
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.endDate
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].endDate`} />
@@ -343,8 +363,9 @@ const OnBoardingForm: React.FC = () => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Experience ${index + 1
-                    }`}</Typography>
+                  <Typography variant="h6">{`Experience ${
+                    index + 1
+                  }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -367,7 +388,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.company &&
-                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.company
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.company
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].company`} />
@@ -383,7 +405,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.title &&
-                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.title
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.title
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].title`} />
@@ -399,7 +422,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.location &&
-                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.location
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.location
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].location`} />
@@ -419,7 +443,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.startDate &&
-                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.startDate
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.startDate
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].startDate`} />
@@ -439,7 +464,8 @@ const OnBoardingForm: React.FC = () => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.endDate &&
-                      !!(errors.educations?.[index] as SeekerFormTypeExperience)?.endDate
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.endDate
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].endDate`} />
@@ -539,6 +565,7 @@ const OnBoardingForm: React.FC = () => {
       }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("email", values.email);
         formData.append("phone", values.phone);
@@ -557,11 +584,15 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
-            dispatch({ ...state, loginType: "seeker" })
+            setResponseMessage("Account Information Added Successfully!");
+            setOpenSnackbar(true);
+            setIsLoading(false);
+            dispatch({ ...state, loginType: "seeker" });
             setUserDataByName("loginType", "seeker");
             router.push("/dashboard");
           })
           .catch((err) => {
+            setIsLoading(false);
             console.log(err);
           });
       }}
@@ -620,6 +651,28 @@ const OnBoardingForm: React.FC = () => {
                   >
                     Submit
                   </Button>
+                  <Backdrop
+                    open={isLoading}
+                    sx={{
+                      color: "#fff",
+                      zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                  >
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                  >
+                    <Alert
+                      onClose={handleCloseSnackbar}
+                      severity="success"
+                      elevation={3}
+                    >
+                      {responseMessage}
+                    </Alert>
+                  </Snackbar>
                 </Grid>
               </>
             )}

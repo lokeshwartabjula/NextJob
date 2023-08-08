@@ -33,6 +33,7 @@ func main() {
 	})
 	public.POST("/login", api.Login)
 	public.POST("/register", api.Register)
+	public.POST("/contactUs", api.ContactUs)
 
 	// protected routes. For this routes you need to add Authorization header which contains JWT token. The API would look like this: http://localhost:8080/api/
 	protected := router.Group("/api")
@@ -61,7 +62,7 @@ func main() {
 	protected.GET("/employerByUserId/:id", api.GetEmployerByUserId)
 	protected.GET("/getJobApplicantIdsByJobId/:id", api.GetJobApplicantIdsByJobId)
 	protected.POST("/apply", api.ApplyJob)
-
+	protected.POST("/scheduleInterview", api.ScheduleInterview)
 	protected.GET("/getEmployers", api.GetEmployers)
 
 	protected.POST("/review", api.WriteReview)

@@ -8,7 +8,18 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+  Backdrop,
+  CircularProgress,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import AuthLayout from "../layout";
 import React, { ReactElement } from "react";
 import { axiosInstance } from "../../../../api";
@@ -18,10 +29,17 @@ function Page(): ReactElement {
   const router = useRouter();
 
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -73,11 +91,17 @@ function Page(): ReactElement {
         axiosInstance
           .post("/pub/register", { ...values, submit: undefined })
           .then((res) => {
+            setResponseMessage(
+              "Account Created! Now Please Login to Add Your Information."
+            );
+            setOpenSnackbar(true);
+            setIsLoading(false);
             router.push("/auth/login");
           })
           .catch((err) => {
             message.error(err?.response?.data?.message);
             message.error("Error while regestring user");
+            setIsLoading(false);
           });
       } catch (err: any) {
         helpers.setStatus({ success: false });
@@ -218,6 +242,25 @@ function Page(): ReactElement {
                 Register
               </Button>
             </form>
+            <Backdrop
+              open={isLoading}
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+              open={openSnackbar}
+              autoHideDuration={6000}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert
+                onClose={handleCloseSnackbar}
+                severity="success"
+                elevation={3}
+              >
+                {responseMessage}
+              </Alert>
+            </Snackbar>
           </div>
         </Box>
       </Box>

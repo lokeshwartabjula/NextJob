@@ -43,7 +43,7 @@ export default function Contact() {
             <Typography
               variant={matchesSm ? "h4" : "h2"}
               align="center"
-              color="primary"
+              color="#003060"
               sx={{ mb: 5 }}
             >
               Contact Us
@@ -128,7 +128,7 @@ export default function Contact() {
               <Typography
                 variant="h5"
                 align="center"
-                color="primary"
+                color="#003060"
                 fontFamily="arial"
               >
                 Send Your Message
