@@ -33,6 +33,7 @@ func main() {
 	})
 	public.POST("/login", api.Login)
 	public.POST("/register", api.Register)
+	public.POST("/contactUs", api.ContactUs)
 
 	// protected routes. For this routes you need to add Authorization header which contains JWT token. The API would look like this: http://localhost:8080/api/
 	protected := router.Group("/api")
