@@ -72,7 +72,7 @@ const JobListings: React.FC<Props> = (props) => {
 
   console.log('state', state)
   var router = useRouter();
-  const companyName = state?.companyName;
+  const companyName = state?.loginType === "employer" ? state?.companyName : props?.companyName;
   console.log('companyName', companyName);
 
   useEffect(() => {
@@ -338,9 +338,9 @@ const JobListings: React.FC<Props> = (props) => {
                     <TableCell className={styles.titles}>Job Title</TableCell>
                     <TableCell className={styles.titles}>Location</TableCell>
                     <TableCell className={styles.titles}>Openings</TableCell>
-                    <TableCell className={styles.titles}>Job Status</TableCell>
-                    <TableCell className={styles.titles}>Candidates</TableCell>
-                    <TableCell className={styles.titles}>Actions</TableCell>
+                    {state?.loginType === "employer" ? <TableCell className={styles.titles}>Job Status</TableCell> : null}
+                    {state?.loginType === "employer" ? <TableCell className={styles.titles}>Candidates</TableCell> : null}
+                    {state?.loginType === "employer" ? <TableCell className={styles.titles}>Actions</TableCell> : null}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -367,7 +367,7 @@ const JobListings: React.FC<Props> = (props) => {
                           >
                             {job.noOfPositions}
                           </TableCell>
-                          <TableCell
+                          {state?.loginType === "employer" ? <TableCell
                             className={styles.description}
                             sx={{ width: "70px" }}
                           >
@@ -433,8 +433,8 @@ const JobListings: React.FC<Props> = (props) => {
                                 </div>
                               </MenuItem>
                             </Select>
-                          </TableCell>
-                          <TableCell>
+                          </TableCell> : null}
+                          {state?.loginType === "employer" ? <TableCell>
                             <Button
                               variant="contained"
                               className={styles.buttonApplicants}
@@ -444,8 +444,8 @@ const JobListings: React.FC<Props> = (props) => {
                             >
                               Applicants
                             </Button>
-                          </TableCell>
-                          <TableCell>
+                          </TableCell> : null}
+                          {state?.loginType === "employer" ? <TableCell>
                             <Grid container direction="row">
                               <Grid
                                 item
@@ -471,7 +471,7 @@ const JobListings: React.FC<Props> = (props) => {
                                 </Button>
                               </Grid>
                             </Grid>
-                          </TableCell>
+                          </TableCell> : null}
                         </TableRow>
                       ) : (
                         <></>

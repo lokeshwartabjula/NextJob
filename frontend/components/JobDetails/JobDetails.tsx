@@ -122,7 +122,7 @@ export default function JobDetails({
                   sx={{ height: 60, width: 60 }}
                   aria-label="recipe"
                   alt="companyLogo"
-                  src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src={jobData?.jobCompanyLogo}
                 />
               }
               title={jobData?.jobCompany}

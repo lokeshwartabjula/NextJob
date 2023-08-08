@@ -1,8 +1,15 @@
+/**
+Author: Kruti Panchal
+Banner Id: B00930563
+Email id: kr946702@dal.ca
+*/
+
 package api
 
 import (
 	"backend/configs"
 	"backend/models/db"
+
 	// "backend/models/payload"
 	// "backend/utils"
 	"context"
