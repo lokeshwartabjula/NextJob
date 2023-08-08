@@ -92,11 +92,31 @@ export default function JobDetails({
       setResponseMessage(data.message);
       setIsError(false);
       setOpenSnackbar(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setIsError(true);
       setIsLoading(false);
-      setResponseMessage("An error occurred while applying for the job");
+
+      if (error.response) {
+        if (error.response.status === 400 && error.response.data.errors) {
+          const errorKeys = Object.keys(error.response.data.errors);
+          if (errorKeys.length > 0) {
+            setResponseMessage(error.response.data.errors[errorKeys[0]]);
+          } else {
+            setResponseMessage("An error occurred while applying for the job");
+          }
+          setIsError(true);
+        } else if (error.response.status === 409) {
+          setResponseMessage(error.response.data.message);
+          setIsError(false);
+        } else {
+          setResponseMessage("An error occurred while applying for the job");
+          setIsError(true);
+        }
+      } else {
+        setResponseMessage("An error occurred while applying for the job");
+        setIsError(true);
+      }
+
       setOpenSnackbar(true);
     }
   };
