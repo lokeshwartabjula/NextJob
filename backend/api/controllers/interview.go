@@ -71,7 +71,7 @@ func composeInterviewEmail(data InterviewRequest) string {
 				<li><strong>Role Description:</strong> ` + data.RoleDescription + `</li>
 			</ul>
 			<h3>Next Steps:</h3>
-			<p>To proceed with the interview process, kindly contact the employer directly at ` + data.EmployerEmail + ` or ` + data.EmployerContact + ` to coordinate a suitable date and time for an online interview.</p>
+			<p>To proceed with the interview process, kindly contact the employer directly at <strong>` + data.EmployerEmail + `</strong> or <strong>` + data.EmployerContact + `</strong> to coordinate a suitable date and time for an online interview.</p>
 			<h4>Preparation for the Online Interview:</h4>
 			<ul>
 				<li><strong>Tech Check:</strong> Ensure your camera and microphone are functioning correctly. It's advisable to test your internet connection in advance.</li>
@@ -79,7 +79,7 @@ func composeInterviewEmail(data InterviewRequest) string {
 			</ul>
 			<p>If you have any questions or require further details about the process, we encourage you to reach out to the employer at your earliest convenience.</p>
 			<p>Thank you for utilizing our job portal for your recruitment needs. We are committed to providing you with a seamless and efficient hiring experience. If you have any inquiries or require assistance, please don't hesitate to contact our support team.</p>
-			<p>We wish you the best of luck with your interview at ` + data.CompanyName + `!</p>
+			<p>We wish you the best of luck with your interview at <strong>` + data.CompanyName + `</strong>!</p>
 			<p style="color: grey;">Best regards,<br>Kishan Patel<br>Software Developer<br>NextJob <br>+1 123 456 6743 | nextjob.group1@gmail.com</p>
 		</body>
 		</html>
