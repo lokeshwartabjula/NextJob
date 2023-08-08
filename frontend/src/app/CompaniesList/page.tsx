@@ -53,7 +53,7 @@ export default function CompaniesList(props: any) {
     try {
       const response = await axiosInstance.get('api/getEmployers');
       const data = await response.data;
-      console.log('Company data:', response)
+      // console.log('Company data:', response)
       setCompanyData(data.employers);
       setFilteredCompanyData(data.employers); // Initialize filtered data with all companies
     } catch (error) {
@@ -74,7 +74,7 @@ export default function CompaniesList(props: any) {
   // Handle checkbox change
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const filterValue = event.target.value;
-    console.log('filterValue:', filterValue);
+    // console.log('filterValue:', filterValue);
     const updatedFilters = selectedFilters.includes(filterValue)
       ? selectedFilters.filter((filter) => filter !== filterValue)
       : [...selectedFilters, filterValue];
@@ -85,7 +85,7 @@ export default function CompaniesList(props: any) {
   // Apply filters and update filteredCompanyData
   useEffect(() => {
     if (selectedFilters.length > 0) {
-      const filteredData = companyData.filter((company) =>{
+      const filteredData = companyData.filter((company) => {
         const filterArray = [company.industry, company.companySize];
         return selectedFilters.every((val) => filterArray.includes(val));
       });
@@ -104,49 +104,49 @@ export default function CompaniesList(props: any) {
 
   const drawer = (
     <div>
-    <div className="indentation" style={{borderRight:'none'}}>
-    <Typography variant="h6" component="h6" sx={{ textAlign: "center" }}>
-        Filter By Size
-      </Typography>      
-      <FormGroup className='flexclass'>
-        {Array.from(new Set(companyData.map((company) => company.companySize))).map((companySize) => (
-          <FormControlLabel
-          // className='flexclass'
-            key={companySize}
-            control={
-              <Checkbox
-                checked={selectedFilters.includes(companySize)}
-                onChange={handleCheckboxChange}
-                value={companySize}
-              />
-            }
-            label={companySize}
-          />
-        ))}
-      </FormGroup>
-    </div>
-    <div className="indentation">
-    <Typography variant="h6" component="h6" sx={{ textAlign: "center" }}>
-        Filter By Industry
-      </Typography> 
-    <FormGroup className='flexclass'>
-      {Array.from(new Set(companyData.map((company) => company.industry))).map((industry) => (
-        <FormControlLabel
-        // className='flexclass'
-          key={industry}
-          control={
-            <Checkbox
-              checked={selectedFilters.includes(industry)}
-              onChange={handleCheckboxChange}
-              value={industry}
+      <div className="indentation" style={{ borderRight: 'none' }}>
+        <Typography variant="h6" component="h6" sx={{ textAlign: "center" }}>
+          Filter By Size
+        </Typography>
+        <FormGroup className='flexclass'>
+          {Array.from(new Set(companyData.map((company) => company.companySize))).map((companySize) => (
+            <FormControlLabel
+              // className='flexclass'
+              key={companySize}
+              control={
+                <Checkbox
+                  checked={selectedFilters.includes(companySize)}
+                  onChange={handleCheckboxChange}
+                  value={companySize}
+                />
+              }
+              label={companySize}
             />
-          }
-          label={industry}
-        />
-      ))}
-    </FormGroup>
-  </div>
-  </div>
+          ))}
+        </FormGroup>
+      </div>
+      <div className="indentation">
+        <Typography variant="h6" component="h6" sx={{ textAlign: "center" }}>
+          Filter By Industry
+        </Typography>
+        <FormGroup className='flexclass'>
+          {Array.from(new Set(companyData.map((company) => company.industry))).map((industry) => (
+            <FormControlLabel
+              // className='flexclass'
+              key={industry}
+              control={
+                <Checkbox
+                  checked={selectedFilters.includes(industry)}
+                  onChange={handleCheckboxChange}
+                  value={industry}
+                />
+              }
+              label={industry}
+            />
+          ))}
+        </FormGroup>
+      </div>
+    </div>
   );
 
   // State variable to hold the selected companyId
@@ -189,7 +189,7 @@ export default function CompaniesList(props: any) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {  width: drawerWidth, top: '110px' , borderRight:'none'},
+            '& .MuiDrawer-paper': { width: drawerWidth, top: '110px', borderRight: 'none' },
           }}
           open
         >

@@ -183,9 +183,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Education ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Education ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -334,9 +333,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Experience ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Experience ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -553,7 +551,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
               setIsLoading(false);
             })
             .catch((err) => {
-              console.log(err);
+              // console.log(err);
               setIsLoading(false);
             });
         }}

@@ -315,12 +315,12 @@ const Employer: React.FC<EmployerProps> = (props: EmployerProps) => {
               setIsLoading(false);
             })
             .catch((err) => {
-              console.log("err=>", err);
+              // console.log("err=>", err);
               setIsLoading(false);
             });
         }}
         onErrors={(errors: FormikErrors<EmployerFormType>) => {
-          console.log(errors);
+          // console.log(errors);
         }}
       >
         {({ errors, touched }) => (

@@ -210,7 +210,7 @@ export default function EditJobPosting({ params }: { params: { id: string } }) {
     axiosInstance
       .delete(`api/deleteJob/${jobId}`)
       .then((res) => {
-        console.log("res ==>", res);
+        // console.log("res ==>", res);
         setSnackBarVisible(true);
         router.push(`/job-information`);
       })

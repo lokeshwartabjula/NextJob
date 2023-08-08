@@ -37,12 +37,8 @@ interface JobData {
   jobCompanyLogo: string;
 }
 
-interface ActiveJobsTabPageProps {
-  employerName: string;
-}
 
-
-export default function ActiveJobsTabPage(props: any) {
+const ActiveJobsTabPage = (props: any) => {
   const { employerName } = props;
   const [jobData, setJobData] = useState<JobData[]>([]);
 
@@ -60,22 +56,24 @@ export default function ActiveJobsTabPage(props: any) {
       setJobData([]);
     }
   };
-    //generate more job data with different values for each field
+  //generate more job data with different values for each field
 
-    return (
-      <>
-        {jobData.map((job) => (
-          <JobCard
-            key={job.id}
-            jobDate={job.openDate}
-            jobTitle={job.jobTitle}
-            jobCompany={job.jobCompany}
-            jobType={job.jobType}
-            salary={job.salary}
-            jobLocation={job.location.placeName}
-            companyLogo={job.jobCompanyLogo}
-          />
-        ))}
-      </>
-    );
-  }
+  return (
+    <>
+      {jobData.map((job) => (
+        <JobCard
+          key={job.id}
+          jobDate={job.openDate}
+          jobTitle={job.jobTitle}
+          jobCompany={job.jobCompany}
+          jobType={job.jobType}
+          salary={job.salary}
+          jobLocation={job.location.placeName}
+          companyLogo={job.jobCompanyLogo}
+        />
+      ))}
+    </>
+  );
+}
+
+export default ActiveJobsTabPage;

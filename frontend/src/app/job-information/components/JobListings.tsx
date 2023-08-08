@@ -70,16 +70,16 @@ const JobListings: React.FC<Props> = (props) => {
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleleId] = useState("");
 
-  console.log('state', state)
+  // console.log('state', state)
   var router = useRouter();
   const companyName = state?.loginType === "employer" ? state?.companyName : props?.companyName;
-  console.log('companyName', companyName);
+  // console.log('companyName', companyName);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const res = await axiosInstance.get("api/getJobs");
-        console.log('res ==>', res)
+        // console.log('res ==>', res)
         setJobs(res.data.jobs);
         setFilteredJobs(res.data.jobs);
         setLoading(false);
@@ -127,7 +127,7 @@ const JobListings: React.FC<Props> = (props) => {
     setFilteredJobs(result);
   }, [searchTitle, searchLocation, jobStatus, jobs]);
 
-  console.log('filtered jobs ==>', filteredJobs)
+  // console.log('filtered jobs ==>', filteredJobs)
   const handleDelete = async (id: string) => {
     try {
       const response = await axiosInstance.delete(`api/deleteJob/${id}`);
@@ -149,7 +149,7 @@ const JobListings: React.FC<Props> = (props) => {
     });
     if (jobToUpdate) {
       const updatedJob = { ...jobToUpdate, jobStatus: status };
-      console.log('updated job ==>', updatedJob)
+      // console.log('updated job ==>', updatedJob)
       try {
         const response = await axiosInstance.put(`api/updateJob`, {
           id: updatedJob.id,

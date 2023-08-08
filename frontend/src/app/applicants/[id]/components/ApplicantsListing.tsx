@@ -125,7 +125,7 @@ export default function ApplicantsListing(props: { id: string }) {
     return userFullName;
   };
 
-  console.log("users => ", users);
+  // console.log("users => ", users);
   // console.log("seekersData => ", seekersData);
   useEffect(() => {
     let result = [...seekersData];
@@ -185,27 +185,27 @@ export default function ApplicantsListing(props: { id: string }) {
                 sx={
                   captionSize
                     ? {
-                        margin: "0% 5% 5% 5%",
-                        display: "flex",
-                        flexDirection: "column",
-                        textAlign: "center",
-                        alignContent: "center",
-                        alignItems: "center",
-                        border: "1px solid #D4D2D0",
-                        boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                        borderRadius: "5px",
-                      }
+                      margin: "0% 5% 5% 5%",
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                      border: "1px solid #D4D2D0",
+                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                      borderRadius: "5px",
+                    }
                     : {
-                        margin: "0% 5%",
-                        display: "flex",
-                        flexDirection: "column",
-                        textAlign: "center",
-                        alignContent: "center",
-                        alignItems: "center",
-                        border: "1px solid #D4D2D0",
-                        boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                        borderRadius: "5px",
-                      }
+                      margin: "0% 5%",
+                      display: "flex",
+                      flexDirection: "column",
+                      textAlign: "center",
+                      alignContent: "center",
+                      alignItems: "center",
+                      border: "1px solid #D4D2D0",
+                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                      borderRadius: "5px",
+                    }
                 }
               >
                 <CardContent>
@@ -315,7 +315,7 @@ export default function ApplicantsListing(props: { id: string }) {
                                 {getUserById(seeker.email)}
                               </TableCell>
                               {seeker.experiences &&
-                              seeker.experiences[0].title !== "" ? (
+                                seeker.experiences[0].title !== "" ? (
                                 <TableCell className={styles.description}>
                                   {seeker.experiences[0].title}
                                 </TableCell>
@@ -323,7 +323,7 @@ export default function ApplicantsListing(props: { id: string }) {
                                 <TableCell></TableCell>
                               )}
                               {seeker.educations &&
-                              seeker.educations[0].fieldOfStudy !== "" ? (
+                                seeker.educations[0].fieldOfStudy !== "" ? (
                                 <TableCell className={styles.description}>
                                   {seeker.educations[0].fieldOfStudy}
                                 </TableCell>
@@ -331,7 +331,7 @@ export default function ApplicantsListing(props: { id: string }) {
                                 <TableCell></TableCell>
                               )}
                               {seeker.educations &&
-                              seeker.educations[0].fieldOfStudy !== "" ? (
+                                seeker.educations[0].fieldOfStudy !== "" ? (
                                 <TableCell>
                                   {seeker.educations[0].degree}
                                 </TableCell>

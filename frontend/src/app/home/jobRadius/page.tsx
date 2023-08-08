@@ -75,7 +75,7 @@ const JobRadiusPage = () => {
                     setMarkerJobs(response)
                 })
                 .catch(err => {
-                    console.log('error inside fetching jobs based on radius API ==>', err)
+                    // console.log('error inside fetching jobs based on radius API ==>', err)
                 })
         }
     }, [dropPinToCoordinate])

@@ -60,7 +60,7 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
     try {
       const response = await axiosInstance.get(`/api/employer/${companyId}`);
       const data = await response.data;
-      console.log("data", response);
+      // console.log("data", response);
       if (data.employers && data.employers.length > 0) {
         setEmployerData(data.employers[0]); // Assuming there's only one employer in the response
       } else {
@@ -72,7 +72,7 @@ export default function CompanyDescriptionPage({ params }: { params: { companyId
     }
   };
 
-  console.log('companyid ==>', companyId)
+  // console.log('companyid ==>', companyId)
   return (
     <div className="mainContainer">
       <div className="parentContainer">

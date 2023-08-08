@@ -178,7 +178,7 @@ export default function JobPosting() {
         router.push("/job-information");
       })
       .catch((error) => {
-        console.log("api error ==>", error);
+        // console.log("api error ==>", error);
         alert("Error in creating job");
         setIsLoading(false);
       });

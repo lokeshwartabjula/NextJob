@@ -129,7 +129,7 @@ const OnBoardingForm: React.FC = () => {
             if (values.companyName.length > 3) {
               const response = await axios.get(
                 "https://autocomplete.clearbit.com/v1/companies/suggest?query=" +
-                  values.companyName
+                values.companyName
               );
 
               setCompanyLogoURL(response?.data[0]?.logo || "");
@@ -352,12 +352,12 @@ const OnBoardingForm: React.FC = () => {
             router.push("/dashboard");
           })
           .catch((err) => {
-            console.log("err=>", err);
+            // console.log("err=>", err);
             setIsLoading(false);
           });
       }}
       onErrors={(errors: FormikErrors<FormType>) => {
-        console.log(errors);
+        // console.log(errors);
       }}
     >
       {({ errors, touched, values }) => (

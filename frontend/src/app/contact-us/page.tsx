@@ -107,7 +107,7 @@ export default function Contact() {
       setMessage("");
     })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         setIsLoading(false);
       })
   }
