@@ -30,7 +30,13 @@ function Page(): ReactElement {
 
   const [isHydrated, setIsHydrated] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const [responseMessage, setResponseMessage] = React.useState("");
+  const [responseMessage, setResponseMessage] = React.useState<{
+    message: string;
+    type: "success" | "error";
+  }>({
+    message: "",
+    type: "success",
+  });
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -91,16 +97,21 @@ function Page(): ReactElement {
         axiosInstance
           .post("/pub/register", { ...values, submit: undefined })
           .then((res) => {
-            setResponseMessage(
-              "Account Created! Now Please Login to Add Your Information."
-            );
+            setResponseMessage({
+              message:
+                "Account Created! Now Please Login to Add Your Information.",
+              type: "success",
+            });
             setOpenSnackbar(true);
             setIsLoading(false);
             router.push("/auth/login");
           })
           .catch((err) => {
-            message.error(err?.response?.data?.message);
-            message.error("Error while regestring user");
+            setResponseMessage({
+              message: "Error while register user! Please try again.",
+              type: "error",
+            });
+            setOpenSnackbar(true);
             setIsLoading(false);
           });
       } catch (err: any) {
@@ -255,10 +266,10 @@ function Page(): ReactElement {
             >
               <Alert
                 onClose={handleCloseSnackbar}
-                severity="success"
+                severity={responseMessage.type}
                 elevation={3}
               >
-                {responseMessage}
+                {responseMessage.message}
               </Alert>
             </Snackbar>
           </div>

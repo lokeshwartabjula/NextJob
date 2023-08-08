@@ -20,10 +20,16 @@ import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
 import Image from "next/image";
 import contactPic from "/public/3.png";
 import SendSharpIcon from "@mui/icons-material/SendSharp";
+import { useEffect } from "react";
+import { isAuthenticatedUser } from "../../../api";
 export default function Contact() {
   const theme = useTheme();
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
+  
+  useEffect(() => {
+    isAuthenticatedUser();
+  }, []);
 
   return (
     <Paper

@@ -27,7 +27,7 @@ import {
 } from "formik";
 import React, { useContext } from "react";
 import * as Yup from "yup";
-import { axiosInstance } from "../../../../api";
+import { axiosInstance, isAuthenticatedUser } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
 import { message } from "antd";
@@ -69,6 +69,7 @@ const initialValues: FormType = {
 };
 
 const OnBoardingForm: React.FC = () => {
+  const [open, setOpen] = React.useState(false);
   const [isHydrated, setIsHydrated] = React.useState(false);
   const [companyLogoURL, setCompanyLogoURL] = React.useState("");
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
@@ -79,8 +80,8 @@ const OnBoardingForm: React.FC = () => {
 
   React.useEffect(() => {
     setIsHydrated(true);
+    isAuthenticatedUser();
   }, []);
-
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
@@ -306,7 +307,7 @@ const OnBoardingForm: React.FC = () => {
       validationSchema={validationSchema}
       onSubmit={(values: FormType) => {
         if (!companyLogoURL) {
-          message.error("Please enter valid company name");
+          setOpen(true);
           return;
         }
         setIsLoading(true);
@@ -435,6 +436,12 @@ const OnBoardingForm: React.FC = () => {
                     </Alert>
                   </Snackbar>
                 </Grid>
+                <Snackbar
+                  open={open}
+                  autoHideDuration={6000}
+                  onClose={() => setOpen(false)}
+                  message={"Please enter valid company name"}
+                />
               </>
             )}
           </Grid>

@@ -29,7 +29,7 @@ import {
 } from "formik";
 import React, { useContext } from "react";
 import * as Yup from "yup";
-import { axiosInstance } from "../../../../api";
+import { axiosInstance, isAuthenticatedUser } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
 import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
@@ -74,6 +74,7 @@ const OnBoardingForm: React.FC = () => {
 
   React.useEffect(() => {
     setIsHydrated(true);
+    isAuthenticatedUser();
   }, []);
 
   const handleCloseSnackbar = () => {

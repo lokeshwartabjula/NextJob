@@ -47,3 +47,10 @@ const redirectToLogin = () => {
   removeUserData();
   window.location.replace("/auth/login");
 };
+
+export const isAuthenticatedUser = () => {
+  const token = getToken();
+  if (token) return true;
+  redirectToLogin();
+  return false;
+};
