@@ -41,6 +41,10 @@ Email ID: jt429386@dal.ca
 
 .title {
     font-weight: 400;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
 }
 
 .company-desc {
@@ -56,6 +60,7 @@ Email ID: jt429386@dal.ca
 .comp-div {
     display: flex;
     flex-direction: column;
+    max-width: 70%;
 }
 
 .company-logo {

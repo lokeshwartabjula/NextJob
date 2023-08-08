@@ -40,7 +40,7 @@ const CJobCard = (props: CJobCardProps) => {
                     </div>
 
                     <div className='company-logo'>
-                        <img src={props.companyLogo} />
+                        <img src={props.companyLogo} style={{ height: 'auto', alignItems: 'center', maxHeight: '100%' }} />
                     </div>
                 </div>
 

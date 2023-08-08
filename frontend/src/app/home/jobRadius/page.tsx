@@ -67,7 +67,12 @@ const JobRadiusPage = () => {
             axiosInstance.get(getJobsByRadius + dropPinToCoordinate?.lat + '/' + dropPinToCoordinate?.lng)
                 .then(res => {
                     setMarkerPoints(res.data.jobs)
-                    setMarkerJobs(res.data.jobs)
+                    const response = res?.data?.jobs?.filter((value: any) => {
+                        if (value?.employerEmail) {
+                            return value
+                        }
+                    })
+                    setMarkerJobs(response)
                 })
                 .catch(err => {
                     console.log('error inside fetching jobs based on radius API ==>', err)
