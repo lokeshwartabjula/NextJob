@@ -537,7 +537,7 @@ const OnBoardingForm: React.FC = () => {
   return (
     <Formik
       initialValues={{
-        email: localStorage.getItem("email") || "",
+        email: state.email || "",
         phone: "",
         address1: "",
         address2: "",
