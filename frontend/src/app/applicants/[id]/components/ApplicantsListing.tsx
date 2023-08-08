@@ -378,6 +378,7 @@ export default function ApplicantsListing(props: { id: string }) {
               handleClose={handleClose}
               applicantData={applicantDetails}
               userName={userName}
+              jobId={jobId}
             />
           )}
         </Box>
