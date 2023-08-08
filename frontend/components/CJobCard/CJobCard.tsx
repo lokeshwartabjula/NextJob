@@ -51,7 +51,7 @@ const CJobCard = (props: CJobCardProps) => {
 
             <div className='footer'>
                 <div className='salary-div'>
-                    <text className='sal'>${props.salary}/Month</text>
+                    <text className='sal'>${props.salary}/ Annum</text>
                     <text className='location'>{props.jobLocation}</text>
                 </div>
 

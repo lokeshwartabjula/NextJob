@@ -40,7 +40,7 @@ export default function ReviewComponent({ companyId }: any) {
     } else {
       setReview("");
       setReviews([
-        ...reviews,
+        ...reviews ? reviews : [],
         {
           firstName: userData?.firstName,
           lastName: userData?.lastName,

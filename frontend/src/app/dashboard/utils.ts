@@ -9,7 +9,7 @@ export const convertRawDataToSalaryGraphStats = (
   }
 ) => {
   let stats: { [key: string]: number } = {};
-  rawData.map((job) => {
+  rawData?.map((job) => {
     if (location && location.city && location.city.length > 0) {
       if (location.city.includes(job.location.city)) {
         stats[salaryRange(Number(job.salary))] =
