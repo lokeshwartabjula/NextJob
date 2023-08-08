@@ -8,7 +8,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useContext } from "react";
-import { axiosInstance } from "../../../../api";
+import { axiosInstance, isAuthenticatedUser } from "../../../../api";
 import { useRouter } from "next/navigation";
 import JobDetails from "../../../../components/JobDetails/JobDetails";
 
@@ -76,6 +76,7 @@ const JobListings: React.FC<Props> = (props) => {
   // console.log('companyName', companyName);
 
   useEffect(() => {
+    isAuthenticatedUser();
     const fetchJobs = async () => {
       try {
         const res = await axiosInstance.get("api/getJobs");
