@@ -9,6 +9,7 @@ import { Grid } from "@mui/material";
 import Cover from "./home/Cover";
 import JobSteps from "./home/JobSteps";
 import RecrutingOption from "./home/RecrutingOption";
+import 'antd/dist/antd.css';
 
 export default function MyApp() {
   return (

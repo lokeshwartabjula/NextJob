@@ -35,6 +35,7 @@ import {
   Button,
   useTheme,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -69,6 +70,7 @@ const JobListings: React.FC<Props> = (props) => {
   const [jobDetails, setJobDetails] = useState<JobInformation>();
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleleId] = useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   // console.log('state', state)
   var router = useRouter();
@@ -76,6 +78,8 @@ const JobListings: React.FC<Props> = (props) => {
   // console.log('companyName', companyName);
 
   useEffect(() => {
+    setIsMounted(true);
+    setIsLoading(true);
     isAuthenticatedUser();
     const fetchJobs = async () => {
       try {
@@ -90,10 +94,8 @@ const JobListings: React.FC<Props> = (props) => {
     };
 
     fetchJobs();
-  }, []);
 
-  useEffect(() => {
-    setIsMounted(true);
+    setIsLoading
   }, []);
 
   const handleEdit = (job: JobInformation) => {
@@ -529,7 +531,7 @@ const JobListings: React.FC<Props> = (props) => {
             jobDetailsOpen={jobDetailsOpen}
             handleClose={handleClose}
             jobData={jobDetails}
-            isClickedByEmployer={true}
+            isClickedByEmployer={state?.loginType === "employer" ? true : false}
           />
         )}
       </Box>
