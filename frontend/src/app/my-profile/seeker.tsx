@@ -12,6 +12,9 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  Snackbar,
+  Alert,
+  Backdrop,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import {
@@ -27,17 +30,29 @@ import {
 import React, { useContext } from "react";
 import * as Yup from "yup";
 import { axiosInstance } from "../../../api";
-import { SeekerFormType, SeekerProps } from "./types";
+import {
+  SeekerFormType,
+  SeekerFormTypeEducation,
+  SeekerFormTypeExperience,
+  SeekerProps,
+} from "./types";
 import { UserContext } from "../(context)/UserContext";
 import { message } from "antd";
 
 const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
   const [isHydrated, setIsHydrated] = React.useState(false);
   const { state } = useContext(UserContext);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const validationSchema: Yup.ObjectSchema<SeekerFormType> = Yup.object().shape(
     {
@@ -168,9 +183,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Education ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Education ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -192,7 +206,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.school &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.school
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].school`} />
@@ -208,7 +223,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.degree &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.degree
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].degree`} />
@@ -224,7 +240,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.fieldOfStudy &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.fieldOfStudy
                     }
                     helperText={
                       <ErrorMessage
@@ -246,7 +263,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.startDate &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.startDate
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].startDate`} />
@@ -266,7 +284,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.educations &&
                       touched.educations[index]?.endDate &&
-                      !!errors.educations
+                      !!(errors.educations?.[index] as SeekerFormTypeEducation)
+                        ?.endDate
                     }
                     helperText={
                       <ErrorMessage name={`educations[${index}].endDate`} />
@@ -277,7 +296,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             </div>
           ))}
           <Grid xs={12} textAlign={"right"}>
-            {values.educations?.length < 3 && (
+            {!values.educations || values.educations.length < 3 ? (
               <Button
                 type="button"
                 variant="contained"
@@ -295,7 +314,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
               >
                 Add Education
               </Button>
-            )}
+            ) : null}
           </Grid>
         </>
       )}
@@ -314,9 +333,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             <div key={index}>
               <Grid container spacing={2}>
                 <Grid xs>
-                  <Typography variant="h6">{`Experience ${
-                    index + 1
-                  }`}</Typography>
+                  <Typography variant="h6">{`Experience ${index + 1
+                    }`}</Typography>
                 </Grid>
                 <Grid xs textAlign={"right"}>
                   <Button
@@ -339,7 +357,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.company &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.company
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].company`} />
@@ -355,7 +374,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.title &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.title
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].title`} />
@@ -371,7 +391,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.location &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.location
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].location`} />
@@ -391,7 +412,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.startDate &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.startDate
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].startDate`} />
@@ -411,7 +433,8 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     error={
                       touched.experiences &&
                       touched.experiences[index]?.endDate &&
-                      !!errors.experiences
+                      !!(errors.educations?.[index] as SeekerFormTypeExperience)
+                        ?.endDate
                     }
                     helperText={
                       <ErrorMessage name={`experiences[${index}].endDate`} />
@@ -432,7 +455,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
             </div>
           ))}
           <Grid xs={12} textAlign={"right"}>
-            {values.experiences?.length < 3 && (
+            {!values.experiences || values.experiences.length < 3 ? (
               <Button
                 type="button"
                 variant="contained"
@@ -449,7 +472,7 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
               >
                 Add Experience
               </Button>
-            )}
+            ) : null}
           </Grid>
         </>
       )}
@@ -482,73 +505,94 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
   };
 
   return (
-    <Formik
-      initialValues={props}
-      validationSchema={validationSchema}
-      onSubmit={(values) => {
-        const formData = new FormData();
-        formData.append("ID", props.id);
-        formData.append("email", values.email);
-        formData.append("phone", values.phone);
-        formData.append("address1", values.address1);
-        formData.append("address2", values.address2);
-        formData.append("state", values.state);
-        formData.append("postalCode", values.postalCode);
-        // values.resume && formData.append("resume", values.resume);
-        formData.append("educations", JSON.stringify(values.educations));
-        formData.append("experiences", JSON.stringify(values.experiences));
-        formData.append("userId", state.id);
-        axiosInstance
-          .put(`api/seeker`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            message.success("Profile updated successfully");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }}
-    >
-      {({ errors, touched, values, isSubmitting }) => (
-        <Form>
-          <Grid
-            container
-            justifyContent="center"
-            sx={{ flex: "1 1 auto" }}
-            spacing={1}
-          >
-            {!isHydrated ? (
-              <CircularProgress />
-            ) : (
-              <>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Basic Information" />
-                    <CardContent>
-                      {renderBasicDetails(errors, touched)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Education" />
-                    <CardContent>
-                      {renderEducationComponent(errors, touched, values)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <Grid xs={11} md={8}>
-                  <Card>
-                    <CardHeader title="Experience" />
-                    <CardContent>
-                      {renderExperienceComponent(errors, touched, values)}
-                    </CardContent>
-                  </Card>
-                </Grid>
-                {/* <Grid xs={11} md={8}>
+    <>
+      <Backdrop
+        open={isLoading}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" elevation={3}>
+          {responseMessage}
+        </Alert>
+      </Snackbar>
+
+      <Formik
+        initialValues={props}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          setIsLoading(true);
+          const formData = new FormData();
+          formData.append("ID", props.id);
+          formData.append("email", values.email);
+          formData.append("phone", values.phone);
+          formData.append("address1", values.address1);
+          formData.append("address2", values.address2);
+          formData.append("state", values.state);
+          formData.append("postalCode", values.postalCode);
+          // values.resume && formData.append("resume", values.resume);
+          formData.append("educations", JSON.stringify(values.educations));
+          formData.append("experiences", JSON.stringify(values.experiences));
+          formData.append("userId", state.id);
+          axiosInstance
+            .put(`api/seeker`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((res) => {
+              setResponseMessage("Profile updated successfully");
+              setOpenSnackbar(true);
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              // console.log(err);
+              setIsLoading(false);
+            });
+        }}
+      >
+        {({ errors, touched, values, isSubmitting }) => (
+          <Form>
+            <Grid
+              container
+              justifyContent="center"
+              sx={{ flex: "1 1 auto" }}
+              spacing={1}
+            >
+              {!isHydrated ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Basic Information" />
+                      <CardContent>
+                        {renderBasicDetails(errors, touched)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Education" />
+                      <CardContent>
+                        {renderEducationComponent(errors, touched, values)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid xs={11} md={8}>
+                    <Card>
+                      <CardHeader title="Experience" />
+                      <CardContent>
+                        {renderExperienceComponent(errors, touched, values)}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  {/* <Grid xs={11} md={8}>
                   <Card>
                     <CardHeader title="Upload Resume" />
                     <CardContent>
@@ -556,23 +600,24 @@ const SeekerForm: React.FC<SeekerProps> = (props: SeekerProps) => {
                     </CardContent>
                   </Card>
                 </Grid> */}
-                <Grid xs={11} md={8}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    // disabled={isSubmitting}
-                    sx={{ mt: 2, py: 1, minWidth: 150 }}
-                  >
-                    Submit
-                  </Button>
-                </Grid>
-              </>
-            )}
-          </Grid>
-        </Form>
-      )}
-    </Formik>
+                  <Grid xs={11} md={8}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      // disabled={isSubmitting}
+                      sx={{ mt: 2, py: 1, minWidth: 150 }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                </>
+              )}
+            </Grid>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };
 

@@ -16,6 +16,8 @@ import { Button, Result } from 'antd';
 import { useRouter } from 'next/navigation';
 import CJobCard from '../../../../components/CJobCard/CJobCard';
 import { GOOGLE_MAPS_API_KEY } from '../../../../utils/CONSTANTS';
+import { set } from 'date-fns';
+import JobDetails from '../../../../components/JobDetails/JobDetails';
 
 
 const randomPoints = Array.from({ length: 100 }, () => {
@@ -52,7 +54,8 @@ const JobRadiusPage = () => {
     const [markerJobs, setMarkerJobs] = useState([])
     const [viewJobModal, setViewJobModal] = useState(false)
     const [searchLocationData, setSearchLocationData] = useState<any>()
-
+    const [jobDetailsModal, setJobDetailsModal] = useState(false)
+    const [jobModalData, setJobModalData] = useState<any>(null)
 
     const map = useLoadScript({
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -63,12 +66,16 @@ const JobRadiusPage = () => {
         if (map.isLoaded && dropPinToCoordinate?.lat && dropPinToCoordinate?.lng) {
             axiosInstance.get(getJobsByRadius + dropPinToCoordinate?.lat + '/' + dropPinToCoordinate?.lng)
                 .then(res => {
-                    console.log('res =>', res)
                     setMarkerPoints(res.data.jobs)
-                    setMarkerJobs(res.data.jobs)
+                    const response = res?.data?.jobs?.filter((value: any) => {
+                        if (value?.employerEmail) {
+                            return value
+                        }
+                    })
+                    setMarkerJobs(response)
                 })
                 .catch(err => {
-                    console.log('error inside fetching jobs based on radius API ==>', err)
+                    // console.log('error inside fetching jobs based on radius API ==>', err)
                 })
         }
     }, [dropPinToCoordinate])
@@ -81,17 +88,16 @@ const JobRadiusPage = () => {
 
     const onSearchPress = () => {
         setViewJobModal(!viewJobModal)
-        console.log('searchLocationData =>', searchLocationData)
         setDropPinToCoordinate({ lat: searchLocationData?.geometry?.location?.lat(), lng: searchLocationData?.geometry?.location?.lng() })
     }
 
-    const onShowDetails = () => {
-        console.log('onShowDetails')
-        // const data = { show: "sparrow" }
-        // router.
-        // router.push('/home/job-details')
+    const jobDetailsModalStateHandler = (jobData: any) => {
+        setJobModalData(jobData)
+        setJobDetailsModal(!jobDetailsModal)
+    }
 
-        // navigate to job-details page and also pass parameters to that page.
+    const onShowDetails = () => {
+
         router.push('/home/job-details')
     }
 
@@ -158,6 +164,7 @@ const JobRadiusPage = () => {
                                 companyLogo={card.jobCompanyLogo}
                                 jobDate={card.openDate}
                                 showDetails={onShowDetails}
+                                setJobDetailsModal={jobDetailsModalStateHandler}
                                 job={card}
                             />
                         )
@@ -181,6 +188,18 @@ const JobRadiusPage = () => {
                     <Button type='primary' className='search-jobs' onClick={onSearchPress}>Search</Button>
                 </CModal>
                 : null}
+
+            {
+                jobModalData &&
+                <JobDetails
+                    jobDetailsOpen={jobDetailsModal}
+                    handleClose={() => setJobDetailsModal(false)}
+                    jobData={jobModalData}
+                    isClickedByEmployer={false}
+                />
+            }
+
+
         </main>
     )
 }

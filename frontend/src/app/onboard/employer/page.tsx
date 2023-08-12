@@ -12,6 +12,9 @@ import {
   CardHeader,
   CircularProgress,
   TextField,
+  Backdrop,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import {
@@ -24,11 +27,13 @@ import {
 } from "formik";
 import React, { useContext } from "react";
 import * as Yup from "yup";
-import { axiosInstance } from "../../../../api";
+import { axiosInstance, isAuthenticatedUser } from "../../../../api";
 import { UserContext } from "@/app/(context)/UserContext";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { message } from "antd";
+import { setUserDataByName } from "@/app/(context)/LocatStorageManager";
+import axios from "axios";
+import { isValidURL } from "../../../../utils";
 
 interface FormType {
   jobTitle: string;
@@ -64,15 +69,22 @@ const initialValues: FormType = {
 };
 
 const OnBoardingForm: React.FC = () => {
+  const [open, setOpen] = React.useState(false);
   const [isHydrated, setIsHydrated] = React.useState(false);
   const [companyLogoURL, setCompanyLogoURL] = React.useState("");
-
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
   const { state, dispatch } = useContext(UserContext);
   const router = useRouter();
 
   React.useEffect(() => {
     setIsHydrated(true);
+    isAuthenticatedUser();
   }, []);
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const validationSchema: Yup.ObjectSchema<FormType> = Yup.object().shape({
     jobTitle: Yup.string().required("Job title is required"),
@@ -90,7 +102,7 @@ const OnBoardingForm: React.FC = () => {
     companyType: Yup.string().required("Company type is required"),
     description: Yup.string().required("Company description is required"),
     websiteURL: Yup.string()
-      .url("Invalid URL")
+      .test("valid-url", "Invalid URL", isValidURL)
       .required("Website URL is required"),
     streetAddress: Yup.string().required("Street address is required"),
     city: Yup.string().required("City is required"),
@@ -116,16 +128,11 @@ const OnBoardingForm: React.FC = () => {
           onBlur={async () => {
             if (values.companyName.length > 3) {
               const response = await axios.get(
-                "https://api.brandfetch.io/v2/search/" + values.companyName,
-                {
-                  headers: {
-                    Authorization:
-                      "Bearer 89CHWV0oBGHuH2idEvLbMUM0rYb/nEZABMx8Qu1ZlAI=",
-                  },
-                }
+                "https://autocomplete.clearbit.com/v1/companies/suggest?query=" +
+                values.companyName
               );
 
-              setCompanyLogoURL(response?.data[0]?.icon || "");
+              setCompanyLogoURL(response?.data[0]?.logo || "");
             }
           }}
         />
@@ -300,9 +307,10 @@ const OnBoardingForm: React.FC = () => {
       validationSchema={validationSchema}
       onSubmit={(values: FormType) => {
         if (!companyLogoURL) {
-          message.error("Please enter valid company name");
+          setOpen(true);
           return;
         }
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("jobTitle", values.jobTitle);
         formData.append("phone", values.phone);
@@ -329,20 +337,27 @@ const OnBoardingForm: React.FC = () => {
             },
           })
           .then((res) => {
+            setResponseMessage("Accouted Details Added Successfully!");
+            setOpenSnackbar(true);
+            setIsLoading(false);
             dispatch({
               ...state,
               loginType: "employer",
               companyName: values.companyName,
               companyLogo: companyLogoURL,
             });
+            setUserDataByName("loginType", "employer");
+            setUserDataByName("companyName", values.companyName);
+            setUserDataByName("companyLogo", companyLogoURL);
             router.push("/dashboard");
           })
           .catch((err) => {
-            console.log("err=>", err);
+            // console.log("err=>", err);
+            setIsLoading(false);
           });
       }}
       onErrors={(errors: FormikErrors<FormType>) => {
-        console.log(errors);
+        // console.log(errors);
       }}
     >
       {({ errors, touched, values }) => (
@@ -353,54 +368,82 @@ const OnBoardingForm: React.FC = () => {
             sx={{ flex: "1 1 auto" }}
             spacing={1}
           >
-              {!isHydrated ? (
-                <CircularProgress />
-              ) : (
-                <>
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Employer Details" />
-                      <CardContent>
-                        {renderPersonalDetails(errors, touched)}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Company Details" />
-                      <CardContent>
-                        {renderBasicDetails(errors, touched, values)}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Company Address" />
-                      <CardContent>
-                        {renderAddressDetails(errors, touched)}
-                      </CardContent>
-                    </Card>
-                  </Grid>
+            {!isHydrated ? (
+              <CircularProgress />
+            ) : (
+              <>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Employer Details" />
+                    <CardContent>
+                      {renderPersonalDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Details" />
+                    <CardContent>
+                      {renderBasicDetails(errors, touched, values)}
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Address" />
+                    <CardContent>
+                      {renderAddressDetails(errors, touched)}
+                    </CardContent>
+                  </Card>
+                </Grid>
 
-                  <Grid xs={11} md={8}>
-                    <Card>
-                      <CardHeader title="Company Logo" />
-                      <CardContent>{renderLogoComponent()}</CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid xs={11} md={8}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      // disabled={isSubmitting}
-                      sx={{ mt: 2, py: 1, minWidth: 150 }}
+                <Grid xs={11} md={8}>
+                  <Card>
+                    <CardHeader title="Company Logo" />
+                    <CardContent>{renderLogoComponent()}</CardContent>
+                  </Card>
+                </Grid>
+                <Grid xs={11} md={8}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    // disabled={isSubmitting}
+                    sx={{ mt: 2, py: 1, minWidth: 150 }}
+                  >
+                    Submit
+                  </Button>
+                  <Backdrop
+                    open={isLoading}
+                    sx={{
+                      color: "#fff",
+                      zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                  >
+                    <CircularProgress color="inherit" />
+                  </Backdrop>
+                  <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                  >
+                    <Alert
+                      onClose={handleCloseSnackbar}
+                      severity="success"
+                      elevation={3}
                     >
-                      Submit
-                    </Button>
-                  </Grid>
-                </>
-              )}
+                      {responseMessage}
+                    </Alert>
+                  </Snackbar>
+                </Grid>
+                <Snackbar
+                  open={open}
+                  autoHideDuration={6000}
+                  onClose={() => setOpen(false)}
+                  message={"Please enter valid company name"}
+                />
+              </>
+            )}
           </Grid>
         </Form>
       )}

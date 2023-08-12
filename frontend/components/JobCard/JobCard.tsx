@@ -33,7 +33,7 @@ const JobCard = (props: JobData) => {
             <div className="company-logo">
               {/* <img src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800" /> */}
               <Avatar
-                src="https://images.pexels.com/photos/2896668/pexels-photo-2896668.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src={props.jobCompanyLogo}
                 sx={{ width: 56, height: 56 }}
               />
             </div>
@@ -46,7 +46,7 @@ const JobCard = (props: JobData) => {
 
         <div className="footer">
           <div className="salary-div">
-            <text className="sal">$ {props.salary} /Month</text>
+            <text className="sal">$ {props.salary} / Annum</text>
             <text className="location">
               {props.location.city},{props.location.country}
             </text>

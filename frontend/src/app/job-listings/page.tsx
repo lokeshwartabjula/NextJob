@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { FilterChangeEvent, JobData } from "./types";
 import JobFilter from "../../../components/JobFilter/JobFilter";
 
-import { axiosInstance } from "../../../api";
+import { axiosInstance, isAuthenticatedUser } from "../../../api";
 
 export default function JobListings() {
   const [searchValue, setSearchValue] = useState("");
@@ -26,11 +26,17 @@ export default function JobListings() {
   const [maxFilterAmountError, setMaxFilterAmountError] = useState(false);
 
   useEffect(() => {
+    isAuthenticatedUser();
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get("/api/getJobs");
-        setJobDataArr(response.data.jobs);
-        setDisplayedJobDataArr(response.data.jobs);
+        const res = response?.data?.jobs?.filter((value: any) => {
+          if (value?.employerEmail) {
+            return value
+          }
+        })
+        setJobDataArr(res);
+        setDisplayedJobDataArr(res);
       } catch (error) {
         console.error("An error occurred while fetching job data: ", error);
       }

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
+  Alert,
   Box,
   Button,
   Link,
@@ -18,6 +19,9 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
 } from "@mui/material";
 import AuthLayout from "../layout";
 import React, { ReactElement, useContext } from "react";
@@ -40,12 +44,17 @@ interface LoginResponseType {
   loginType?: "seeker" | "employer";
 }
 
+const LOGIN_ERROR_MESSAGE = "Invalid email or password";
+
 function Page(): ReactElement {
   const router = useRouter();
   const [isHydrated, setIsHydrated] = React.useState(false);
-
+  const [loginType, setLoginType] = React.useState("seeker");
   const userContext = useContext(UserContext);
-  
+  const [isLoginError, setIsLoginError] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState("");
   const { dispatch } = userContext;
 
   const handleLoginAndRedirect = (value: {
@@ -53,21 +62,33 @@ function Page(): ReactElement {
     email: string;
     password: string;
   }) => {
+    setIsLoading(true);
+    setIsLoginError(false);
     axiosInstance
-      .post("/pub/login", {...value, submit: undefined})
+      .post("/pub/login", { ...value, submit: undefined })
       .then((res) => {
+        setResponseMessage("Login Successfully!");
+        setOpenSnackbar(true);
+        setIsLoading(false);
         const data: LoginResponseType = res.data.response;
         setUserData(data);
         dispatch(data);
-        if (value.loginType==="seeker" && !data.isSeeker) {
+        if (value.loginType === "seeker" && !data.isSeeker) {
           router.push("/onboard/seeker");
-        } else if (value.loginType==="employer" && !data.isEmployer) {
+        } else if (value.loginType === "employer" && !data.isEmployer) {
           router.push("/onboard/employer");
         } else {
           router.push("/dashboard");
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        setIsLoading(false);
+        setIsLoginError(true);
+      });
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   React.useEffect(() => {
@@ -89,7 +110,6 @@ function Page(): ReactElement {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        console.log(values);
         handleLoginAndRedirect(values);
       } catch (err: any) {
         helpers.setStatus({ success: false });
@@ -98,6 +118,16 @@ function Page(): ReactElement {
       }
     },
   });
+
+  const handleLoginTypeStateHandler = (
+    event: React.MouseEvent<HTMLElement>,
+    newLoginType: string | null
+  ) => {
+    if (newLoginType !== null) {
+      setLoginType(newLoginType);
+      formik.setFieldValue("loginType", newLoginType);
+    }
+  };
 
   return (
     <>
@@ -138,9 +168,7 @@ function Page(): ReactElement {
                     <ToggleButtonGroup
                       value={formik.values.loginType}
                       exclusive
-                      onChange={(event, newLoginType) => {
-                        formik.setFieldValue("loginType", newLoginType);
-                      }}
+                      onChange={handleLoginTypeStateHandler}
                       aria-label="login type"
                       size="large"
                     >
@@ -197,6 +225,10 @@ function Page(): ReactElement {
                     type="password"
                     value={formik.values.password}
                   />
+
+                  {isLoginError && (
+                    <Alert severity="error">{LOGIN_ERROR_MESSAGE}</Alert>
+                  )}
                 </Stack>
               )}
 
@@ -214,6 +246,28 @@ function Page(): ReactElement {
               >
                 Login
               </Button>
+              <Backdrop
+                open={isLoading}
+                sx={{
+                  zIndex: (theme) => theme.zIndex.drawer + 1,
+                  color: "#fff",
+                }}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
+              <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+              >
+                <Alert
+                  onClose={handleCloseSnackbar}
+                  severity="success"
+                  elevation={3}
+                >
+                  {responseMessage}
+                </Alert>
+              </Snackbar>
               <Typography color="text.secondary" variant="body2">
                 Don&apos;t have an account? &nbsp;
                 <Link

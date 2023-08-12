@@ -8,7 +8,18 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Stack,
+  TextField,
+  Typography,
+  Backdrop,
+  CircularProgress,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import AuthLayout from "../layout";
 import React, { ReactElement } from "react";
 import { axiosInstance } from "../../../../api";
@@ -18,10 +29,23 @@ function Page(): ReactElement {
   const router = useRouter();
 
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [responseMessage, setResponseMessage] = React.useState<{
+    message: string;
+    type: "success" | "error";
+  }>({
+    message: "",
+    type: "success",
+  });
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -29,27 +53,66 @@ function Page(): ReactElement {
       firstName: "",
       lastName: "",
       password: "",
+      confirmPassword: "",
       submit: null,
     },
+    validateOnBlur: true,
+
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Must be a valid email")
-        .max(255)
+        .max(255, "Email must be at most 255 characters")
         .required("Email is required"),
-      firstName: Yup.string().max(255).required("First name is required"),
-      lastName: Yup.string().max(255).required("Last name is required"),
-      password: Yup.string().max(255).required("Password is required"),
+      firstName: Yup.string()
+        .matches(
+          /^[a-zA-Z ]+$/,
+          "First name must contain only alphabets or spaces"
+        )
+        .max(40, "First name must be at most 40 characters")
+        .required("First name is required"),
+      lastName: Yup.string()
+        .matches(
+          /^[a-zA-Z ]+$/,
+          "Last name must contain only alphabets or spaces"
+        )
+        .max(40, "Last name must be at most 40 characters")
+        .required("Last name is required"),
+      password: Yup.string()
+        .max(255, "Password must be at most 255 characters")
+        .required("Password is required")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character"
+        ),
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), ""], "Passwords must match")
+        .required("Confirm Password is required"),
     }),
     onSubmit: async (values, helpers) => {
       try {
+        if (values.password !== values.confirmPassword) {
+          helpers.setErrors({ confirmPassword: "Passwords must match" });
+          return;
+        }
         axiosInstance
           .post("/pub/register", { ...values, submit: undefined })
           .then((res) => {
+            setResponseMessage({
+              message:
+                "Account Created! Now Please Login to Add Your Information.",
+              type: "success",
+            });
+            setOpenSnackbar(true);
+            setIsLoading(false);
             router.push("/auth/login");
           })
           .catch((err) => {
-            message.error(err.response.data.message);
-            message.error("Error while regestring user");
+            setResponseMessage({
+              message: "Error while register user! Please try again.",
+              type: "error",
+            });
+            setOpenSnackbar(true);
+            setIsLoading(false);
           });
       } catch (err: any) {
         helpers.setStatus({ success: false });
@@ -99,6 +162,8 @@ function Page(): ReactElement {
               {isHydrated && (
                 <Stack spacing={3}>
                   <TextField
+                    // id="firstName"
+                    type="text"
                     error={
                       !!(formik.touched.firstName && formik.errors.firstName)
                     }
@@ -152,6 +217,25 @@ function Page(): ReactElement {
                     type="password"
                     value={formik.values.password}
                   />
+                  <TextField
+                    error={
+                      !!(
+                        formik.touched.confirmPassword &&
+                        formik.errors.confirmPassword
+                      )
+                    }
+                    fullWidth
+                    helperText={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                    }
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    type="password"
+                    value={formik.values.confirmPassword}
+                  />
                 </Stack>
               )}
               {formik.errors.submit && (
@@ -169,6 +253,25 @@ function Page(): ReactElement {
                 Register
               </Button>
             </form>
+            <Backdrop
+              open={isLoading}
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+            <Snackbar
+              open={openSnackbar}
+              autoHideDuration={6000}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert
+                onClose={handleCloseSnackbar}
+                severity={responseMessage.type}
+                elevation={3}
+              >
+                {responseMessage.message}
+              </Alert>
+            </Snackbar>
           </div>
         </Box>
       </Box>

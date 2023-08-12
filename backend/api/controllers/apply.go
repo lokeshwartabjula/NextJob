@@ -1,7 +1,6 @@
 /*
-  Author: Kruti Panchal
-  Banner Id: B00930563
-  email id: kr946702@dal.ca
+  Author: Kishan Patel
+  Banner Id: B00929225
 */
 
 package api
@@ -68,7 +67,7 @@ func ApplyJob(c *gin.Context) {
 	_, err := collection.InsertOne(c, bson.M{"userId": requestData.UserID, "jobId": requestData.JobID})
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "You have already applied to this job!"})
+			c.IndentedJSON(http.StatusConflict, gin.H{"message": "You have already applied to this job!"})
 			return
 		} else {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "An error occurred while applying for the job!"})

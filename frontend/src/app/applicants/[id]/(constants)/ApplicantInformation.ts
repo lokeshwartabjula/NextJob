@@ -12,6 +12,7 @@ export interface ApplicantsType {
     address2: string;
     state: string;
     postalCode: string;
+    userId: string;
     educations: {
       school: string;
       degree: string;

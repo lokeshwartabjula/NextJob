@@ -21,6 +21,7 @@ interface CJobCardProps {
     companyLogo: string
     showDetails: () => void,
     job: any
+    setJobDetailsModal: (jobData: any) => void,
 }
 
 const CJobCard = (props: CJobCardProps) => {
@@ -39,7 +40,7 @@ const CJobCard = (props: CJobCardProps) => {
                     </div>
 
                     <div className='company-logo'>
-                        <img src={"data:image/png;base64," + props.companyLogo} />
+                        <img src={props.companyLogo} style={{ height: 'auto', alignItems: 'center', maxHeight: '100%' }} />
                     </div>
                 </div>
 
@@ -50,27 +51,27 @@ const CJobCard = (props: CJobCardProps) => {
 
             <div className='footer'>
                 <div className='salary-div'>
-                    <text className='sal'>${props.salary}/Month</text>
+                    <text className='sal'>${props.salary}/ Annum</text>
                     <text className='location'>{props.jobLocation}</text>
                 </div>
 
                 <div>
-                    <Link href={{ pathname: '/home/job-details', query: { data: JSON.stringify(props.job) } }}>
-                        <Button className='details-bttn' style={{
-                            backgroundColor: 'rgba(140, 226, 112, 0.859)',
-                            color: '#000',
-                            borderRadius: '24px',
-                            paddingLeft: '1.3rem',
-                            paddingRight: '1.3rem',
-                            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.16)',
-                        }} onClick={() => { }}>
-                            Details
-                        </Button>
-                    </Link>
+                    {/* <Link href={{ pathname: '/home/job-details', query: { data: JSON.stringify(props.job) } }}> */}
+                    <Button className='details-bttn' style={{
+                        backgroundColor: 'rgba(140, 226, 112, 0.859)',
+                        color: '#000',
+                        borderRadius: '24px',
+                        paddingLeft: '1.3rem',
+                        paddingRight: '1.3rem',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.16)',
+                    }} onClick={() => props.setJobDetailsModal(props.job)}>
+                        Details
+                    </Button>
+                    {/* </Link> */}
                 </div>
             </div>
 
-        </div>
+        </div >
     )
 }
 

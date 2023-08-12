@@ -10,9 +10,7 @@ import SeekerForm from "./seeker";
 import Employer from "./employer";
 import { UserContext } from "../(context)/UserContext";
 
-const MyProfile: React.FC<{ userType: number }> = (props: {
-  userType: number;
-}) => {
+const MyProfile: React.FC = () => {
   const { state } = useContext(UserContext);
 
   const userType: "seeker" | "employer" | undefined = state.loginType;
@@ -27,10 +25,14 @@ const MyProfile: React.FC<{ userType: number }> = (props: {
   const fetchUserData = async () => {
     if (userType === "seeker") {
       const res = await axiosInstance.get(`/api/seeker/${userId}`);
+      // console.log("seeker data ==> ", res.data);
       res.data?.seekers[0] != null && setSeekerData(res.data?.seekers[0]);
     } else if (userType === "employer") {
-      const res = await axiosInstance.get(`/api/employer/${userId}`);
-      res.data?.employers[0] != null && setEmployerData(res.data?.employers[0]);
+      const res = await axiosInstance.get(`/api/employerByUserId/${userId}`);
+      // console.log("employer data ==> ", res.data);
+      res.data.employers &&
+        res.data?.employers[0] != null &&
+        setEmployerData(res.data?.employers[0]);
     }
   };
 

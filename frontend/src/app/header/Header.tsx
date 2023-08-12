@@ -74,7 +74,13 @@ function ResponsiveAppBar() {
   const handleNavClick = (route?: string) => {
     if (route === "/logout") {
       Router.push("/auth/login");
-      dispatch({ firstName: "", lastName: "", email: "", id: "", loginType: undefined });
+      dispatch({
+        firstName: "",
+        lastName: "",
+        email: "",
+        id: "",
+        loginType: undefined,
+      });
       removeUserData();
     } else route ? Router.push(route) : setSnackBarVisible(true);
     handleCloseNavMenu();
@@ -142,7 +148,7 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {NavOptions.map((page) => (
+                {navList.map((page) => (
                   <MenuItem
                     key={page.label}
                     onClick={() => handleNavClick(page.route)}

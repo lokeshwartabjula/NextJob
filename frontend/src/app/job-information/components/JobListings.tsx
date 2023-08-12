@@ -8,7 +8,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useContext } from "react";
-import { axiosInstance } from "../../../../api";
+import { axiosInstance, isAuthenticatedUser } from "../../../../api";
 import { useRouter } from "next/navigation";
 import JobDetails from "../../../../components/JobDetails/JobDetails";
 
@@ -35,6 +35,7 @@ import {
   Button,
   useTheme,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -51,7 +52,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 
-export default function JobListings() {
+interface Props {
+  companyName?: string | undefined
+}
+const JobListings: React.FC<Props> = (props) => {
   const theme = useTheme();
   const { state } = useContext(UserContext);
   const captionSize = useMediaQuery(theme.breakpoints.down("md"));
@@ -66,15 +70,23 @@ export default function JobListings() {
   const [jobDetails, setJobDetails] = useState<JobInformation>();
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleleId] = useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
 
+  // console.log('state', state)
   var router = useRouter();
-  const companyName = state.companyName;
+  const companyName = state?.loginType === "employer" ? state?.companyName : props?.companyName;
+  // console.log('companyName', companyName);
 
   useEffect(() => {
+    setIsMounted(true);
+    setIsLoading(true);
+    isAuthenticatedUser();
     const fetchJobs = async () => {
       try {
         const res = await axiosInstance.get("api/getJobs");
+        // console.log('res ==>', res)
         setJobs(res.data.jobs);
+        setFilteredJobs(res.data.jobs);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch jobs", error);
@@ -82,10 +94,8 @@ export default function JobListings() {
     };
 
     fetchJobs();
-  }, []);
 
-  useEffect(() => {
-    setIsMounted(true);
+    setIsLoading
   }, []);
 
   const handleEdit = (job: JobInformation) => {
@@ -120,6 +130,7 @@ export default function JobListings() {
     setFilteredJobs(result);
   }, [searchTitle, searchLocation, jobStatus, jobs]);
 
+  // console.log('filtered jobs ==>', filteredJobs)
   const handleDelete = async (id: string) => {
     try {
       const response = await axiosInstance.delete(`api/deleteJob/${id}`);
@@ -141,7 +152,7 @@ export default function JobListings() {
     });
     if (jobToUpdate) {
       const updatedJob = { ...jobToUpdate, jobStatus: status };
-      console.log('updated job ==>', updatedJob)
+      // console.log('updated job ==>', updatedJob)
       try {
         const response = await axiosInstance.put(`api/updateJob`, {
           id: updatedJob.id,
@@ -151,10 +162,10 @@ export default function JobListings() {
           jobStatus: updatedJob.jobStatus,
           noOfPositions: updatedJob.noOfPositions,
           jobType: updatedJob.jobType,
-          location : {
+          location: {
             lng: updatedJob.location.coordinates[0],
-            lat:updatedJob.location.coordinates[1],
-            placeId: updatedJob.location.placeId, 
+            lat: updatedJob.location.coordinates[1],
+            placeId: updatedJob.location.placeId,
             placeName: updatedJob.location.placeName,
             city: updatedJob.location.city,
             state: updatedJob.location.state,
@@ -217,27 +228,27 @@ export default function JobListings() {
               sx={
                 captionSize
                   ? {
-                      margin: "0% 5% 5% 5%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D4D2D0",
-                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                      borderRadius: "5px",
-                    }
+                    margin: "0% 5% 5% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px",
+                  }
                   : {
-                      margin: "0% 5%",
-                      display: "flex",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      border: "1px solid #D4D2D0",
-                      boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
-                      borderRadius: "5px",
-                    }
+                    margin: "0% 5%",
+                    display: "flex",
+                    flexDirection: "column",
+                    textAlign: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #D4D2D0",
+                    boxShadow: "0px 0px 0px rgba(0, 0, 0, 0)",
+                    borderRadius: "5px",
+                  }
               }
             >
               <CardContent>
@@ -330,9 +341,9 @@ export default function JobListings() {
                     <TableCell className={styles.titles}>Job Title</TableCell>
                     <TableCell className={styles.titles}>Location</TableCell>
                     <TableCell className={styles.titles}>Openings</TableCell>
-                    <TableCell className={styles.titles}>Job Status</TableCell>
-                    <TableCell className={styles.titles}>Candidates</TableCell>
-                    <TableCell className={styles.titles}>Actions</TableCell>
+                    {state?.loginType === "employer" ? <TableCell className={styles.titles}>Job Status</TableCell> : null}
+                    {state?.loginType === "employer" ? <TableCell className={styles.titles}>Candidates</TableCell> : null}
+                    {state?.loginType === "employer" ? <TableCell className={styles.titles}>Actions</TableCell> : null}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -359,7 +370,7 @@ export default function JobListings() {
                           >
                             {job.noOfPositions}
                           </TableCell>
-                          <TableCell
+                          {state?.loginType === "employer" ? <TableCell
                             className={styles.description}
                             sx={{ width: "70px" }}
                           >
@@ -425,8 +436,8 @@ export default function JobListings() {
                                 </div>
                               </MenuItem>
                             </Select>
-                          </TableCell>
-                          <TableCell>
+                          </TableCell> : null}
+                          {state?.loginType === "employer" ? <TableCell>
                             <Button
                               variant="contained"
                               className={styles.buttonApplicants}
@@ -436,8 +447,8 @@ export default function JobListings() {
                             >
                               Applicants
                             </Button>
-                          </TableCell>
-                          <TableCell>
+                          </TableCell> : null}
+                          {state?.loginType === "employer" ? <TableCell>
                             <Grid container direction="row">
                               <Grid
                                 item
@@ -463,7 +474,7 @@ export default function JobListings() {
                                 </Button>
                               </Grid>
                             </Grid>
-                          </TableCell>
+                          </TableCell> : null}
                         </TableRow>
                       ) : (
                         <></>
@@ -520,10 +531,12 @@ export default function JobListings() {
             jobDetailsOpen={jobDetailsOpen}
             handleClose={handleClose}
             jobData={jobDetails}
-            isClickedByEmployer={true}
+            isClickedByEmployer={state?.loginType === "employer" ? true : false}
           />
         )}
       </Box>
     </>
   );
 }
+
+export default JobListings;
