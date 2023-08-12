@@ -1,4 +1,9 @@
-// Developed by: Kishan Patel | B00929225
+/*
+Author: Kishan Patel
+Banner ID : B00929225
+Email ID: ks255715@dal.ca
+*/
+
 "use client";
 
 import JobListingsSearchBar from "../../../components/JobListingsSearchBar/JobListingsSearchBar";
@@ -32,9 +37,9 @@ export default function JobListings() {
         const response = await axiosInstance.get("/api/getJobs");
         const res = response?.data?.jobs?.filter((value: any) => {
           if (value?.employerEmail) {
-            return value
+            return value;
           }
-        })
+        });
         setJobDataArr(res);
         setDisplayedJobDataArr(res);
       } catch (error) {

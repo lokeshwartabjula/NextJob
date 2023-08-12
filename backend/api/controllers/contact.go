@@ -1,11 +1,17 @@
+/*
+Author: Kishan Patel
+Banner Id : B00929225
+Email-Id: ks255715@dal.ca
+*/
 package api
 
 import (
 	"backend/utils"
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type ContactRequest struct {

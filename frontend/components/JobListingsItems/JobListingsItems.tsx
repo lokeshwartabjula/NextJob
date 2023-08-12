@@ -1,4 +1,9 @@
-// Developed by: Kishan Patel | B00929225
+/*
+Author: Kishan Patel
+Banner ID : B00929225
+Email ID: ks255715@dal.ca
+*/
+
 "use client";
 
 import { Grid } from "@mui/material";

@@ -1,3 +1,9 @@
+/*
+Author: Kishan Patel
+Banner ID : B00929225
+Email ID: ks255715@dal.ca
+*/
+
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
