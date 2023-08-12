@@ -1,4 +1,4 @@
-# D3 Proposal Web Application
+# D3 Proposal Web Application by Group1
 
 This is a group submission to meet the requirements of D3. As a team of 6, we have developed an innovative job search web application called “Next Job” which aims to revolutionize the recruitment landscape by addressing the prevalent challenges in job seeking and job hiring process. It can be claimed as a one-stop solution for job seekers and employers with a goal to bridge the gap between them through user-centric interface and experience. This submission has the complete end to end feature implementation of our project prototype. In this submission data is not hardcoded and is being retrieved by calling the APIs that we have developed. 
 
@@ -30,7 +30,13 @@ With respect to process, we have followed design thinking strategy where we star
 ## Testing
 
 We have hosted the website through netlify and we checked if our intended features are being loaded, checked if the developed UI components are being rendered as expected and checked if the APIs that we developed are sending expected responses.
-we have also checked the responsiveness of the website in different orientations.
+We have also checked the responsiveness of the website in different orientations.
+
+The testing strategy for this application was primarily manual. Each new feature or bug fix was thoroughly tested in an iterative development process. This involved testing the feature in isolation and then retesting it in the context of the entire application to ensure overall system integrity. This was done in local environment first.
+
+Post-deployment, the application was moved to the staging environment where it was rigorously tested on the live server to verify its functionality and to ensure a seamless user experience. Then it is deployed in production environment as well.
+
+
 
 ### Break down into end to end tests
 
@@ -75,6 +81,12 @@ We deployed this website using netlify. We followed the instructions given in th
 - [React](https://reactjs.org/) - React was used as the frontend library
 - [Material UI](https://mui.com/) - Material UI was used as the UI library
 - [Axios](https://axios-http.com/) - Axios was used for making API calls
+- [Ant Design](https://ant.design/) - Ant Design was used for the UI components
+- [Google Maps API](https://developers.google.com/maps) - Google Maps API was used for the location based feature
+- [React Apex Chart](https://apexcharts.com/docs/react-charts/) - React Apex charts was used for displaying charts in the visual analytics dashboard
+- [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) - Used to implement in forms to get location
+
+
 
 
 
